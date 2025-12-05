@@ -1,0 +1,15 @@
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./keto.db:/app/keto.db
+      - ./config:/app/config
+    env_file:
+      - .env
+    networks:
+      - web-public
+
+networks:
+  web-public:
+    external: true

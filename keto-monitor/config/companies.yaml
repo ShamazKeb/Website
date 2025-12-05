@@ -1,0 +1,13 @@
+companies:
+  - name: "Keto Software"
+    slug: "keto"
+    search_query: "Keto Software news"
+  - name: "Guidecom"
+    slug: "guidecom"
+    search_query: "Guidecom news"
+  - name: "McKinsey"
+    slug: "mckinsey"
+    search_query: "McKinsey news"
+  - name: "Nvidia"
+    slug: "nvidia"
+    search_query: "Nvidia news"

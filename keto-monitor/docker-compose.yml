@@ -1,0 +1,17 @@
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./keto.db:/app/keto.db
+      - ./config:/app/config
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - web-public
+
+networks:
+  web-public:
+    external: true

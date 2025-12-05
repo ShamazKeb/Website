@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Environment Variables
+.env
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Environment Variables
+.env
+
+# Database
+*.db
+*.sqlite3
+
+# IDEs
+.vscode
+.idea
+
+# Nginx Proxy Manager Data
+npm/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,9 @@
+flask
+pyyaml
+sqlalchemy
+requests
+openai
+python-dotenv
+feedparser
+
+

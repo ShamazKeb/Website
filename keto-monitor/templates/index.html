@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keto Monitor 3.0</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .filter-bar {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .topic-card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+
+        .topic-title {
+            margin: 0;
+            color: #333;
+        }
+
+        .topic-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .summary {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            margin: 15px 0;
+        }
+
+        .article-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .article-item {
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+
+        .article-source {
+            color: #666;
+            font-size: 0.85em;
+            margin-left: 5px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Keto Monitor 3.0</h1>
+
+    <div class="filter-bar">
+        <form action="/" method="get" style="display: flex; gap: 10px; align-items: center; width: 100%;">
+            <label>Company:</label>
+            <select name="company">
+                <option value="">All Companies</option>
+                {% for company in companies %}
+                <option value="{{ company.slug }}" {% if selected_company==company.slug %}selected{% endif %}>
+                    {{ company.name }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label>From:</label>
+            <input type="date" name="from" value="{{ selected_from or '' }}">
+
+            <label>To:</label>
+            <input type="date" name="to" value="{{ selected_to or '' }}">
+
+            <button type="submit">Filter</button>
+            <a href="/" style="margin-left: auto;">Reset</a>
+        </form>
+    </div>
+
+    <div class="topics-container">
+        {% if not topics %}
+        <p>No topics found for the selected criteria.</p>
+        {% endif %}
+
+        {% for topic in topics %}
+        <div class="topic-card">
+            <div class="topic-header">
+                <h2 class="topic-title">{{ topic.title }}</h2>
+                <span class="topic-date">{{ topic.updated_at.strftime('%Y-%m-%d %H:%M') }}</span>
+            </div>
+
+            {% if topic.summaries %}
+            <div class="summary">
+                <strong>Summary:</strong>
+                <p style="margin: 5px 0;">{{ topic.summaries[-1].summary_text }}</p>
+            </div>
+            {% endif %}
+
+            <h3>Sources</h3>
+            <ul class="article-list">
+                {% for ta in topic.topic_articles %}
+                <li class="article-item">
+                    <a href="{{ ta.article.url }}" target="_blank">{{ ta.article.title }}</a>
+                    <span class="article-source">
+                        ({{ ta.article.source_name }} - {{ ta.article.published_at.strftime('%Y-%m-%d') if
+                        ta.article.published_at else 'N/A' }})
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+services:
+  web:
+    image: nginx:alpine
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html:ro
+    networks:
+      - web-public
+    restart: unless-stopped
+
+networks:
+  web-public:
+    external: true

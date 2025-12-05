@@ -1,0 +1,28 @@
+# General
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+.DS_Store
+Thumbs.db
+
+# Environment Variables (CRITICAL: Do not commit secrets)
+.env
+.env.*
+
+# Docker
+docker-compose.override.yml
+
+# Virtual Environments
+.venv/
+venv/
+env/
+
+# Data Directories (Ignored to prevent large uploads / persistence issues)
+infrastructure/npm/data/
+infrastructure/npm/letsencrypt/
+keto-monitor/keto.db
+keto-monitor/data/
+
+# Backup Folder
+keto_monitor3.0/

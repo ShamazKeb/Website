@@ -1,0 +1,54 @@
+global_feeds:
+  - "https://www.it-finanzmagazin.de/feed/rss/"
+  - "https://siliconcanals.com/feed/"
+  - "https://www.consultancy.org/rss/"
+  - "https://www.consultingmag.com/feed/"
+  - "https://www.theverge.com/rss/index.xml"
+  - "https://techcrunch.com/feed/"
+  - "https://www.tomshardware.com/feeds.xml"
+  - "https://www.heise.de/rss/heise-atom.xml"
+  - "https://www.computerbase.de/rss/news.xml"
+
+  # GPU / Hardware / Benchmarks (redaktionelle Inhalte)
+  - "https://videocardz.com/feed"
+  - "https://www.guru3d.com/news_rss/"
+  - "https://www.anandtech.com/rss/"
+  - "https://wccftech.com/feed/"
+  - "https://www.pcgamer.com/rss/"
+  - "https://www.techradar.com/rss"
+  - "https://www.engadget.com/rss.xml"
+  - "https://dsogaming.com/feed/"
+
+  # Tech News / AI / Computing
+  - "https://venturebeat.com/category/ai/feed/"
+  - "https://arstechnica.com/feed/"
+  - "https://feeds.arstechnica.com/arstechnica/technology-lab"
+  - "https://www.zdnet.com/news/rss.xml"
+  - "https://www.technologyreview.com/feed/"
+  - "https://artificialintelligence-news.com/feed/"
+
+  # Börse / Markt / Finance
+  - "https://feeds.reuters.com/reuters/technologyNews"
+  - "https://feeds.reuters.com/reuters/companyNews"
+  - "https://www.investing.com/rss/news.rss"
+  - "https://www.marketwatch.com/rss/topstories"
+
+  # Linux / Treiber / Developer
+  - "https://www.phoronix.com/rss.php"
+  - "https://hnrss.org/frontpage"
+
+  # Internationale IT-/Tech-Quellen
+  - "https://asia.nikkei.com/rss/feed/nar"
+  - "https://rss.golem.de/rss.php?feed=RSS1.0"
+  - "https://www.lesnumeriques.com/rss.xml"
+  - "https://www.xataka.com/index.xml"
+  - "https://english.etnews.com/rss"
+
+company_specific_feeds:
+  keto: []
+  mckinsey: []
+  guidecom: []
+  nvidia:
+    # Offizielle NVIDIA-Quellen (News / Blog, keine Community-Posts)
+    - "https://nvidianews.nvidia.com/cats/press_release.xml"
+    - "https://feeds.feedburner.com/nvidiablog"

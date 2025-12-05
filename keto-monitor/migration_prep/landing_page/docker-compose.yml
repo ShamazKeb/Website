@@ -1,0 +1,10 @@
+services:
+  landing:
+    build: .
+    restart: unless-stopped
+    networks:
+      - web-public
+
+networks:
+  web-public:
+    external: true
