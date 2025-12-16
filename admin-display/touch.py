@@ -4,12 +4,12 @@ import threading
 import time
 
 class Touch:
-    def __init__(self, dev_path='/dev/input/event0'):
+    def __init__(self, dev_path='/dev/input/event0', w=320, h=480):
         # Attempt to find the correct device if event0 is not it
-        # (This is a simplified approach, usually event0 is touch on these screens)
         self.dev_path = dev_path
         self.device = None
         self.x, self.y = 0, 0
+        self.w, self.h = w, h
         self.running = True
         self._connect()
 
@@ -41,13 +41,13 @@ class Touch:
         for event in events:
             if event.type == ecodes.EV_ABS:
                 if event.code == ecodes.ABS_X:
-                    # Calibration scaling (approximate for 3.5")
-                    # XPT2046 often returns 0..4095. Invert/Scale as needed.
-                    # Assuming Landscape: X maps to 480, Y maps to 320.
-                    # You might need to invert x = 480 - (...) depending on rotation.
-                    self.x = int((event.value / 4095.0) * 480) 
+                    # Calibration scaling
+                    # XPT2046 0..4095
+                    # Portrait Mode: X typically maps to Width (320)
+                    self.x = int((event.value / 4095.0) * self.w) 
                 elif event.code == ecodes.ABS_Y:
-                    self.y = int((event.value / 4095.0) * 320)
+                    # Portrait Mode: Y typically maps to Height (480)
+                    self.y = int((event.value / 4095.0) * self.h)
             elif event.type == ecodes.EV_KEY:
                 if event.code == ecodes.BTN_TOUCH and event.value == 1: # 1=Press, 0=Release
                     touch_triggered = True

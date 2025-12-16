@@ -2,7 +2,7 @@ import mmap
 import os
 
 class Framebuffer:
-    def __init__(self, dev='/dev/fb1', w=480, h=320):
+    def __init__(self, dev='/dev/fb1', w=320, h=480):
         self.w, self.h = w, h
         # RGB565 = 2 bytes per pixel
         self.screensize = w * h * 2

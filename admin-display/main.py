@@ -13,10 +13,10 @@ UPDATE_SCRIPT = "../update.sh"
 
 class App:
     def __init__(self):
-        self.fb = Framebuffer()
-        self.touch = Touch()
-        self.width = 480
-        self.height = 320
+        self.fb = Framebuffer(w=320, h=480) # Fixed Resolution
+        self.touch = Touch(w=320, h=480)    # Pass resolution to touch
+        self.width = 320
+        self.height = 480
         self.state = "IDLE" # IDLE, UPDATING, MENU
         
         # Load Assets
@@ -43,7 +43,7 @@ class App:
         img = Image.new("RGB", (self.width, self.height), "black")
         draw = ImageDraw.Draw(img)
         
-        # Circle Center
+        # Circle Center (Vertical Center)
         center_x, center_y = self.width // 2, self.height // 2
         radius = 80
         
@@ -59,7 +59,7 @@ class App:
         # Text
         text = "Tap to Update"
         text_bbox = draw.textbbox((0,0), text, font=self.small_font)
-        draw.text((center_x - text_bbox[2]//2, center_y + radius + 10), text, font=self.small_font, fill="gray")
+        draw.text((center_x - text_bbox[2]//2, center_y + radius + 20), text, font=self.small_font, fill="gray")
         
         return img
 
@@ -78,24 +78,20 @@ class App:
         draw = ImageDraw.Draw(img)
         
         # Title
-        draw.text((10, 10), "Thy Projects", font=self.font, fill="#e67e22")
+        draw.text((20, 20), "Thy Projects", font=self.font, fill="#e67e22")
         
-        # Buttons Grid (2 buttons side by side)
-        # Button 1: Keto
-        # Button 2: Handball
+        # Buttons Grid (Vertical Stack for Portrait)
+        thumb_w, thumb_h = 240, 150 # Larger thumbnails
         
-        # Draw Images (Thumbnails)
-        thumb_w, thumb_h = 180, 135
-        
-        # Keto
+        # Keto (Top)
         keto_thumb = self.keto_img.resize((thumb_w, thumb_h))
-        img.paste(keto_thumb, (30, 60))
-        draw.text((30, 200), "Keto Monitor", font=self.small_font, fill="white")
+        img.paste(keto_thumb, (40, 80))
+        draw.text((40, 240), "Keto Monitor", font=self.small_font, fill="white")
         
-        # Handball
+        # Handball (Bottom)
         handball_thumb = self.handball_img.resize((thumb_w, thumb_h))
-        img.paste(handball_thumb, (270, 60))
-        draw.text((270, 200), "Handball Tracker", font=self.small_font, fill="white")
+        img.paste(handball_thumb, (40, 280))
+        draw.text((40, 440), "Handball Tracker", font=self.small_font, fill="white")
         
         return img
 
@@ -119,7 +115,7 @@ class App:
         self.fb.show(self.draw_menu())
 
     def run(self):
-        print("Admin Display Started...")
+        print(f"Admin Display Started ({self.width}x{self.height})...")
         # Initial Draw
         self.fb.show(self.draw_idle())
         
@@ -132,24 +128,23 @@ class App:
                 
                 # Logic based on State
                 if self.state == "IDLE":
-                    # Check if click is near center circle (roughly)
+                    # Check if click is near center circle
                     cx, cy = self.width // 2, self.height // 2
-                    if abs(pos[0] - cx) < 100 and abs(pos[1] - cy) < 100:
+                    if abs(pos[0] - cx) < 120 and abs(pos[1] - cy) < 120:
                         self.perform_update()
                 
                 elif self.state == "MENU":
-                    # Check Button Clicks
-                    # Button 1 (Keto): x=30..210, y=60..195
-                    if 30 < pos[0] < 210 and 60 < pos[1] < 195:
+                    # Vertical Menu Logic
+                    # Button 1 (Keto): x=40..280, y=80..230
+                    if 40 < pos[0] < 280 and 80 < pos[1] < 230:
                         print("Keto Selected - No Action Implemented")
                     
-                    # Button 2 (Handball): x=270..450, y=60..195
-                    if 270 < pos[0] < 450 and 60 < pos[1] < 195:
+                    # Button 2 (Handball): x=40..280, y=280..430
+                    if 40 < pos[0] < 280 and 280 < pos[1] < 430:
                         print("Handball Selected - No Action Implemented")
                         
-                    # Back to Idle if clicked elsewhere? Or distinct Back button?
-                    # For now: Click Top Left title to go back
-                    if pos[0] < 200 and pos[1] < 50:
+                    # Back to Idle if clicked top title
+                    if pos[1] < 60:
                         self.state = "IDLE"
                         self.fb.show(self.draw_idle())
 
