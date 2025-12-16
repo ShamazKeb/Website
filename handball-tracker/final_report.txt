@@ -1,0 +1,18 @@
+--- Team Assignments (SQL Grouped) ---
+
+[DEBUG] Raw Counts:
+  users: 13
+  teams: 3
+  players: 7
+  team_players: 6
+  coaches: 3
+  team_coaches: 3
+
+[DEBUG] team_players dump:
+[(1, 1), (1, 2), (2, 3), (2, 4), (3, 6), (3, 5)]
+
+Team                 | Players                                            | Coaches                       
+---------------------------------------------------------------------------------------------------------
+D-Jugend             | string string,Lena Müller                          | Julia Krämer                  
+C-Jugend             | Noah Schmidt,Mia Hoffmann                          | Markus Becker                 
+B-Jugend             | Paul Weber,Sofia Klein                             | Thomas Wagner                 

@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+pydantic-settings
+passlib[argon2]
+python-jose[cryptography]
+python-multipart
+httpx

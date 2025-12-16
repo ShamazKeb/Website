@@ -1,0 +1,2 @@
+Status: 400
+Body: {'detail': 'User with this email already exists'}
