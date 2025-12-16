@@ -18,7 +18,7 @@ class App:
         self.touch = Touch(w=320, h=480)
         self.width = 320
         self.height = 480
-        self.state = "IDLE" 
+        self.state = "START_MENU" # Start with Menu 
         
         # Log & Animation State
         self.log_lines = []
@@ -47,10 +47,42 @@ class App:
             self.small_font = ImageFont.load_default()
             self.log_font = ImageFont.load_default()
 
+    def draw_start_menu(self):
+        img = Image.new("RGB", (self.width, self.height), "#1a1a1a")
+        draw = ImageDraw.Draw(img)
+        
+        # Header
+        draw.text((20, 30), "THY ADMIN", font=self.font, fill="#e67e22")
+        draw.line((20, 65, 300, 65), fill="#333333", width=2)
+        
+        # Button 1: System Update
+        btn_y = 100
+        btn_h = 80
+        btn_w = 280
+        btn_x = 20
+        
+        # Draw Button Background
+        draw.rounded_rectangle((btn_x, btn_y, btn_x + btn_w, btn_y + btn_h), radius=15, fill="#2c3e50", outline="#34495e", width=2)
+        
+        # Icon placeholder (Update Icon)
+        draw.text((btn_x + 20, btn_y + 25), "🔄", font=self.font, fill="white")
+        draw.text((btn_x + 60, btn_y + 30), "System Update", font=self.small_font, fill="white")
+        
+        # Button 2: Placeholder
+        btn2_y = 200
+        draw.rounded_rectangle((btn_x, btn2_y, btn_x + btn_w, btn2_y + btn_h), radius=15, fill="#1a1a1a", outline="#333333", width=2)
+        draw.text((btn_x + 60, btn2_y + 30), "Coming Soon...", font=self.small_font, fill="#666666")
+
+        return img
+
     # ... (draw_idle and draw_menu remain largely the same, maybe minor adjustments optional) ...
     def draw_idle(self):
         img = Image.new("RGB", (self.width, self.height), "black")
         draw = ImageDraw.Draw(img)
+        
+        # Back Button (Top Left)
+        draw.text((10, 10), "< Back", font=self.small_font, fill="#666666")
+        
         center_x, center_y = self.width // 2, self.height // 2
         radius = 80
         draw.ellipse((center_x - radius, center_y - radius, center_x + radius, center_y + radius), 
@@ -160,11 +192,37 @@ class App:
 
     def run(self):
         print(f"Admin Display Started ({self.width}x{self.height})...")
-        self.fb.show(self.draw_idle())
         
         while True:
-            # 1. Handle Updating State Animation
-            if self.state == "UPDATING":
+            # 1. Start Menu Logic
+            if self.state == "START_MENU":
+                self.fb.show(self.draw_start_menu())
+                pos = self.touch.read()
+                if pos:
+                    print(f"Start Menu Touch: {pos}")
+                    # Button 1: System Update (y=100 to y=180)
+                    if 20 < pos[0] < 300 and 100 < pos[1] < 180:
+                        self.state = "IDLE" # Transition to Update Screen
+                        time.sleep(0.2) # Debounce
+
+            # 2. Update Update Screen (IDLE)
+            elif self.state == "IDLE":
+                self.fb.show(self.draw_idle())
+                pos = self.touch.read()
+                if pos:
+                    print(f"IDLE Touch: {pos}")
+                    # Back Button (Top Left area)
+                    if pos[0] < 100 and pos[1] < 50:
+                        self.state = "START_MENU"
+                        time.sleep(0.2) 
+                    else:
+                        # Center Update Button
+                        cx, cy = self.width // 2, self.height // 2
+                        if abs(pos[0] - cx) < 120 and abs(pos[1] - cy) < 120:
+                            self.perform_update()
+
+            # 3. Handle Updating State Animation
+            elif self.state == "UPDATING":
                 self.animation_angle = (self.animation_angle + 15) % 360
                 self.fb.show(self.draw_updating())
                 
@@ -176,29 +234,7 @@ class App:
                 # Small sleep to control framerate (e.g. 10-15 FPS)
                 time.sleep(0.05)
                 continue # Skip Touch input during update
-
-            # 2. Normal Touch Input
-            pos = self.touch.read()
             
-            if pos:
-                print(f"Touch at {pos}")
-                if self.state == "IDLE":
-                    cx, cy = self.width // 2, self.height // 2
-                    if abs(pos[0] - cx) < 120 and abs(pos[1] - cy) < 120:
-                        self.perform_update()
-                
-                elif self.state == "MENU":
-                    # KETO
-                    if 40 < pos[0] < 280 and 80 < pos[1] < 230:
-                        pass
-                    # HANDBALL
-                    if 40 < pos[0] < 280 and 280 < pos[1] < 430:
-                        pass
-                    # BACK
-                    if pos[1] < 60:
-                        self.state = "IDLE"
-                        self.fb.show(self.draw_idle())
-
             time.sleep(0.1)
 
             time.sleep(0.1)
