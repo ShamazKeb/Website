@@ -1,8 +1,10 @@
 import threading
-import queue
-import math
-
-# ... (Imports remain same) ...
+import time
+import os
+import subprocess
+from PIL import Image, ImageDraw, ImageFont
+from fb import Framebuffer
+from touch import Touch
 
 class App:
     def __init__(self):
