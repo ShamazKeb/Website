@@ -1,6 +1,7 @@
 services:
   web:
-    image: nginx:alpine
+    build: .
+    container_name: landing-page
     # volumes removed to rely on build copy
 
     networks:
