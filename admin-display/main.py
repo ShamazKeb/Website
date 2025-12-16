@@ -6,6 +6,12 @@ from PIL import Image, ImageDraw, ImageFont
 from fb import Framebuffer
 from touch import Touch
 
+# --- Configuration ---
+FAVICON_PATH = "../landing-page/images/favicon.png"
+KETO_IMG_PATH = "../landing-page/images/keto-monitor.png"
+HANDBALL_IMG_PATH = "../landing-page/images/handball-tracker.png"
+UPDATE_SCRIPT = "../update.sh"
+
 class App:
     def __init__(self):
         self.fb = Framebuffer(w=320, h=480)
