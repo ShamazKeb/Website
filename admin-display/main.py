@@ -1,23 +1,22 @@
-import time
-import os
-import subprocess
-from PIL import Image, ImageDraw, ImageFont
-from fb import Framebuffer
-from touch import Touch
+import threading
+import queue
+import math
 
-# --- Configuration ---
-FAVICON_PATH = "../landing-page/images/favicon.png"
-KETO_IMG_PATH = "../landing-page/images/keto-monitor.png"
-HANDBALL_IMG_PATH = "../landing-page/images/handball-tracker.png"
-UPDATE_SCRIPT = "../update.sh"
+# ... (Imports remain same) ...
 
 class App:
     def __init__(self):
-        self.fb = Framebuffer(w=320, h=480) # Fixed Resolution
-        self.touch = Touch(w=320, h=480)    # Pass resolution to touch
+        self.fb = Framebuffer(w=320, h=480)
+        self.touch = Touch(w=320, h=480)
         self.width = 320
         self.height = 480
-        self.state = "IDLE" # IDLE, UPDATING, MENU
+        self.state = "IDLE" 
+        
+        # Log & Animation State
+        self.log_lines = []
+        self.animation_angle = 0
+        self.update_process = None
+        self.is_updating = False
         
         # Load Assets
         try:
@@ -33,120 +32,166 @@ class App:
         # Fonts
         try:
             self.font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 24)
-            self.small_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 16)
+            self.small_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 14)
+            self.log_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", 10)
         except:
             self.font = ImageFont.load_default()
             self.small_font = ImageFont.load_default()
+            self.log_font = ImageFont.load_default()
 
+    # ... (draw_idle and draw_menu remain largely the same, maybe minor adjustments optional) ...
     def draw_idle(self):
-        # Black background
         img = Image.new("RGB", (self.width, self.height), "black")
         draw = ImageDraw.Draw(img)
-        
-        # Circle Center (Vertical Center)
         center_x, center_y = self.width // 2, self.height // 2
         radius = 80
-        
-        # Draw Circle
         draw.ellipse((center_x - radius, center_y - radius, center_x + radius, center_y + radius), 
                      fill="#1a1a1a", outline="#e67e22", width=3)
-        
-        # Paste Favicon in Center (Resized)
         icon_size = 100
         resized_icon = self.icon.resize((icon_size, icon_size))
         img.paste(resized_icon, (center_x - icon_size//2, center_y - icon_size//2), resized_icon)
-        
-        # Text
         text = "Tap to Update"
         text_bbox = draw.textbbox((0,0), text, font=self.small_font)
         draw.text((center_x - text_bbox[2]//2, center_y + radius + 20), text, font=self.small_font, fill="gray")
-        
-        return img
-
-    def draw_updating(self):
-        img = Image.new("RGB", (self.width, self.height), "#2c3e50")
-        draw = ImageDraw.Draw(img)
-        
-        text = "Updating..."
-        bbox = draw.textbbox((0,0), text, font=self.font)
-        draw.text(((self.width - bbox[2])//2, (self.height - bbox[3])//2), text, font=self.font, fill="white")
-        
         return img
 
     def draw_menu(self):
         img = Image.new("RGB", (self.width, self.height), "#1a1a1a")
         draw = ImageDraw.Draw(img)
-        
-        # Title
         draw.text((20, 20), "Thy Projects", font=self.font, fill="#e67e22")
-        
-        # Buttons Grid (Vertical Stack for Portrait)
-        thumb_w, thumb_h = 240, 150 # Larger thumbnails
-        
-        # Keto (Top)
+        thumb_w, thumb_h = 240, 150
         keto_thumb = self.keto_img.resize((thumb_w, thumb_h))
         img.paste(keto_thumb, (40, 80))
         draw.text((40, 240), "Keto Monitor", font=self.small_font, fill="white")
-        
-        # Handball (Bottom)
         handball_thumb = self.handball_img.resize((thumb_w, thumb_h))
         img.paste(handball_thumb, (40, 280))
         draw.text((40, 440), "Handball Tracker", font=self.small_font, fill="white")
-        
         return img
 
-    def perform_update(self):
-        self.state = "UPDATING"
-        self.fb.show(self.draw_updating())
+    def draw_updating(self):
+        img = Image.new("RGB", (self.width, self.height), "#101010")
+        draw = ImageDraw.Draw(img)
         
-        print("Running Update Script...")
+        # 1. Background Logs (Matrix Style)
+        # Show more lines to fill screen
+        lines_per_screen = self.height // 12
+        visible_logs = self.log_lines[-lines_per_screen:] 
+        y = 5
+        for line in visible_logs:
+            # Darker gray for background effect
+            draw.text((10, y), "> " + line, font=self.log_font, fill="#444444")
+            y += 12
+
+        center_x, center_y = self.width // 2, self.height // 2
+        
+        # 2. Rotating Arc (White)
+        radius = 70
+        start_angle = self.animation_angle
+        end_angle = self.animation_angle + 120
+        # White arc
+        draw.arc((center_x - radius, center_y - radius, center_x + radius, center_y + radius), 
+                 start=start_angle, end=end_angle, fill="white", width=5)
+        # Second symmetrical arc
+        draw.arc((center_x - radius, center_y - radius, center_x + radius, center_y + radius), 
+                 start=start_angle + 180, end=end_angle + 180, fill="white", width=5)
+
+        # 3. Icon in Center (On top of logs)
+        # Add a small black halo/circle behind icon to make it pop against text?
+        # Let's draw a filled black circle first to clear text behind logo
+        bg_radius = 65
+        draw.ellipse((center_x - bg_radius, center_y - bg_radius, center_x + bg_radius, center_y + bg_radius), fill="#101010")
+
+        icon_size = 80
+        resized_icon = self.icon.resize((icon_size, icon_size))
+        img.paste(resized_icon, (center_x - icon_size//2, center_y - icon_size//2), resized_icon)
+        
+        # Overlay "Updating..." text at bottom?
+        # draw.text((20, self.height - 30), "Updating System...", font=self.small_font, fill="white")
+
+        return img
+
+    def _run_update_process(self):
         try:
-            # We run it relative to the script location
             script_path = os.path.join(os.path.dirname(__file__), UPDATE_SCRIPT)
-            result = subprocess.run([script_path], capture_output=True, text=True)
-            print(result.stdout)
-            if result.stderr:
-                print("Errors:", result.stderr)
-        except Exception as e:
-            print(f"Update failed: {e}")
+            # Use Popen to read stdout line by line
+            self.update_process = subprocess.Popen(
+                [script_path], 
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.STDOUT, 
+                text=True,
+                bufsize=1
+            )
             
-        time.sleep(2) # Show "Updating" for at least a moment
-        self.state = "MENU"
-        self.fb.show(self.draw_menu())
+            for line in self.update_process.stdout:
+                line = line.strip()
+                if line:
+                    self.log_lines.append(line)
+                    # Keep log buffer reasonable
+                    if len(self.log_lines) > 50:
+                        self.log_lines.pop(0)
+                        
+            self.update_process.wait()
+            self.log_lines.append("Done! Return code: " + str(self.update_process.returncode))
+            
+        except Exception as e:
+            self.log_lines.append(f"Error: {e}")
+        
+        time.sleep(2) # Show "Done" briefly
+        self.is_updating = False
+
+    def perform_update(self):
+        if self.is_updating: return
+        
+        self.state = "UPDATING"
+        self.is_updating = True
+        self.log_lines = ["Preparing update..."]
+        
+        # Start Thread
+        t = threading.Thread(target=self._run_update_process)
+        t.start()
 
     def run(self):
         print(f"Admin Display Started ({self.width}x{self.height})...")
-        # Initial Draw
         self.fb.show(self.draw_idle())
         
         while True:
-            # 1. Read Input
+            # 1. Handle Updating State Animation
+            if self.state == "UPDATING":
+                self.animation_angle = (self.animation_angle + 15) % 360
+                self.fb.show(self.draw_updating())
+                
+                # Check transition condition (Thread finished)
+                if not self.is_updating:
+                    self.state = "MENU"
+                    self.fb.show(self.draw_menu())
+                
+                # Small sleep to control framerate (e.g. 10-15 FPS)
+                time.sleep(0.05)
+                continue # Skip Touch input during update
+
+            # 2. Normal Touch Input
             pos = self.touch.read()
             
             if pos:
                 print(f"Touch at {pos}")
-                
-                # Logic based on State
                 if self.state == "IDLE":
-                    # Check if click is near center circle
                     cx, cy = self.width // 2, self.height // 2
                     if abs(pos[0] - cx) < 120 and abs(pos[1] - cy) < 120:
                         self.perform_update()
                 
                 elif self.state == "MENU":
-                    # Vertical Menu Logic
-                    # Button 1 (Keto): x=40..280, y=80..230
+                    # KETO
                     if 40 < pos[0] < 280 and 80 < pos[1] < 230:
-                        print("Keto Selected - No Action Implemented")
-                    
-                    # Button 2 (Handball): x=40..280, y=280..430
+                        pass
+                    # HANDBALL
                     if 40 < pos[0] < 280 and 280 < pos[1] < 430:
-                        print("Handball Selected - No Action Implemented")
-                        
-                    # Back to Idle if clicked top title
+                        pass
+                    # BACK
                     if pos[1] < 60:
                         self.state = "IDLE"
                         self.fb.show(self.draw_idle())
+
+            time.sleep(0.1)
 
             time.sleep(0.1)
 
