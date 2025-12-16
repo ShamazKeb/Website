@@ -1,0 +1,59 @@
+import evdev
+from evdev import ecodes
+import threading
+import time
+
+class Touch:
+    def __init__(self, dev_path='/dev/input/event0'):
+        # Attempt to find the correct device if event0 is not it
+        # (This is a simplified approach, usually event0 is touch on these screens)
+        self.dev_path = dev_path
+        self.device = None
+        self.x, self.y = 0, 0
+        self.running = True
+        self._connect()
+
+    def _connect(self):
+        try:
+            self.device = evdev.InputDevice(self.dev_path)
+            print(f"Touch device connected: {self.device.name}")
+        except Exception as e:
+            print(f"Touch connection error: {e}")
+            self.device = None
+
+    def read(self):
+        """
+        Polls for a touch event. Returns (x, y) if a touch release/press is detected, else None.
+        This is a blocking call if used directly on device.read(), so we use a non-blocking check or loop logic in main.
+        Actually, for a simple loop, we can just return the last known coordinate if a 'touch' happened.
+        """
+        if not self.device:
+            return None
+
+        # Drain the buffer
+        try:
+            events = list(self.device.read())
+        except (BlockingIOError, OSError):
+            return None
+
+        touch_triggered = False
+        
+        for event in events:
+            if event.type == ecodes.EV_ABS:
+                if event.code == ecodes.ABS_X:
+                    # Calibration scaling (approximate for 3.5")
+                    # XPT2046 often returns 0..4095. Invert/Scale as needed.
+                    # Assuming Landscape: X maps to 480, Y maps to 320.
+                    # You might need to invert x = 480 - (...) depending on rotation.
+                    self.x = int((event.value / 4095.0) * 480) 
+                elif event.code == ecodes.ABS_Y:
+                    self.y = int((event.value / 4095.0) * 320)
+            elif event.type == ecodes.EV_KEY:
+                if event.code == ecodes.BTN_TOUCH and event.value == 1: # 1=Press, 0=Release
+                    touch_triggered = True
+
+        if touch_triggered:
+            # Simple debounce / return logic
+            return (self.x, self.y)
+            
+        return None
