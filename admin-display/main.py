@@ -15,7 +15,12 @@ UPDATE_SCRIPT = "../update.sh"
 class App:
     def __init__(self):
         self.fb = Framebuffer(w=320, h=480)
-        self.touch = Touch(w=320, h=480)
+        # Calibration based on user diagnostics (17.12.2025)
+        # TL: ~3750, 3780 | BR: ~410, 270
+        self.touch = Touch(w=320, h=480, 
+                           invert_x=True, invert_y=True, 
+                           x_min=380, x_max=3780, 
+                           y_min=260, y_max=3800)
         self.width = 320
         self.height = 480
         self.state = "START_MENU" # Start with Menu 
