@@ -3,6 +3,7 @@ version: '3.8'
 services:
   app:
     build: .
+    container_name: handball-tracker
     ports:
       - "8000:8000"
     volumes:
@@ -11,3 +12,9 @@ services:
       - SECRET_KEY=supersecretkey123
       - ALGORITHM=HS256
       - DATABASE_URL=sqlite:///./app.db
+    networks:
+      - web-public
+
+networks:
+  web-public:
+    external: true
