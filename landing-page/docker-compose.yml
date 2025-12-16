@@ -1,8 +1,8 @@
 services:
   web:
     image: nginx:alpine
-    volumes:
-      - ./index.html:/usr/share/nginx/html/index.html:ro
+    # volumes removed to rely on build copy
+
     networks:
       - web-public
     restart: unless-stopped
