@@ -4,22 +4,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thy Projects landing page</title>
+    <title>Thy Projects Portfolio</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --accent-color: #e67e22;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 2rem;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .project-card {
+            position: relative;
+            background: #2a2a2a;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-card:hover {
+            transform: scale(1.02);
+            z-index: 10;
+        }
+
+        .project-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-card:hover .project-image {
+            opacity: 0.4;
+        }
+
+        .project-info {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            text-align: center;
+        }
+
+        .project-card:hover .project-info {
+            opacity: 1;
+        }
+
+        .project-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .project-desc {
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .link-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <main
-        style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; gap: 20px;">
+
+    <header>
         <h1>Thy Projects</h1>
-        <nav style="display: flex; gap: 20px;">
-            <a href="http://keto.thy-projects.com"
-                style="padding: 15px 30px; background: #2c3e50; color: white; text-decoration: none; border-radius: 8px; font-size: 1.2rem;">Keto
-                Monitor</a>
-            <a href="http://handball.thy-projects.com"
-                style="padding: 15px 30px; background: #e67e22; color: white; text-decoration: none; border-radius: 8px; font-size: 1.2rem;">Handball
-                Tracker</a>
-        </nav>
-    </main>
+        <p>Innovation & Code</p>
+    </header>
+
+    <div class="grid-container">
+
+        <!-- Keto Monitor Project -->
+        <div class="project-card">
+            <img src="images/keto-monitor.png" alt="Keto Monitor" class="project-image">
+            <div class="project-info">
+                <div class="project-title">Keto Monitor</div>
+                <div class="project-desc">AI-powered news aggregation and analysis for everything Keto. Real-time
+                    updates and smart summaries.</div>
+            </div>
+            <a href="http://keto.thy-projects.com" class="link-overlay"></a>
+        </div>
+
+        <!-- Handball Tracker Project -->
+        <div class="project-card">
+            <img src="images/handball-tracker.png" alt="Handball Tracker" class="project-image">
+            <div class="project-info">
+                <div class="project-title">Handball Tracker</div>
+                <div class="project-desc">Advanced team management and performance tracking API for handball coaches and
+                    players.</div>
+            </div>
+            <a href="http://handball.thy-projects.com" class="link-overlay"></a>
+        </div>
+
+        <!-- Placeholder for future projects -->
+        <div class="project-card"
+            style="background: #222; display: flex; align-items: center; justify-content: center;">
+            <div style="color: #444; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px;">Coming Soon
+            </div>
+        </div>
+
+    </div>
+
 </body>
 
 </html>
