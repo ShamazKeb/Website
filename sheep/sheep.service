@@ -1,0 +1,16 @@
+[Unit]
+Description=Project Sheep (Audio Wake Service)
+After=network.target sound.target
+
+[Service]
+Type=simple
+User=johann
+WorkingDirectory=/home/johann/Website/sheep
+ExecStart=/usr/bin/python3 /home/johann/Website/sheep/shepherd.py
+Restart=always
+RestartSec=5
+# Allow access to backlight (if permissions are tricky, this might rely on User group membership or pre-set perms)
+# Otherwise User=root might be needed if not using udev rules.
+
+[Install]
+WantedBy=multi-user.target
