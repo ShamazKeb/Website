@@ -1,0 +1,12 @@
+services:
+  audio-wake:
+    build: .
+    container_name: audio-wake
+    privileged: true
+    restart: unless-stopped
+    volumes:
+      - /dev/snd:/dev/snd # Access to Audio Hardware
+      - /sys:/sys # Access to Backlight Control (sysfs)
+    environment:
+      # PortAudio often needs this inside containers using ALSA
+      - PA_ALSA_PLUGHW=1

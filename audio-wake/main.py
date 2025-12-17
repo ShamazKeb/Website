@@ -3,7 +3,7 @@ import config
 from listener import Listener
 from hardware import DisplayControl
 
-class Shepherd:
+class AudioWakeApp:
     def __init__(self):
         self.display = DisplayControl()
         self.listener = Listener()
@@ -14,7 +14,7 @@ class Shepherd:
         
         # Initialize Display On
         self.display.wake()
-        print(f"[Sheep] 🐑 Shepherd started. Energy: {self.energy}")
+        print(f"[AudioWake] System started. Energy: {self.energy}")
 
     def on_audio(self, rms):
         """
@@ -63,10 +63,10 @@ class Shepherd:
         self.listener.listen_loop(self.on_audio)
 
 if __name__ == "__main__":
-    shepherd = Shepherd()
+    app = AudioWakeApp()
     try:
-        shepherd.run()
+        app.run()
     except KeyboardInterrupt:
-        print("\n[Sheep] Exiting...")
+        print("\n[AudioWake] Exiting...")
         # Optional: Wake screen on exit so user isn't stuck in dark?
-        # shepherd.display.wake() 
+        # app.display.wake() 
