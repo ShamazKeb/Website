@@ -30,6 +30,7 @@ class App:
         self.animation_angle = 0
         self.update_process = None
         self.is_updating = False
+        self.completed_steps = set()
         
         # Load Assets
         try:
@@ -117,6 +118,18 @@ class App:
         img = Image.new("RGB", (self.width, self.height), "#101010")
         draw = ImageDraw.Draw(img)
         
+        # 0. Read Status from IPC
+        status_file = "/tmp/admin_update_status"
+        if os.path.exists(status_file):
+            try:
+                with open(status_file, "r") as f:
+                    current_step = f.read().strip()
+                    # Add to completed steps if not already there
+                    if current_step and current_step != "DONE":
+                         self.completed_steps.add(current_step)
+            except:
+                pass
+
         # 1. Background Logs (Matrix Style)
         # Show more lines to fill screen
         lines_per_screen = self.height // 12
@@ -140,7 +153,56 @@ class App:
         draw.arc((center_x - radius, center_y - radius, center_x + radius, center_y + radius), 
                  start=start_angle + 180, end=end_angle + 180, fill="white", width=5)
 
-        # 3. Icon in Center (On top of logs)
+        # 3. Orbiting Progress Icons
+        # Steps order for color/icon definition
+        STEPS_INFO = {
+            "CODE": ("📦", "#f39c12"),      # Orange
+            "INFRA": ("🌐", "#3498db"),     # Blue
+            "LANDING": ("🏠", "#2ecc71"),   # Green
+            "KETO": ("🥑", "#e74c3c"),      # Red
+            "HANDBALL": ("🤾", "#9b59b6"), # Purple
+            "AUDIO": ("🔉", "#1abc9c"),     # Teal
+            "ADMIN": ("🖥️", "#34495e")      # Dark Blue
+        }
+        
+        orbit_radius = 100
+        # Calculate positions based on number of completed steps + current one
+        # Actually, let's just make completed steps orbit
+        
+        if self.completed_steps:
+            import math
+            step_list = list(self.completed_steps)
+            # Sort them to keep order stable if needed, or just random
+            # Let's sort by defined order if possible, or just alpha
+            step_list.sort() 
+            
+            num_orbters = len(step_list)
+            angle_step = 360 / max(1, num_orbters)
+            
+            for i, step_name in enumerate(step_list):
+                if step_name in STEPS_INFO:
+                    icon_char, color = STEPS_INFO[step_name]
+                    
+                    # Current angle for this icon (rotating with animation_angle)
+                    # We add an offset based on index (i * angle_step)
+                    # We subtract animation_angle to make them orbit counter-clockwise or add for clockwise
+                    angle_deg = (self.animation_angle * 0.5) + (i * angle_step)
+                    angle_rad = math.radians(angle_deg)
+                    
+                    # Polar to Cartesian
+                    ox = center_x + orbit_radius * math.cos(angle_rad)
+                    oy = center_y + orbit_radius * math.sin(angle_rad)
+                    
+                    # Draw Bubble
+                    bubble_r = 18
+                    draw.ellipse((ox - bubble_r, oy - bubble_r, ox + bubble_r, oy + bubble_r), fill=color, outline="white", width=2)
+                    
+                    # Draw Icon Text
+                    # Center text roughly
+                    draw.text((ox - 10, oy - 12), icon_char, font=self.small_font, fill="white")
+
+
+        # 4. Icon in Center (On top of logs)
         # Add a small black halo/circle behind icon to make it pop against text?
         # Let's draw a filled black circle first to clear text behind logo
         bg_radius = 65
@@ -150,9 +212,6 @@ class App:
         resized_icon = self.icon.resize((icon_size, icon_size))
         img.paste(resized_icon, (center_x - icon_size//2, center_y - icon_size//2), resized_icon)
         
-        # Overlay "Updating..." text at bottom?
-        # draw.text((20, self.height - 30), "Updating System...", font=self.small_font, fill="white")
-
         return img
 
     def _run_update_process(self):
@@ -190,6 +249,7 @@ class App:
         self.state = "UPDATING"
         self.is_updating = True
         self.log_lines = ["Preparing update..."]
+        self.completed_steps = set()
         
         # Start Thread
         t = threading.Thread(target=self._run_update_process)
