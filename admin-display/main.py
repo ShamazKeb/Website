@@ -118,100 +118,114 @@ class App:
         img = Image.new("RGB", (self.width, self.height), "#101010")
         draw = ImageDraw.Draw(img)
         
-        # 0. Read Status from IPC
+        # 0. Read Status
         status_file = "/tmp/admin_update_status"
+        current_step = ""
         if os.path.exists(status_file):
             try:
                 with open(status_file, "r") as f:
                     current_step = f.read().strip()
-                    # Add to completed steps if not already there
-                    if current_step and current_step != "DONE":
-                         self.completed_steps.add(current_step)
             except:
                 pass
 
-        # 1. Background Logs (Matrix Style)
-        # Show more lines to fill screen
-        lines_per_screen = self.height // 12
+        # 1. Background Logs (Matrix Style) - Keep as background
+        lines_per_screen = self.height // 14
         visible_logs = self.log_lines[-lines_per_screen:] 
-        y = 5
+        y_log = 80 # Start logs lower to make room for header
         for line in visible_logs:
-            # Darker gray for background effect
-            draw.text((10, y), "> " + line, font=self.log_font, fill="#444444")
-            y += 12
+            draw.text((10, y_log), "> " + line, font=self.log_font, fill="#333333")
+            y_log += 12
 
-        center_x, center_y = self.width // 2, self.height // 2
-        
-        # 2. Rotating Arc (White)
-        radius = 70
-        start_angle = self.animation_angle
-        end_angle = self.animation_angle + 120
-        # White arc
-        draw.arc((center_x - radius, center_y - radius, center_x + radius, center_y + radius), 
-                 start=start_angle, end=end_angle, fill="white", width=5)
-        # Second symmetrical arc
-        draw.arc((center_x - radius, center_y - radius, center_x + radius, center_y + radius), 
-                 start=start_angle + 180, end=end_angle + 180, fill="white", width=5)
-
-        # 3. Orbiting Progress Icons
-        # Steps order for color/icon definition
-        STEPS_INFO = {
-            "CODE": ("Git", "#f39c12"),      # Orange
-            "INFRA": ("NPM", "#3498db"),     # Blue
-            "LANDING": ("Web", "#2ecc71"),   # Green
-            "KETO": ("Keto", "#e74c3c"),      # Red
-            "HANDBALL": ("HB", "#9b59b6"), # Purple
-            "AUDIO": ("Mic", "#1abc9c"),     # Teal
-            "ADMIN": ("GUI", "#34495e")      # Dark Blue
+        # 2. Progress Bar (Top)
+        STEPS = ["CODE", "INFRA", "LANDING", "KETO", "HANDBALL", "AUDIO", "ADMIN"]
+        # Map Steps to Display Names and Colors (for finished state)
+        STEP_META = {
+            "CODE": ("Git", "#f39c12"),
+            "INFRA": ("NPM", "#3498db"),
+            "LANDING": ("Web", "#2ecc71"),
+            "KETO": ("Keto", "#e74c3c"),
+            "HANDBALL": ("HB", "#9b59b6"),
+            "AUDIO": ("Mic", "#1abc9c"),
+            "ADMIN": ("GUI", "#95a5a6"),
+            "DONE": ("✅", "white")
         }
+
+        # Determine Progress Index
+        current_idx = -1
+        if current_step in STEPS:
+            current_idx = STEPS.index(current_step)
+        elif current_step == "DONE":
+            current_idx = len(STEPS) # All done
+
+        # Draw Icons Row
+        margin_x = 10
+        top_y = 10
+        icon_size = 36
+        gap = (self.width - 2*margin_x - len(STEPS)*icon_size) / (len(STEPS) - 1)
         
-        orbit_radius = 100
-        # Calculate positions based on number of completed steps + current one
-        # Actually, let's just make completed steps orbit
-        
-        if self.completed_steps:
-            import math
-            step_list = list(self.completed_steps)
-            # Sort them to keep order stable if needed, or just random
-            # Let's sort by defined order if possible, or just alpha
-            step_list.sort() 
+        for i, step_key in enumerate(STEPS):
+            x = margin_x + i * (icon_size + gap)
+            y = top_y
             
-            num_orbters = len(step_list)
-            angle_step = 360 / max(1, num_orbters)
+            label, color = STEP_META.get(step_key, ("?", "white"))
             
-            for i, step_name in enumerate(step_list):
-                if step_name in STEPS_INFO:
-                    icon_char, color = STEPS_INFO[step_name]
-                    
-                    # Current angle for this icon (rotating with animation_angle)
-                    # We add an offset based on index (i * angle_step)
-                    # We subtract animation_angle to make them orbit counter-clockwise or add for clockwise
-                    angle_deg = (self.animation_angle * 0.5) + (i * angle_step)
-                    angle_rad = math.radians(angle_deg)
-                    
-                    # Polar to Cartesian
-                    ox = center_x + orbit_radius * math.cos(angle_rad)
-                    oy = center_y + orbit_radius * math.sin(angle_rad)
-                    
-                    # Draw Bubble
-                    bubble_r = 18
-                    draw.ellipse((ox - bubble_r, oy - bubble_r, ox + bubble_r, oy + bubble_r), fill=color, outline="white", width=2)
-                    
-                    # Draw Icon Text
-                    # Center text roughly
-                    draw.text((ox - 10, oy - 12), icon_char, font=self.small_font, fill="white")
+            # State Logic
+            if i < current_idx:
+                # DONE -> Colored
+                fill_color = color
+                outline_color = color
+                text_color = "black" if step_key in ["CODE", "LANDING", "AUDIO"] else "white" # High contrast
+            elif i == current_idx:
+                # CURRENT -> Gray/Pulse? User said "Grayed out". 
+                # Let's make it highlighted gray with white border
+                fill_color = "#444444"
+                outline_color = "white"
+                text_color = "white"
+            else:
+                # PENDING -> Dark Gray
+                fill_color = "#222222"
+                outline_color = "#333333"
+                text_color = "#555555"
 
+            # Draw Circle
+            draw.ellipse((x, y, x+icon_size, y+icon_size), fill=fill_color, outline=outline_color, width=2)
+            
+            # Draw Label (centered)
+            # Using log_font for small labels inside icons
+            bbox = draw.textbbox((0,0), label, font=self.log_font)
+            txt_w = bbox[2] - bbox[0]
+            txt_h = bbox[3] - bbox[1]
+            draw.text((x + (icon_size-txt_w)/2, y + (icon_size-txt_h)/2), label, font=self.log_font, fill=text_color)
 
-        # 4. Icon in Center (On top of logs)
-        # Add a small black halo/circle behind icon to make it pop against text?
-        # Let's draw a filled black circle first to clear text behind logo
-        bg_radius = 65
-        draw.ellipse((center_x - bg_radius, center_y - bg_radius, center_x + bg_radius, center_y + bg_radius), fill="#101010")
-
-        icon_size = 80
-        resized_icon = self.icon.resize((icon_size, icon_size))
-        img.paste(resized_icon, (center_x - icon_size//2, center_y - icon_size//2), resized_icon)
+        # 3. Status Text (Below Icons)
+        status_text = "Preparing..."
+        if current_step in STEPS:
+            # User wants: "Updating keto" etc
+            pretty_name = STEP_META[current_step][0]
+            # Use full names if possible?
+            FULL_NAMES = {
+                "CODE": "Updating Code...",
+                "INFRA": "Updating Infrastructure...",
+                "LANDING": "Updating Landing Page...",
+                "KETO": "Updating Keto Monitor...",
+                "HANDBALL": "Updating Handball Tracker...",
+                "AUDIO": "Updating Audio Wake...",
+                "ADMIN": "Updating Admin Interface..."
+            }
+            status_text = FULL_NAMES.get(current_step, f"Updating {pretty_name}...")
+        elif current_step == "DONE":
+            status_text = "Update Complete!"
+            
+        # Draw Center STATUS
+        # Draw a bar behind text?
+        bar_y = 60
+        draw.line((0, bar_y + 12, self.width, bar_y + 12), fill="#333333", width=1)
         
+        # Draw Text
+        bbox = draw.textbbox((0,0), status_text, font=self.small_font)
+        w = bbox[2] - bbox[0]
+        draw.text(((self.width - w) / 2, bar_y), status_text, font=self.small_font, fill="white")
+
         return img
 
     def _run_update_process(self):
