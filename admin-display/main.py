@@ -156,13 +156,13 @@ class App:
         # 3. Orbiting Progress Icons
         # Steps order for color/icon definition
         STEPS_INFO = {
-            "CODE": ("📦", "#f39c12"),      # Orange
-            "INFRA": ("🌐", "#3498db"),     # Blue
-            "LANDING": ("🏠", "#2ecc71"),   # Green
-            "KETO": ("🥑", "#e74c3c"),      # Red
-            "HANDBALL": ("🤾", "#9b59b6"), # Purple
-            "AUDIO": ("🔉", "#1abc9c"),     # Teal
-            "ADMIN": ("🖥️", "#34495e")      # Dark Blue
+            "CODE": ("Git", "#f39c12"),      # Orange
+            "INFRA": ("NPM", "#3498db"),     # Blue
+            "LANDING": ("Web", "#2ecc71"),   # Green
+            "KETO": ("Keto", "#e74c3c"),      # Red
+            "HANDBALL": ("HB", "#9b59b6"), # Purple
+            "AUDIO": ("Mic", "#1abc9c"),     # Teal
+            "ADMIN": ("GUI", "#34495e")      # Dark Blue
         }
         
         orbit_radius = 100
