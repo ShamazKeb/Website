@@ -197,6 +197,26 @@ class App:
             txt_h = bbox[3] - bbox[1]
             draw.text((x + (icon_size-txt_w)/2, y + (icon_size-txt_h)/2), label, font=self.log_font, fill=text_color)
 
+        # 2b. Restore Rotating Arcs (Center)
+        center_x, center_y = self.width // 2, self.height // 2
+        radius = 70
+        start_angle = self.animation_angle
+        end_angle = self.animation_angle + 120
+        # White arc
+        draw.arc((center_x - radius, center_y - radius, center_x + radius, center_y + radius), 
+                 start=start_angle, end=end_angle, fill="white", width=5)
+        # Second symmetrical arc
+        draw.arc((center_x - radius, center_y - radius, center_x + radius, center_y + radius), 
+                 start=start_angle + 180, end=end_angle + 180, fill="white", width=5)
+        
+        # Center Icon background
+        bg_radius = 65
+        draw.ellipse((center_x - bg_radius, center_y - bg_radius, center_x + bg_radius, center_y + bg_radius), fill="#101010")
+        
+        icon_size = 80
+        resized_icon = self.icon.resize((icon_size, icon_size))
+        img.paste(resized_icon, (center_x - icon_size//2, center_y - icon_size//2), resized_icon)
+
         # 3. Status Text (Below Icons)
         status_text = "Preparing..."
         if current_step in STEPS:
