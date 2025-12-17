@@ -36,3 +36,17 @@ cd ..
 
 echo "✅ Alle Dienste aktualisiert!"
 
+# 7. Admin Display (Self-Update)
+echo "🖥️  Aktualisiere Admin Display..."
+cd admin-display
+if [ -x "$(command -v pip3)" ]; then
+    pip3 install -r requirements.txt --break-system-packages
+fi
+# Restart Service if it exists (This restarts the GUI)
+if systemctl list-units --full -all | grep -Fq "admin.service"; then
+    echo "   Restarting Admin Interface..."
+    sudo systemctl restart admin.service
+fi
+cd ..
+
+

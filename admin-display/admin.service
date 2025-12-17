@@ -1,0 +1,17 @@
+[Unit]
+Description=Admin Display Kiosk
+After=network.target
+
+[Service]
+Type=simple
+# Root required for direct Framebuffer (/dev/fb1) and Input (/dev/input/) access
+User=root
+WorkingDirectory=/home/johann/Website/admin-display
+# Force Python to flush stdout so logs appear in journalctl immediately
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 main.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
