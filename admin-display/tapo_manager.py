@@ -1,9 +1,6 @@
 import asyncio
-from plugp100.common.credentials import AuthCredential
 from plugp100.api.tapo_client import TapoClient
-from plugp100.new.tapoplug import TapoPlug
-# Protocol Imports
-from plugp100.protocol.passthrough_protocol import PassthroughProtocol
+# In v3.6.1, it's typically just TapoClient handling everything for plugs
 
 class TapoManager:
     def __init__(self, email, password):
@@ -19,67 +16,61 @@ class TapoManager:
         ]
 
     async def _toggle_async(self, ip, index):
-        client = None
         try:
-            # 1. Credentials
-            creds = AuthCredential(self.username, self.password)
-            url = f"http://{ip}"
+            # v3 API: Client is directly instantiated with creds
+            client = TapoClient(ip, self.username, self.password)
             
-            # 2. Protocol (Fallback to Passthrough)
-            # KLAP failed, implying these devices use the older secure passthrough method
-            protocol = PassthroughProtocol(creds, url)
+            # Login
+            await client.login()
             
-            # 3. Client
-            client = TapoClient(creds, url, protocol)
+            # Get State (get_device_info returns an object/dict)
+            info = await client.get_device_info()
+            # Note: In older versions this might return a dict directly or an object with .to_dict()
+            # We'll assume object and try-access or use .to_dict() if needed. 
+            # Usually .device_on property or dict key 'device_on'
             
-            # 4. wrapper
-            plug = TapoPlug(ip, None, client)
+            # Let's inspect briefly via trial/error or assuming dict access on the object property
+            # Actually, most v3 examples show `info.device_on`
             
-            # 5. Action
-            await plug.update()
-            
-            if plug.is_on: 
-                await plug.turn_off()
+            is_on = getattr(info, 'device_on', None)
+            if is_on is None:
+                # Fallback if it's a dict
+                is_on = info.get('device_on', False)
+
+            if is_on:
+                await client.turn_off()
                 self.devices[index]["state"] = False
             else:
-                await plug.turn_on()
+                await client.turn_on()
                 self.devices[index]["state"] = True
                 
             return True
-            
         except Exception as e:
             print(f"Error communicating with {ip}: {e}")
             return False
-        finally:
-            if client:
-                await client.close()
 
     async def _update_state_async(self, ip, index):
-        client = None
         try:
-            creds = AuthCredential(self.username, self.password)
-            url = f"http://{ip}"
-            protocol = PassthroughProtocol(creds, url)
-            client = TapoClient(creds, url, protocol)
-            plug = TapoPlug(ip, None, client)
+            client = TapoClient(ip, self.username, self.password)
+            await client.login()
+            info = await client.get_device_info()
             
-            await plug.update()
-            self.devices[index]["state"] = plug.is_on
+            # Logic to extract state
+            is_on = getattr(info, 'device_on', None)
+            if is_on is None and hasattr(info, 'to_dict'):
+                 is_on = info.to_dict().get('device_on')
+            if is_on is None and isinstance(info, dict):
+                 is_on = info.get('device_on')
+            
+            self.devices[index]["state"] = bool(is_on)
             
         except Exception as e:
             print(f"Error updating {ip}: {e}")
             pass
-        finally:
-            if client:
-                await client.close()
 
     def toggle(self, index):
-        """
-        Synchronous wrapper for toggle action.
-        """
         if index < 0 or index >= len(self.devices):
             return False
-
         device = self.devices[index]
         try:
             asyncio.run(self._toggle_async(device["ip"], index))
@@ -89,15 +80,11 @@ class TapoManager:
             return False
 
     def update_states(self):
-        """
-        Synchronous wrapper for updating all states.
-        """
         async def main():
             tasks = []
             for i, dev in enumerate(self.devices):
                 tasks.append(self._update_state_async(dev["ip"], i))
             await asyncio.gather(*tasks)
-            
         try:
             asyncio.run(main())
         except Exception as e:
