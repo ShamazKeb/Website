@@ -60,7 +60,7 @@ class TapoManager:
         try:
             creds = AuthCredential(self.username, self.password)
             url = f"http://{ip}"
-            protocol = KlapProtocol(creds, url, KlapHandshakeRevisionV2)
+            protocol = KlapProtocol(creds, url, KlapHandshakeRevisionV2())
             client = TapoClient(creds, url, protocol)
             plug = TapoPlug(ip, None, client)
             
