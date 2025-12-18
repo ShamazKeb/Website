@@ -19,25 +19,31 @@ class TapoManager:
             # v3.6.0: Client takes credentials
             client = TapoClient(self.username, self.password)
             
-            # Login with IP (Library adds http:// internally)
-            await client.login(ip, use_v2=True)
-            
-            # Get State
-            result = await client.get_device_info()
-            if result.is_right:
-                info = result.get() # Unpack 'Either'
-                # info is typically a dict in v3
-                is_on = info.get('device_on', False)
-                
-                # Toggle
-                new_state = not is_on
-                await client.set_device_info({"device_on": new_state})
-                
-                # Update local state
-                self.devices[index]["state"] = new_state
-                return True
+            # Login with IP
+            login_result = await client.login(ip, use_v2=True)
+            if not login_result.is_right:
+                 login_result = await client.login(ip, use_v2=False)
+
+            if login_result.is_right:
+                # Get State
+                result = await client.get_device_info()
+                if result.is_right:
+                    info = result.get() # Unpack 'Either'
+                    # info is typically a dict in v3
+                    is_on = info.get('device_on', False)
+                    
+                    # Toggle
+                    new_state = not is_on
+                    await client.set_device_info({"device_on": new_state})
+                    
+                    # Update local state
+                    self.devices[index]["state"] = new_state
+                    return True
+                else:
+                    print(f"Failed to get info for {ip}: {result}")
+                    return False
             else:
-                print(f"Failed to get info for {ip}: {result}")
+                print(f"Login failed for {ip}: {login_result}")
                 return False
                 
         except Exception as e:
@@ -45,28 +51,32 @@ class TapoManager:
             return False
         finally:
             # Clean up session
-            # Note: v3 TapoClient might not have close(), but underlying session does?
-            # Inspect showed close() method exists.
             if client:
                 await client.close()
 
     async def _update_state_async(self, ip, index):
         try:
             client = TapoClient(self.username, self.password)
+            
             # Try login v2 first
-            try:
-                await client.login(ip, use_v2=True)
-            except Exception:
-                 # Fallback to v1?
-                 await client.login(ip, use_v2=False)
+            login_result = await client.login(ip, use_v2=True)
+            
+            if not login_result.is_right:
+                # Fallback to v1 (or use_v2=False which means old protocol)
+                login_result = await client.login(ip, use_v2=False)
 
-            result = await client.get_device_info()
-            if result.is_right:
-                 info = result.get()
-                 is_on = info.get('device_on', False)
-                 self.devices[index]["state"] = bool(is_on)
+            if login_result.is_right:
+                result = await client.get_device_info()
+                if result.is_right:
+                    info = result.get()
+                    is_on = info.get('device_on', False)
+                    self.devices[index]["state"] = bool(is_on)
+                else:
+                    print(f"Update failed for {ip}: {result}")
             else:
-                 print(f"Update failed for {ip}: {result}")
+                # Only print the error from the FINAL attempt (v1) if v2 also failed.
+                # Actually, login_result holds the v1 failure here.
+                print(f"Login failed for {ip}: {login_result}")
                  
         except Exception as e:
             print(f"Error updating {ip}: {e}")
