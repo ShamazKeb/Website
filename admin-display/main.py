@@ -25,6 +25,14 @@ class App:
         self.height = 480
         self.state = "START_MENU"
         self.last_touch_pos = None # For debug visualization
+        
+        # Log & Animation State
+        self.log_lines = []
+        self.animation_angle = 0
+        self.update_process = None
+        self.is_updating = False
+        self.completed_steps = set()
+        
         # Load Assets
         try:
             self.icon = Image.open(FAVICON_PATH).convert("RGBA")
