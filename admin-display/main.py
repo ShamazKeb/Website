@@ -278,8 +278,12 @@ class App:
         self.is_updating = False
 
     def perform_update(self):
-        if self.is_updating: return
+        print("perform_update() called")
+        if self.is_updating: 
+            print("Already updating, ignoring.")
+            return
         
+        print("Starting Update Process...")
         self.state = "UPDATING"
         self.is_updating = True
         self.log_lines = ["Preparing update..."]
@@ -317,8 +321,9 @@ class App:
                     pos = self.last_touch_pos
                     # Back Button (Top Left area)
                     if pos[0] < 100 and pos[1] < 50:
+                        print("Back Button Hit")
                         self.state = "START_MENU"
-                        self.last_touch_pos = None
+                        # Keep dot for verification
                         time.sleep(0.2) 
                     else:
                         # Center Update Button
@@ -327,7 +332,7 @@ class App:
                         if abs(pos[0] - cx) < 120 and abs(pos[1] - cy) < 120:
                              print(f"Update Button Hit! {pos}")
                              self.perform_update()
-                             self.last_touch_pos = None
+                             # Keep dot for verification
 
                 self.fb.show(self.draw_idle())
                 
