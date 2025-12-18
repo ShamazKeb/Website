@@ -101,12 +101,6 @@ class App:
         text_bbox = draw.textbbox((0,0), text, font=self.small_font)
         draw.text((center_x - text_bbox[2]//2, center_y + radius + 20), text, font=self.small_font, fill="gray")
         
-        # DEBUG: Draw touch point
-        if self.last_touch_pos:
-            lx, ly = self.last_touch_pos
-            draw.ellipse((lx-5, ly-5, lx+5, ly+5), fill="yellow", outline="red")
-            draw.text((lx+10, ly), f"{lx},{ly}", font=self.log_font, fill="yellow")
-
         return img
 
     def draw_menu(self):
@@ -325,22 +319,16 @@ class App:
                     print(f"IDLE Touch: {pos}")
                 
                 # Check Buttons
-                if self.last_touch_pos:
-                    pos = self.last_touch_pos
-                    # Back Button (Top Left area)
+                # Back Button (Top Left area)
                     if pos[0] < 100 and pos[1] < 50:
-                        print("Back Button Hit")
                         self.state = "START_MENU"
-                        # Keep dot for verification
                         time.sleep(0.2) 
                     else:
                         # Center Update Button
                         cx, cy = self.width // 2, self.height // 2
                         # Button region
                         if abs(pos[0] - cx) < 120 and abs(pos[1] - cy) < 120:
-                             print(f"Update Button Hit! {pos}")
                              self.perform_update()
-                             # Keep dot for verification
 
                 self.fb.show(self.draw_idle())
                 
