@@ -65,7 +65,8 @@ class TapoManager:
             
             self.devices[index]["state"] = plug.is_on
             await client.close()
-        except:
+        except Exception as e:
+            print(f"Error updating {ip}: {e}")
             pass
 
     def toggle(self, index):
