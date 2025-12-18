@@ -1,4 +1,5 @@
 import asyncio
+import aiohttp
 from plugp100.api.tapo_client import TapoClient
 
 class TapoManager:
@@ -15,9 +16,10 @@ class TapoManager:
         ]
 
     async def _toggle_async(self, ip, index):
+        session = aiohttp.ClientSession()
         try:
-            # v3.6.0: Client takes credentials
-            client = TapoClient(self.username, self.password)
+            # v3.6.0: Pass explicit session
+            client = TapoClient(self.username, self.password, session)
             
             # Login with IP
             login_result = await client.login(ip, use_v2=True)
@@ -28,8 +30,7 @@ class TapoManager:
                 # Get State
                 result = await client.get_device_info()
                 if result.is_right:
-                    info = result.get() # Unpack 'Either'
-                    # info is typically a dict in v3
+                    info = result.get()
                     is_on = info.get('device_on', False)
                     
                     # Toggle
@@ -46,23 +47,23 @@ class TapoManager:
                 print(f"Login failed for {ip}: {login_result}")
                 return False
                 
-        except Exception as e:
-            print(f"Error communicating with {ip}: {e}")
+        except Exception:
+            import traceback
+            traceback.print_exc()
             return False
         finally:
-            # Clean up session
-            if client:
-                await client.close()
+            await session.close()
 
     async def _update_state_async(self, ip, index):
+        session = aiohttp.ClientSession()
         try:
-            client = TapoClient(self.username, self.password)
+            client = TapoClient(self.username, self.password, session)
             
             # Try login v2 first
             login_result = await client.login(ip, use_v2=True)
             
             if not login_result.is_right:
-                # Fallback to v1 (or use_v2=False which means old protocol)
+                # Fallback
                 login_result = await client.login(ip, use_v2=False)
 
             if login_result.is_right:
@@ -74,8 +75,6 @@ class TapoManager:
                 else:
                     print(f"Update failed for {ip}: {result}")
             else:
-                # Only print the error from the FINAL attempt (v1) if v2 also failed.
-                # Actually, login_result holds the v1 failure here.
                 print(f"Login failed for {ip}: {login_result}")
                  
         except Exception:
@@ -83,8 +82,7 @@ class TapoManager:
             traceback.print_exc()
             pass
         finally:
-            if client:
-                await client.close()
+            await session.close()
 
     def toggle(self, index):
         if index < 0 or index >= len(self.devices):
