@@ -28,7 +28,7 @@ class TapoManager:
             
             # 2. Protocol (KLAP Revision 2 is standard for new FW)
             # Use specific Revision V2 class
-            protocol = KlapProtocol(creds, url, KlapHandshakeRevisionV2)
+            protocol = KlapProtocol(creds, url, KlapHandshakeRevisionV2())
             
             # 3. Client
             client = TapoClient(creds, url, protocol)
