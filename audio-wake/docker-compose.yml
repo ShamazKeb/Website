@@ -1,5 +1,4 @@
 services:
-services:
   audio-wake:
     build: .
     container_name: audio-wake
