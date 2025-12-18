@@ -2,6 +2,7 @@ import asyncio
 import aiohttp
 from plugp100.common.credentials import AuthCredential
 from plugp100.api.tapo_client import TapoClient
+from plugp100.api.plug_device import PlugDevice
 
 class TapoManager:
     def __init__(self, email, password):
@@ -19,20 +20,23 @@ class TapoManager:
         try:
             async with aiohttp.ClientSession() as session:
                 client = TapoClient.create(self.credential, ip, http_session=session)
+                plug = PlugDevice(client)
                 
                 # Get current state
-                result = await client.get_device_info()
-                # v4.0.3 returns Success/Failure, not Either
+                result = await plug.get_state()
                 if hasattr(result, 'value'):
-                    is_on = result.value.get('device_on', False)
-                    new_state = not is_on
+                    is_on = result.value.device_on
                     
-                    # Toggle
-                    await client.set_device_info({"device_on": new_state})
-                    self.devices[index]["state"] = new_state
+                    # Toggle using on/off methods
+                    if is_on:
+                        await plug.off()
+                        self.devices[index]["state"] = False
+                    else:
+                        await plug.on()
+                        self.devices[index]["state"] = True
                     return True
                 else:
-                    print(f"[{ip}] Get Info Failed: {result}")
+                    print(f"[{ip}] Get State Failed: {result}")
                     return False
                     
         except Exception:
@@ -44,12 +48,11 @@ class TapoManager:
         try:
             async with aiohttp.ClientSession() as session:
                 client = TapoClient.create(self.credential, ip, http_session=session)
+                plug = PlugDevice(client)
                 
-                result = await client.get_device_info()
-                # v4.0.3 returns Success/Failure
+                result = await plug.get_state()
                 if hasattr(result, 'value'):
-                    is_on = result.value.get('device_on', False)
-                    self.devices[index]["state"] = bool(is_on)
+                    self.devices[index]["state"] = result.value.device_on
                 else:
                     print(f"[{ip}] Update Failed: {result}")
                  
