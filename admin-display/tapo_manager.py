@@ -2,6 +2,9 @@ import asyncio
 from plugp100.common.credentials import AuthCredential
 from plugp100.api.tapo_client import TapoClient
 from plugp100.new.tapoplug import TapoPlug
+# Protocol Imports
+from plugp100.protocol.klap.klap_protocol import KlapProtocol
+from plugp100.protocol.klap.klap_handshake_revision import KlapHandshakeRevision
 
 class TapoManager:
     def __init__(self, email, password):
@@ -17,28 +20,25 @@ class TapoManager:
         ]
 
     async def _toggle_async(self, ip, index):
+        client = None
         try:
             # 1. Credentials
             creds = AuthCredential(self.username, self.password)
+            url = f"http://{ip}"
             
-            # 2. Client (Protocol handling)
-            # v5 requires full URL? Or just IP?
-            # Signature says "url: str", so we try "http://<ip>"
-            client = TapoClient(creds, f"http://{ip}")
+            # 2. Protocol (KLAP Revision 2 is standard for new FW)
+            # Default to Revision 2
+            protocol = KlapProtocol(creds, url, KlapHandshakeRevision.Revision2)
             
-            # 3. Device Wrapper
-            # TapoPlug(host, port, client)
-            plug = TapoPlug(ip, None, client) 
+            # 3. Client
+            client = TapoClient(creds, url, protocol)
             
-            # 4. Update State (Connects/Auths implicitly?)
+            # 4. wrapper
+            plug = TapoPlug(ip, None, client)
+            
+            # 5. Action
             await plug.update()
             
-            # 5. Check & Toggle
-            # is_on might be property or method, let's try property first
-            # based on usual python patterns. If it's a method, we catch AttributeError?
-            # User dir() showed 'is_on'. 
-            
-            # Note: plug.is_on is likely a property reading internal state populated by update()
             if plug.is_on: 
                 await plug.turn_off()
                 self.devices[index]["state"] = False
@@ -52,22 +52,27 @@ class TapoManager:
             print(f"Error communicating with {ip}: {e}")
             return False
         finally:
-            if 'client' in locals():
+            if client:
                 await client.close()
 
     async def _update_state_async(self, ip, index):
+        client = None
         try:
             creds = AuthCredential(self.username, self.password)
-            client = TapoClient(creds, f"http://{ip}")
+            url = f"http://{ip}"
+            protocol = KlapProtocol(creds, url, KlapHandshakeRevision.Revision2)
+            client = TapoClient(creds, url, protocol)
             plug = TapoPlug(ip, None, client)
             
             await plug.update()
-            
             self.devices[index]["state"] = plug.is_on
-            await client.close()
+            
         except Exception as e:
             print(f"Error updating {ip}: {e}")
             pass
+        finally:
+            if client:
+                await client.close()
 
     def toggle(self, index):
         """
