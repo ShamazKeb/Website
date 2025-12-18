@@ -19,8 +19,8 @@ class TapoManager:
             # v3.6.0: Client takes credentials
             client = TapoClient(self.username, self.password)
             
-            # Login with IP (Try use_v2=True for newer firmware)
-            await client.login(f"http://{ip}", use_v2=True)
+            # Login with IP (Library adds http:// internally)
+            await client.login(ip, use_v2=True)
             
             # Get State
             result = await client.get_device_info()
@@ -43,16 +43,22 @@ class TapoManager:
         except Exception as e:
             print(f"Error communicating with {ip}: {e}")
             return False
+        finally:
+            # Clean up session
+            # Note: v3 TapoClient might not have close(), but underlying session does?
+            # Inspect showed close() method exists.
+            if client:
+                await client.close()
 
     async def _update_state_async(self, ip, index):
         try:
             client = TapoClient(self.username, self.password)
             # Try login v2 first
             try:
-                await client.login(f"http://{ip}", use_v2=True)
+                await client.login(ip, use_v2=True)
             except Exception:
                  # Fallback to v1?
-                 await client.login(f"http://{ip}", use_v2=False)
+                 await client.login(ip, use_v2=False)
 
             result = await client.get_device_info()
             if result.is_right:
@@ -65,6 +71,9 @@ class TapoManager:
         except Exception as e:
             print(f"Error updating {ip}: {e}")
             pass
+        finally:
+            if client:
+                await client.close()
 
     def toggle(self, index):
         if index < 0 or index >= len(self.devices):
