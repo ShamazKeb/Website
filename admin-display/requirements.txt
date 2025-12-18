@@ -1,4 +1,4 @@
 pillow
 evdev
 RPi.GPIO
-PyP100
+plugp100

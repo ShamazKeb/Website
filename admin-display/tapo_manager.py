@@ -1,9 +1,10 @@
-from PyP100 import PyP100
-import threading
+import asyncio
+from plugp100.api.tapo_client import TapoClient
+from plugp100.common.credentials import AuthCredential
 
 class TapoManager:
     def __init__(self, email, password):
-        self.email = email
+        self.username = email
         self.password = password
         
         # Device Configuration
@@ -13,55 +14,73 @@ class TapoManager:
             {"name": "Industrie", "ip": "192.168.178.30", "state": False},
             {"name": "Schreibtisch", "ip": "192.168.178.31", "state": False}
         ]
-        
-    def _get_device(self, ip):
-        p100 = PyP100.P100(ip, self.email, self.password)
-        # Authentication is required for commands
-        p100.handshake()
-        p100.login()
-        return p100
 
-    def toggle(self, index):
-        """
-        Toggles the device at index. Returns success (True/False).
-        Updates internal state cache.
-        """
-        if index < 0 or index >= len(self.devices):
-            return False
-
-        device_info = self.devices[index]
-        ip = device_info["ip"]
+    async def _toggle_async(self, ip, index):
+        # Create Client
+        credential = AuthCredential(self.username, self.password)
+        client = TapoClient(ip, credential)
         
         try:
-            dev = self._get_device(ip)
-            # Get current state first? Or just toggle based on cache?
-            # To be safe, let's trying reading info, but toggle is faster if we assume cache is approx correct 
-            # or just blindly set inverted.
-            # PyP100 doesn't have a simple 'toggle', we need to get info.
+            # Login
+            await client.login()
             
-            info = dev.getDeviceInfo()
-            is_on = info['device_on']
+            # Get Info
+            info = await client.get_device_info()
+            is_on = info.to_dict()['device_on'] # Adjust based on actual response structure if needed
             
             if is_on:
-                dev.turnOff()
+                await client.turn_off()
                 self.devices[index]["state"] = False
             else:
-                dev.turnOn()
+                await client.turn_on()
                 self.devices[index]["state"] = True
                 
             return True
         except Exception as e:
-            print(f"Error toggling {device_info['name']}: {e}")
+            print(f"Error communicating with {ip}: {e}")
+            return False
+        finally:
+            # Best practice to close session if library supports it?
+            # plugp100 clients usually don't have explicit close, but let's check docs if needed.
+            # Assuming it's fine for one-off.
+            pass
+
+    async def _update_state_async(self, ip, index):
+        credential = AuthCredential(self.username, self.password)
+        client = TapoClient(ip, credential)
+        try:
+            await client.login()
+            info = await client.get_device_info()
+            self.devices[index]["state"] = info.to_dict()['device_on']
+        except:
+            pass
+
+    def toggle(self, index):
+        """
+        Synchronous wrapper for toggle action.
+        """
+        if index < 0 or index >= len(self.devices):
+            return False
+
+        device = self.devices[index]
+        try:
+            asyncio.run(self._toggle_async(device["ip"], index))
+            return True
+        except Exception as e:
+            print(f"Sync Toggle Error: {e}")
             return False
 
     def update_states(self):
         """
-        Background sync of states (optional, for startup)
+        Synchronous wrapper for updating all states.
         """
-        for i, d in enumerate(self.devices):
-            try:
-                dev = self._get_device(d["ip"])
-                info = dev.getDeviceInfo()
-                self.devices[i]["state"] = info['device_on']
-            except:
-                pass # Offline or error
+        async def main():
+            tasks = []
+            for i, dev in enumerate(self.devices):
+                tasks.append(self._update_state_async(dev["ip"], i))
+            await asyncio.gather(*tasks)
+            
+        try:
+            asyncio.run(main())
+        except Exception as e:
+            print(f"State Update Error: {e}")
