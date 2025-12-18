@@ -78,8 +78,9 @@ class TapoManager:
                 # Actually, login_result holds the v1 failure here.
                 print(f"Login failed for {ip}: {login_result}")
                  
-        except Exception as e:
-            print(f"Error updating {ip}: {e}")
+        except Exception:
+            import traceback
+            traceback.print_exc()
             pass
         finally:
             if client:
