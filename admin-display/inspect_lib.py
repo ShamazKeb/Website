@@ -16,20 +16,21 @@ def inspect_lib():
         print("\n✅ Found TapoClient in plugp100.api.tapo_client")
         print("Methods in TapoClient:")
         print([m for m in dir(TapoClient) if not m.startswith("_")])
-    except ImportError:
-        print("\n❌ TapoClient NOT found in plugp100.api.tapo_client")
-
     try:
-        from plugp100.api.tapo_plug import TapoPlug
-        print("\n✅ Found TapoPlug in plugp100.api.tapo_plug")
+        from plugp100.new.tapoplug import TapoPlug
+        print("\n✅ Found TapoPlug in plugp100.new.tapoplug")
+        print("Methods in TapoPlug:")
+        print([m for m in dir(TapoPlug) if not m.startswith("_")])
     except ImportError:
-        print("\n❌ TapoPlug NOT found in plugp100.api.tapo_plug")
-
+        print("\n❌ TapoPlug NOT found in plugp100.new.tapoplug")
+        
     try:
-        from plugp100.domain.smart_plug import SmartPlug
-        print("\n✅ Found SmartPlug in plugp100.domain.smart_plug")
-    except ImportError:
-        print("\n❌ SmartPlug NOT found in plugp100.domain.smart_plug")
+        from plugp100.api.tapo_client import TapoClient
+        # Check constructor args if possible?
+        print("\nTapoClient Constructor Args:")
+        print(inspect.signature(TapoClient.__init__))
+    except:
+        pass
 
 if __name__ == "__main__":
     inspect_lib()
