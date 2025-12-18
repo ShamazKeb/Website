@@ -20,6 +20,8 @@ class TapoManager:
             async with aiohttp.ClientSession() as session:
                 # Use keyword arg for clarity/safety
                 client = TapoClient(self.username, self.password, http_session=session)
+                # FORCE ASSIGNMENT: Constructor seems to drop it in this version
+                client._session = session
                 
                 # Login
                 login_result = await client.login(ip, use_v2=True)
@@ -53,6 +55,8 @@ class TapoManager:
         try:
             async with aiohttp.ClientSession() as session:
                 client = TapoClient(self.username, self.password, http_session=session)
+                # FORCE ASSIGNMENT
+                client._session = session
                 
                 # Login
                 login_result = await client.login(ip, use_v2=True)
