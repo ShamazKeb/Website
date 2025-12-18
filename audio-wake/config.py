@@ -9,8 +9,8 @@ BLOCK_SIZE = 44100 # 1 Second per analysis block
 NOISE_THRESHOLD = 0.03
 
 # Energy Settings (in seconds)
-MAX_ENERGY = 180      # Maximum awake time capacity
-ENERGY_PER_NOISE = 60 # Seconds added per trigger
+MAX_ENERGY = 10    # Maximum awake time capacity
+ENERGY_PER_NOISE = 10 # Seconds added per trigger
 IDLE_DRAIN = 1       # Seconds lost per second of silence
 
 # Hardware Settings
