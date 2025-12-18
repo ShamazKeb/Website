@@ -1,4 +1,5 @@
 services:
+services:
   audio-wake:
     build: .
     container_name: audio-wake
@@ -7,6 +8,7 @@ services:
     volumes:
       - /dev/snd:/dev/snd # Access to Audio Hardware
       - /sys:/sys # Access to Backlight Control (sysfs)
+      - /dev/input:/dev/input # Access to Touch Events
     environment:
       # PortAudio often needs this inside containers using ALSA
       - PA_ALSA_PLUGHW=1
