@@ -24,6 +24,7 @@ class App:
         self.width = 320
         self.height = 480
         self.state = "START_MENU"
+        self.last_touch_pos = None # For debug visualization
         # Load Assets
         try:
             self.icon = Image.open(FAVICON_PATH).convert("RGBA")
@@ -91,6 +92,13 @@ class App:
         text = "Tap to Update"
         text_bbox = draw.textbbox((0,0), text, font=self.small_font)
         draw.text((center_x - text_bbox[2]//2, center_y + radius + 20), text, font=self.small_font, fill="gray")
+        
+        # DEBUG: Draw touch point
+        if self.last_touch_pos:
+            lx, ly = self.last_touch_pos
+            draw.ellipse((lx-5, ly-5, lx+5, ly+5), fill="yellow", outline="red")
+            draw.text((lx+10, ly), f"{lx},{ly}", font=self.log_font, fill="yellow")
+
         return img
 
     def draw_menu(self):
@@ -297,20 +305,35 @@ class App:
                         time.sleep(0.2) # Debounce
 
             # 2. Update Update Screen (IDLE)
+            # 2. Update Update Screen (IDLE)
             elif self.state == "IDLE":
-                self.fb.show(self.draw_idle())
                 pos = self.touch.read()
                 if pos:
+                    self.last_touch_pos = pos
                     print(f"IDLE Touch: {pos}")
+                
+                # Check Buttons
+                if self.last_touch_pos:
+                    pos = self.last_touch_pos
                     # Back Button (Top Left area)
                     if pos[0] < 100 and pos[1] < 50:
                         self.state = "START_MENU"
+                        self.last_touch_pos = None
                         time.sleep(0.2) 
                     else:
                         # Center Update Button
                         cx, cy = self.width // 2, self.height // 2
+                        # Button region
                         if abs(pos[0] - cx) < 120 and abs(pos[1] - cy) < 120:
-                            self.perform_update()
+                             print(f"Update Button Hit! {pos}")
+                             self.perform_update()
+                             self.last_touch_pos = None
+
+                self.fb.show(self.draw_idle())
+                
+                # Decay touch debug (remove after a frame or so? Or keep it?)
+                # for now keep it consistent 
+
 
             # 3. Handle Updating State Animation
             elif self.state == "UPDATING":
