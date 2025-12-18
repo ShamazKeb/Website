@@ -22,7 +22,8 @@ class TapoManager:
                 
                 # Get current state
                 result = await client.get_device_info()
-                if result.is_right():
+                # v4.0.3 returns Success/Failure, not Either
+                if hasattr(result, 'value'):
                     is_on = result.value.get('device_on', False)
                     new_state = not is_on
                     
@@ -45,7 +46,8 @@ class TapoManager:
                 client = TapoClient.create(self.credential, ip, http_session=session)
                 
                 result = await client.get_device_info()
-                if result.is_right():
+                # v4.0.3 returns Success/Failure
+                if hasattr(result, 'value'):
                     is_on = result.value.get('device_on', False)
                     self.devices[index]["state"] = bool(is_on)
                 else:
