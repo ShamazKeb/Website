@@ -326,6 +326,28 @@ class App:
                 time.sleep(0.05)
                 continue # Skip Touch input during update
             
+            # 4. IPC Check (Sleep Mode)
+            if os.path.exists("/tmp/sheep_state"):
+                try:
+                    with open("/tmp/sheep_state", "r") as f:
+                        state = f.read().strip()
+                    if state == "SLEEP":
+                        if self.state != "SLEEPING":
+                            print("Received SLEEP command. Going dark.")
+                            self.fb.show(Image.new("RGB", (self.width, self.height), "black"))
+                            # Hardware Blanking (Host Side)
+                            os.system("echo 1 > /sys/class/graphics/fb1/blank")
+                            self.state = "SLEEPING"
+                        time.sleep(1)
+                        continue
+                    elif state == "WAKE" and self.state == "SLEEPING":
+                        print("Received WAKE command.")
+                        # Hardware Unblanking
+                        os.system("echo 0 > /sys/class/graphics/fb1/blank")
+                        self.state = "START_MENU"
+                except:
+                    pass
+
             time.sleep(0.1)
 
             time.sleep(0.1)
