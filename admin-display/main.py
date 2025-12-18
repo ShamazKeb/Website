@@ -54,13 +54,39 @@ class App:
             self.small_font = ImageFont.load_default()
             self.log_font = ImageFont.load_default()
 
+    def perform_reboot(self):
+        print("Rebooting System...")
+        try:
+            # Draw "Rebooting..." text before dying
+            img = Image.new("RGB", (self.width, self.height), "black")
+            draw = ImageDraw.Draw(img)
+            draw.text((80, 220), "Rebooting...", font=self.font, fill="red")
+            self.fb.show(img)
+            time.sleep(1)
+            subprocess.run(["sudo", "reboot"])
+        except Exception as e:
+            print(f"Reboot failed: {e}")
+
     def draw_start_menu(self):
         img = Image.new("RGB", (self.width, self.height), "#1a1a1a")
         draw = ImageDraw.Draw(img)
         
         # Header
         draw.text((20, 30), "THY ADMIN", font=self.font, fill="#e67e22")
-        draw.line((20, 65, 300, 65), fill="#333333", width=2)
+        draw.line((20, 65, 240, 65), fill="#333333", width=2)
+        
+        # Power/Reboot Button (Top Right)
+        # Location: x=260, y=15, size=50
+        rx, ry, rs = 260, 15, 45
+        draw.ellipse((rx, ry, rx+rs, ry+rs), fill="#c0392b", outline="#e74c3c", width=2)
+        
+        # Draw "Reboot Arrow" (White)
+        cx, cy = rx + rs/2, ry + rs/2
+        r = 12
+        # Arc from 30 to 330 degrees (open at top)
+        draw.arc((cx-r, cy-r, cx+r, cy+r), start=30, end=330, fill="white", width=3)
+        # Arrow Head at end (330 deg) -> approx (cx+6, cy-10)
+        draw.polygon([(cx+6, cy-12), (cx+14, cy-6), (cx+6, cy)], fill="white")
         
         # Button 1: System Update
         btn_y = 100
@@ -305,21 +331,25 @@ class App:
                 pos = self.touch.read()
                 if pos:
                     print(f"Start Menu Touch: {pos}")
+                    
+                    # Check Reboot Button (Top Right)
+                    # Circle at 260, 15, size 45 -> Hitbox approx x>250, y<70
+                    if pos[0] > 250 and pos[1] < 70:
+                        self.perform_reboot()
+                        
                     # Button 1: System Update (y=100 to y=180)
-                    if 20 < pos[0] < 300 and 100 < pos[1] < 180:
+                    elif 20 < pos[0] < 300 and 100 < pos[1] < 180:
                         self.state = "IDLE" # Transition to Update Screen
                         time.sleep(0.2) # Debounce
 
             # 2. Update Update Screen (IDLE)
-            # 2. Update Update Screen (IDLE)
             elif self.state == "IDLE":
                 pos = self.touch.read()
                 if pos:
-                    self.last_touch_pos = pos
                     print(f"IDLE Touch: {pos}")
                 
-                # Check Buttons
-                # Back Button (Top Left area)
+                    # Check Buttons
+                    # Back Button (Top Left area)
                     if pos[0] < 100 and pos[1] < 50:
                         self.state = "START_MENU"
                         time.sleep(0.2) 
