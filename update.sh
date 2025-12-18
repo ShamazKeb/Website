@@ -5,6 +5,9 @@
 sudo rm -f /tmp/admin_update_status
 echo "📦 Hole neuesten Code..."
 echo "CODE" > /tmp/admin_update_status
+# Force Pull (Discard local changes)
+git fetch --all
+git reset --hard origin/main
 git pull
 
 # 2. Infrastructure (Nginx Proxy Manager)

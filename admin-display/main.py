@@ -4,7 +4,9 @@ import os
 import subprocess
 from PIL import Image, ImageDraw, ImageFont
 from fb import Framebuffer
+from fb import Framebuffer
 from touch import Touch
+from tapo_manager import TapoManager
 
 # --- Configuration ---
 FAVICON_PATH = "../landing-page/images/favicon.png"
@@ -31,7 +33,11 @@ class App:
         self.animation_angle = 0
         self.update_process = None
         self.is_updating = False
+        self.is_updating = False
         self.completed_steps = set()
+        
+        # Smart Home Manager
+        self.tapo_manager = TapoManager("johann@thygs.com", "SmartHome!")
         
         # Load Assets
         try:
@@ -118,10 +124,64 @@ class App:
         draw.text((btn_x + 20, btn_y + 25), "🔄", font=self.font, fill="white")
         draw.text((btn_x + 60, btn_y + 30), "System Update", font=self.small_font, fill="white")
         
-        # Button 2: Placeholder
+        # Button 2: Smart Home
         btn2_y = 200
-        draw.rounded_rectangle((btn_x, btn2_y, btn_x + btn_w, btn2_y + btn_h), radius=15, fill="#1a1a1a", outline="#333333", width=2)
-        draw.text((btn_x + 60, btn2_y + 30), "Coming Soon...", font=self.small_font, fill="#666666")
+        # Draw Button Background
+        draw.rounded_rectangle((btn_x, btn2_y, btn_x + btn_w, btn2_y + btn_h), radius=15, fill="#2c3e50", outline="#34495e", width=2)
+        draw.text((btn_x + 20, btn2_y + 25), "🏠", font=self.font, fill="white")
+        draw.text((btn_x + 60, btn2_y + 30), "Smart Home", font=self.small_font, fill="white")
+
+        return img
+
+    def draw_smart_home(self):
+        img = Image.new("RGB", (self.width, self.height), "#1a1a1a")
+        draw = ImageDraw.Draw(img)
+        
+        # Header & Back
+        draw.text((10, 10), "< Back", font=self.small_font, fill="#aeaaaa")
+        draw.text((80, 10), "Smart Home", font=self.font, fill="#e67e22")
+        draw.line((20, 50, 300, 50), fill="#333333", width=2)
+        
+        # 2x2 Grid for Devices
+        # Margins: 20px
+        # W=320 -> 280 usable -> 130 per button + 20 gap
+        # H=480 -> Start Y=70
+        
+        devices = self.tapo_manager.devices
+        
+        start_y = 70
+        btn_w = 135
+        btn_h = 135
+        gap = 10
+        margin_x = 20
+        
+        for i, dev in enumerate(devices):
+            row = i // 2
+            col = i % 2
+            
+            x = margin_x + col * (btn_w + gap)
+            y = start_y + row * (btn_h + gap)
+            
+            # Color based on state
+            color = "#27ae60" if dev["state"] else "#34495e" # Green if on, Dark Blue/Gray if off
+            outline = "#2ecc71" if dev["state"] else "#555555"
+            
+            draw.rounded_rectangle((x, y, x + btn_w, y + btn_h), radius=10, fill=color, outline=outline, width=2)
+            
+            # Icon/Name (Simply use name for now)
+            # Center text
+            name = dev["name"]
+            # Split name if too long?
+            if " " in name:
+                parts = name.split(" ")
+                draw.text((x + 10, y + 40), parts[0], font=self.small_font, fill="white")
+                draw.text((x + 10, y + 65), parts[1], font=self.small_font, fill="white")
+            else:
+                draw.text((x + 10, y + 50), name, font=self.small_font, fill="white")
+                
+            # State Text
+            state_text = "ON" if dev["state"] else "OFF"
+            draw.text((x + 10, y + 100), state_text, font=self.log_font, fill="#cccccc")
 
         return img
 
@@ -358,6 +418,49 @@ class App:
                     elif 20 < pos[0] < 300 and 100 < pos[1] < 180:
                         self.state = "IDLE" # Transition to Update Screen
                         time.sleep(0.2) # Debounce
+                        
+                    # Button 2: Smart Home (y=200 to y=280)
+                    elif 20 < pos[0] < 300 and 200 < pos[1] < 280:
+                        self.state = "SMART_HOME"
+                        # Optimistic background update?
+                        t = threading.Thread(target=self.tapo_manager.update_states)
+                        t.start()
+                        time.sleep(0.2)
+
+            # 1b. Smart Home Logic
+            elif self.state == "SMART_HOME":
+                self.fb.show(self.draw_smart_home())
+                pos = self.touch.read()
+                if pos:
+                    print(f"Smart Home Touch: {pos}")
+                    # Back Button
+                    if pos[0] < 80 and pos[1] < 50:
+                        self.state = "START_MENU"
+                        time.sleep(0.2)
+                    else:
+                        # Grid Calculation
+                        start_y = 70
+                        btn_w = 135
+                        btn_h = 135
+                        gap = 10
+                        margin_x = 20
+                        
+                        # Check which button
+                        for i in range(4):
+                            row = i // 2
+                            col = i % 2
+                            x = margin_x + col * (btn_w + gap)
+                            y = start_y + row * (btn_h + gap)
+                            
+                            if x < pos[0] < x + btn_w and y < pos[1] < y + btn_h:
+                                print(f"Toggling Device {i}")
+                                # Toggle in thread to avoid blocking UI
+                                def do_toggle(idx):
+                                    self.tapo_manager.toggle(idx)
+                                    
+                                t = threading.Thread(target=do_toggle, args=(i,))
+                                t.start()
+                                time.sleep(0.2) # Debounce
 
             # 2. Update Update Screen (IDLE)
             elif self.state == "IDLE":
