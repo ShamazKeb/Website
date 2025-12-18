@@ -4,7 +4,7 @@ from plugp100.api.tapo_client import TapoClient
 from plugp100.new.tapoplug import TapoPlug
 # Protocol Imports
 from plugp100.protocol.klap.klap_protocol import KlapProtocol
-from plugp100.protocol.klap.klap_handshake_revision import KlapHandshakeRevisionV2
+from plugp100.protocol.klap.klap_handshake_revision import KlapHandshakeRevision
 
 class TapoManager:
     def __init__(self, email, password):
@@ -26,9 +26,9 @@ class TapoManager:
             creds = AuthCredential(self.username, self.password)
             url = f"http://{ip}"
             
-            # 2. Protocol (KLAP Revision 2 is standard for new FW)
-            # Use specific Revision V2 class
-            protocol = KlapProtocol(creds, url, KlapHandshakeRevisionV2())
+            # 2. Protocol (Try Base Revision / V1)
+            # V2 failed with challenge mismatch, so we try the standard one
+            protocol = KlapProtocol(creds, url, KlapHandshakeRevision())
             
             # 3. Client
             client = TapoClient(creds, url, protocol)
@@ -60,7 +60,7 @@ class TapoManager:
         try:
             creds = AuthCredential(self.username, self.password)
             url = f"http://{ip}"
-            protocol = KlapProtocol(creds, url, KlapHandshakeRevisionV2())
+            protocol = KlapProtocol(creds, url, KlapHandshakeRevision())
             client = TapoClient(creds, url, protocol)
             plug = TapoPlug(ip, None, client)
             
