@@ -83,10 +83,27 @@ class App:
         # Draw "Reboot Arrow" (White)
         cx, cy = rx + rs/2, ry + rs/2
         r = 12
-        # Arc from 30 to 330 degrees (open at top)
-        draw.arc((cx-r, cy-r, cx+r, cy+r), start=30, end=330, fill="white", width=3)
-        # Arrow Head at end (330 deg) -> approx (cx+6, cy-10)
-        draw.polygon([(cx+6, cy-12), (cx+14, cy-6), (cx+6, cy)], fill="white")
+        # Standard Power/Reboot: Gap at Top (270 deg)
+        # PIL Angles: 0=Right, 90=Bottom, 180=Left, 270=Top
+        # Arc from 290 (Top Right) to 250 (Top Left) clockwise
+        draw.arc((cx-r, cy-r, cx+r, cy+r), start=290, end=250, fill="white", width=3)
+        
+        # Arrow Head at the "End" (250 deg -> Top Left)
+        # 250 deg is approx (-x, -y) from center?
+        # Math: 250 is 10 deg past 240. 
+        # Let's verify: 
+        # 270 is top (0, -r). 
+        # 250 is slightly left of top.
+        # Arrow: Pointing in clockwise direction.
+        
+        # Simple Triangle at Top Left of arc
+        # Coords approx: cx-4, cy-12
+        draw.polygon([(cx-8, cy-14), (cx+2, cy-14), (cx-4, cy-8)], fill="white")
+        # Just a generic wedge at the top-left gap
+        
+        # Dot in center for "Power On" look? Or just open circle?
+        # User said "Red on/off button". 
+        draw.line((cx, cy-4, cx, cy+4), fill="white", width=3) # Power line (Vertical in center)
         
         # Button 1: System Update
         btn_y = 100
