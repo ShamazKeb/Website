@@ -3,8 +3,7 @@ from plugp100.common.credentials import AuthCredential
 from plugp100.api.tapo_client import TapoClient
 from plugp100.new.tapoplug import TapoPlug
 # Protocol Imports
-from plugp100.protocol.klap.klap_protocol import KlapProtocol
-from plugp100.protocol.klap.klap_handshake_revision import KlapHandshakeRevision
+from plugp100.protocol.passthrough_protocol import PassthroughProtocol
 
 class TapoManager:
     def __init__(self, email, password):
@@ -26,9 +25,9 @@ class TapoManager:
             creds = AuthCredential(self.username, self.password)
             url = f"http://{ip}"
             
-            # 2. Protocol (Try Base Revision / V1)
-            # V2 failed with challenge mismatch, so we try the standard one
-            protocol = KlapProtocol(creds, url, KlapHandshakeRevision())
+            # 2. Protocol (Fallback to Passthrough)
+            # KLAP failed, implying these devices use the older secure passthrough method
+            protocol = PassthroughProtocol(creds, url)
             
             # 3. Client
             client = TapoClient(creds, url, protocol)
@@ -60,7 +59,7 @@ class TapoManager:
         try:
             creds = AuthCredential(self.username, self.password)
             url = f"http://{ip}"
-            protocol = KlapProtocol(creds, url, KlapHandshakeRevision())
+            protocol = PassthroughProtocol(creds, url)
             client = TapoClient(creds, url, protocol)
             plug = TapoPlug(ip, None, client)
             
