@@ -16,73 +16,65 @@ class TapoManager:
         ]
 
     async def _toggle_async(self, ip, index):
-        session = aiohttp.ClientSession()
         try:
-            # v3.6.0: Pass explicit session
-            client = TapoClient(self.username, self.password, session)
-            
-            # Login with IP
-            login_result = await client.login(ip, use_v2=True)
-            if not login_result.is_right:
-                 login_result = await client.login(ip, use_v2=False)
-
-            if login_result.is_right:
-                # Get State
-                result = await client.get_device_info()
-                if result.is_right:
-                    info = result.get()
-                    is_on = info.get('device_on', False)
-                    
-                    # Toggle
-                    new_state = not is_on
-                    await client.set_device_info({"device_on": new_state})
-                    
-                    # Update local state
-                    self.devices[index]["state"] = new_state
-                    return True
-                else:
-                    print(f"Failed to get info for {ip}: {result}")
-                    return False
-            else:
-                print(f"Login failed for {ip}: {login_result}")
-                return False
+            async with aiohttp.ClientSession() as session:
+                # Use keyword arg for clarity/safety
+                client = TapoClient(self.username, self.password, http_session=session)
                 
+                # Login
+                login_result = await client.login(ip, use_v2=True)
+                if not login_result.is_right:
+                     login_result = await client.login(ip, use_v2=False)
+
+                if login_result.is_right:
+                    result = await client.get_device_info()
+                    if result.is_right:
+                        info = result.get()
+                        is_on = info.get('device_on', False)
+                        
+                        new_state = not is_on
+                        await client.set_device_info({"device_on": new_state})
+                        
+                        self.devices[index]["state"] = new_state
+                        return True
+                    else:
+                        print(f"[{ip}] Get Info Failed: {result}")
+                        return False
+                else:
+                    print(f"[{ip}] Login Failed: {login_result}")
+                    return False
+                    
         except Exception:
             import traceback
             traceback.print_exc()
             return False
-        finally:
-            await session.close()
 
     async def _update_state_async(self, ip, index):
-        session = aiohttp.ClientSession()
         try:
-            client = TapoClient(self.username, self.password, session)
-            
-            # Try login v2 first
-            login_result = await client.login(ip, use_v2=True)
-            
-            if not login_result.is_right:
-                # Fallback
-                login_result = await client.login(ip, use_v2=False)
+            async with aiohttp.ClientSession() as session:
+                client = TapoClient(self.username, self.password, http_session=session)
+                
+                # Login
+                login_result = await client.login(ip, use_v2=True)
+                if not login_result.is_right:
+                    login_result = await client.login(ip, use_v2=False)
 
-            if login_result.is_right:
-                result = await client.get_device_info()
-                if result.is_right:
-                    info = result.get()
-                    is_on = info.get('device_on', False)
-                    self.devices[index]["state"] = bool(is_on)
+                if login_result.is_right:
+                    result = await client.get_device_info()
+                    if result.is_right:
+                        info = result.get()
+                        # Handle potential differing response structures
+                        is_on = info.get('device_on', False)
+                        self.devices[index]["state"] = bool(is_on)
+                    else:
+                        print(f"[{ip}] Update Failed: {result}")
                 else:
-                    print(f"Update failed for {ip}: {result}")
-            else:
-                print(f"Login failed for {ip}: {login_result}")
+                    print(f"[{ip}] Login Failed: {login_result}")
                  
         except Exception:
             import traceback
             traceback.print_exc()
             pass
-        finally:
-            await session.close()
 
     def toggle(self, index):
         if index < 0 or index >= len(self.devices):
