@@ -1,6 +1,5 @@
 import asyncio
 from plugp100.api.tapo_client import TapoClient
-# In v3.6.1, it's typically just TapoClient handling everything for plugs
 
 class TapoManager:
     def __init__(self, email, password):
@@ -17,53 +16,52 @@ class TapoManager:
 
     async def _toggle_async(self, ip, index):
         try:
-            # v3 API: Client is directly instantiated with creds
-            client = TapoClient(ip, self.username, self.password)
+            # v3.6.0: Client takes credentials
+            client = TapoClient(self.username, self.password)
             
-            # Login
-            await client.login()
+            # Login with IP (Try use_v2=True for newer firmware)
+            await client.login(f"http://{ip}", use_v2=True)
             
-            # Get State (get_device_info returns an object/dict)
-            info = await client.get_device_info()
-            # Note: In older versions this might return a dict directly or an object with .to_dict()
-            # We'll assume object and try-access or use .to_dict() if needed. 
-            # Usually .device_on property or dict key 'device_on'
-            
-            # Let's inspect briefly via trial/error or assuming dict access on the object property
-            # Actually, most v3 examples show `info.device_on`
-            
-            is_on = getattr(info, 'device_on', None)
-            if is_on is None:
-                # Fallback if it's a dict
+            # Get State
+            result = await client.get_device_info()
+            if result.is_right:
+                info = result.get() # Unpack 'Either'
+                # info is typically a dict in v3
                 is_on = info.get('device_on', False)
-
-            if is_on:
-                await client.turn_off()
-                self.devices[index]["state"] = False
-            else:
-                await client.turn_on()
-                self.devices[index]["state"] = True
                 
-            return True
+                # Toggle
+                new_state = not is_on
+                await client.set_device_info({"device_on": new_state})
+                
+                # Update local state
+                self.devices[index]["state"] = new_state
+                return True
+            else:
+                print(f"Failed to get info for {ip}: {result}")
+                return False
+                
         except Exception as e:
             print(f"Error communicating with {ip}: {e}")
             return False
 
     async def _update_state_async(self, ip, index):
         try:
-            client = TapoClient(ip, self.username, self.password)
-            await client.login()
-            info = await client.get_device_info()
-            
-            # Logic to extract state
-            is_on = getattr(info, 'device_on', None)
-            if is_on is None and hasattr(info, 'to_dict'):
-                 is_on = info.to_dict().get('device_on')
-            if is_on is None and isinstance(info, dict):
-                 is_on = info.get('device_on')
-            
-            self.devices[index]["state"] = bool(is_on)
-            
+            client = TapoClient(self.username, self.password)
+            # Try login v2 first
+            try:
+                await client.login(f"http://{ip}", use_v2=True)
+            except Exception:
+                 # Fallback to v1?
+                 await client.login(f"http://{ip}", use_v2=False)
+
+            result = await client.get_device_info()
+            if result.is_right:
+                 info = result.get()
+                 is_on = info.get('device_on', False)
+                 self.devices[index]["state"] = bool(is_on)
+            else:
+                 print(f"Update failed for {ip}: {result}")
+                 
         except Exception as e:
             print(f"Error updating {ip}: {e}")
             pass
