@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # 1. Code aktualisieren
+# Reset Status File Permissions
+sudo rm -f /tmp/admin_update_status
 echo "📦 Hole neuesten Code..."
 echo "CODE" > /tmp/admin_update_status
 git pull
