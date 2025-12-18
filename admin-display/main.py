@@ -23,6 +23,7 @@ class App:
                            y_min=260, y_max=3800)
         self.width = 320
         self.height = 480
+        self.state = "START_MENU"
         # Load Assets
         try:
             self.icon = Image.open(FAVICON_PATH).convert("RGBA")
