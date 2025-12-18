@@ -1,6 +1,7 @@
 import asyncio
-from plugp100.api.tapo_client import TapoClient
 from plugp100.common.credentials import AuthCredential
+from plugp100.api.tapo_client import TapoClient
+from plugp100.new.tapoplug import TapoPlug
 
 class TapoManager:
     def __init__(self, email, password):
@@ -16,42 +17,54 @@ class TapoManager:
         ]
 
     async def _toggle_async(self, ip, index):
-        # Create Client
-        credential = AuthCredential(self.username, self.password)
-        client = TapoClient(ip, credential)
-        
         try:
-            # Login
-            await client.login()
+            # 1. Credentials
+            creds = AuthCredential(self.username, self.password)
             
-            # Get Info
-            info = await client.get_device_info()
-            is_on = info.to_dict()['device_on'] # Adjust based on actual response structure if needed
+            # 2. Client (Protocol handling)
+            # v5 requires full URL? Or just IP?
+            # Signature says "url: str", so we try "http://<ip>"
+            client = TapoClient(creds, f"http://{ip}")
             
-            if is_on:
-                await client.turn_off()
+            # 3. Device Wrapper
+            # TapoPlug(host, port, client)
+            plug = TapoPlug(ip, None, client) 
+            
+            # 4. Update State (Connects/Auths implicitly?)
+            await plug.update()
+            
+            # 5. Check & Toggle
+            # is_on might be property or method, let's try property first
+            # based on usual python patterns. If it's a method, we catch AttributeError?
+            # User dir() showed 'is_on'. 
+            
+            # Note: plug.is_on is likely a property reading internal state populated by update()
+            if plug.is_on: 
+                await plug.turn_off()
                 self.devices[index]["state"] = False
             else:
-                await client.turn_on()
+                await plug.turn_on()
                 self.devices[index]["state"] = True
                 
             return True
+            
         except Exception as e:
             print(f"Error communicating with {ip}: {e}")
             return False
         finally:
-            # Best practice to close session if library supports it?
-            # plugp100 clients usually don't have explicit close, but let's check docs if needed.
-            # Assuming it's fine for one-off.
-            pass
+            if 'client' in locals():
+                await client.close()
 
     async def _update_state_async(self, ip, index):
-        credential = AuthCredential(self.username, self.password)
-        client = TapoClient(ip, credential)
         try:
-            await client.login()
-            info = await client.get_device_info()
-            self.devices[index]["state"] = info.to_dict()['device_on']
+            creds = AuthCredential(self.username, self.password)
+            client = TapoClient(creds, f"http://{ip}")
+            plug = TapoPlug(ip, None, client)
+            
+            await plug.update()
+            
+            self.devices[index]["state"] = plug.is_on
+            await client.close()
         except:
             pass
 
