@@ -1,5 +1,4 @@
 import requests
-from requests.exceptions import RequestException
 from typing import Optional, Dict, Any
 
 
@@ -35,7 +34,7 @@ class PiholeManager:
             response = requests.get(self.base_url, params=params, timeout=5)
             response.raise_for_status()
             return response.json()
-        except RequestException as e:
+        except Exception as e:
             print(f"[PiholeManager] Request failed: {e}")
             return None
         except ValueError:
