@@ -1,15 +1,14 @@
-import importlib
-import sys
+import urllib.request
+import urllib.parse
+import json
 from typing import Optional, Dict, Any
-
-# Force import of the real requests module (not plugp100.requests)
-requests = importlib.import_module('requests')
 
 
 class PiholeManager:
     """
     Manager class for Pi-hole API communication.
     Controls Pi-hole status and retrieves statistics.
+    Uses urllib (stdlib) to avoid conflicts with plugp100.requests.
     """
     
     def __init__(self, host: str = "localhost", port: int = 8080, api_token: str = ""):
@@ -31,17 +30,22 @@ class PiholeManager:
         }
     
     def _request(self, params: Dict[str, Any]) -> Optional[Dict]:
-        """Make API request to Pi-hole."""
+        """Make API request to Pi-hole using urllib."""
         try:
             if self.api_token:
                 params["auth"] = self.api_token
-            response = requests.get(self.base_url, params=params, timeout=5)
-            response.raise_for_status()
-            return response.json()
+            
+            query_string = urllib.parse.urlencode(params)
+            url = f"{self.base_url}?{query_string}"
+            
+            req = urllib.request.Request(url, method='GET')
+            req.add_header('User-Agent', 'PiholeManager/1.0')
+            
+            with urllib.request.urlopen(req, timeout=5) as response:
+                data = response.read().decode('utf-8')
+                return json.loads(data)
         except Exception as e:
             print(f"[PiholeManager] Request failed: {e}")
-            return None
-        except ValueError:
             return None
     
     def get_status(self) -> bool:
