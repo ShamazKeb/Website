@@ -2,3 +2,4 @@ pillow
 evdev
 RPi.GPIO
 plugp100==4.0.3
+requests

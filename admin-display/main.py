@@ -7,6 +7,7 @@ from fb import Framebuffer
 from fb import Framebuffer
 from touch import Touch
 from tapo_manager import TapoManager
+from pihole_manager import PiholeManager
 
 # --- Configuration ---
 FAVICON_PATH = "../landing-page/images/favicon.png"
@@ -38,6 +39,9 @@ class App:
         
         # Smart Home Manager
         self.tapo_manager = TapoManager("johann@thygs.com", "SmartHome!")
+        
+        # Pi-hole Manager (localhost, port 8080)
+        self.pihole_manager = PiholeManager(host="localhost", port=8080)
         
         # Load Assets
         try:
@@ -130,6 +134,15 @@ class App:
         draw.rounded_rectangle((btn_x, btn2_y, btn_x + btn_w, btn2_y + btn_h), radius=15, fill="#2c3e50", outline="#34495e", width=2)
         draw.text((btn_x + 20, btn2_y + 25), "🏠", font=self.font, fill="white")
         draw.text((btn_x + 60, btn2_y + 30), "Smart Home", font=self.small_font, fill="white")
+        
+        # Button 3: Ad-Blocker
+        btn3_y = 300
+        # Color based on Pi-hole status (green if enabled)
+        pihole_color = "#27ae60" if self.pihole_manager.enabled else "#c0392b"
+        pihole_outline = "#2ecc71" if self.pihole_manager.enabled else "#e74c3c"
+        draw.rounded_rectangle((btn_x, btn3_y, btn_x + btn_w, btn3_y + btn_h), radius=15, fill=pihole_color, outline=pihole_outline, width=2)
+        draw.text((btn_x + 20, btn3_y + 25), "🛡️", font=self.font, fill="white")
+        draw.text((btn_x + 60, btn3_y + 30), "Ad-Blocker", font=self.small_font, fill="white")
 
         return img
 
@@ -183,6 +196,74 @@ class App:
             state_text = "ON" if dev["state"] else "OFF"
             draw.text((x + 10, y + 100), state_text, font=self.log_font, fill="#cccccc")
 
+        return img
+
+    def draw_pihole(self):
+        """Draw Pi-hole / Ad-Blocker control screen."""
+        img = Image.new("RGB", (self.width, self.height), "#1a1a1a")
+        draw = ImageDraw.Draw(img)
+        
+        # Header & Back
+        draw.text((10, 10), "< Back", font=self.small_font, fill="#aeaaaa")
+        draw.text((80, 10), "Ad-Blocker", font=self.font, fill="#e67e22")
+        draw.line((20, 50, 300, 50), fill="#333333", width=2)
+        
+        # Main Toggle Button (large, centered)
+        toggle_x = 60
+        toggle_y = 80
+        toggle_w = 200
+        toggle_h = 120
+        
+        if self.pihole_manager.enabled:
+            color = "#27ae60"
+            outline = "#2ecc71"
+            status_text = "ACTIVE"
+            icon = "🛡️"
+        else:
+            color = "#c0392b"
+            outline = "#e74c3c"
+            status_text = "PAUSED"
+            icon = "⛔"
+        
+        draw.rounded_rectangle((toggle_x, toggle_y, toggle_x + toggle_w, toggle_y + toggle_h), 
+                               radius=20, fill=color, outline=outline, width=3)
+        
+        # Icon and status
+        draw.text((toggle_x + 80, toggle_y + 20), icon, font=self.font, fill="white")
+        draw.text((toggle_x + 60, toggle_y + 70), status_text, font=self.small_font, fill="white")
+        
+        # Quick Actions
+        qa_y = 230
+        qa_h = 50
+        qa_w = 130
+        
+        # 5 Min Pause
+        draw.rounded_rectangle((20, qa_y, 20 + qa_w, qa_y + qa_h), radius=10, fill="#7f8c8d", outline="#95a5a6", width=2)
+        draw.text((35, qa_y + 15), "5 Min Pause", font=self.log_font, fill="white")
+        
+        # 30 Min Pause
+        draw.rounded_rectangle((170, qa_y, 170 + qa_w, qa_y + qa_h), radius=10, fill="#7f8c8d", outline="#95a5a6", width=2)
+        draw.text((180, qa_y + 15), "30 Min Pause", font=self.log_font, fill="white")
+        
+        # Statistics Section
+        stats_y = 310
+        draw.line((20, stats_y, 300, stats_y), fill="#333333", width=1)
+        draw.text((20, stats_y + 10), "Statistics", font=self.small_font, fill="#e67e22")
+        
+        stats = self.pihole_manager.get_stats()
+        
+        # Queries Today
+        draw.text((20, stats_y + 45), f"Queries Today:", font=self.log_font, fill="#888888")
+        draw.text((150, stats_y + 45), f"{stats['queries_today']:,}", font=self.log_font, fill="white")
+        
+        # Blocked Today
+        draw.text((20, stats_y + 70), f"Blocked Today:", font=self.log_font, fill="#888888")
+        draw.text((150, stats_y + 70), f"{stats['blocked_today']:,}", font=self.log_font, fill="white")
+        
+        # Percentage
+        draw.text((20, stats_y + 95), f"Block Rate:", font=self.log_font, fill="#888888")
+        draw.text((150, stats_y + 95), f"{stats['percent_blocked']:.1f}%", font=self.log_font, fill="#2ecc71")
+        
         return img
 
     # ... (draw_idle and draw_menu remain largely the same, maybe minor adjustments optional) ...
@@ -426,6 +507,14 @@ class App:
                         t = threading.Thread(target=self.tapo_manager.update_states)
                         t.start()
                         time.sleep(0.2)
+                        
+                    # Button 3: Ad-Blocker (y=300 to y=380)
+                    elif 20 < pos[0] < 300 and 300 < pos[1] < 380:
+                        self.state = "PIHOLE"
+                        # Fetch current stats in background
+                        t = threading.Thread(target=self.pihole_manager.update_stats)
+                        t.start()
+                        time.sleep(0.2)
 
             # 1b. Smart Home Logic
             elif self.state == "SMART_HOME":
@@ -461,6 +550,38 @@ class App:
                                 t = threading.Thread(target=do_toggle, args=(i,))
                                 t.start()
                                 time.sleep(0.2) # Debounce
+
+            # 1c. Pi-hole / Ad-Blocker Logic
+            elif self.state == "PIHOLE":
+                self.fb.show(self.draw_pihole())
+                pos = self.touch.read()
+                if pos:
+                    print(f"Pihole Touch: {pos}")
+                    # Back Button
+                    if pos[0] < 80 and pos[1] < 50:
+                        self.state = "START_MENU"
+                        time.sleep(0.2)
+                    # Main Toggle Button (y=80-200, x=60-260)
+                    elif 60 < pos[0] < 260 and 80 < pos[1] < 200:
+                        def do_toggle_pihole():
+                            self.pihole_manager.toggle()
+                        t = threading.Thread(target=do_toggle_pihole)
+                        t.start()
+                        time.sleep(0.3)
+                    # 5 Min Pause (y=230-280, x=20-150)
+                    elif 20 < pos[0] < 150 and 230 < pos[1] < 280:
+                        def do_pause_5():
+                            self.pihole_manager.disable(300)  # 5 * 60 = 300 seconds
+                        t = threading.Thread(target=do_pause_5)
+                        t.start()
+                        time.sleep(0.2)
+                    # 30 Min Pause (y=230-280, x=170-300)
+                    elif 170 < pos[0] < 300 and 230 < pos[1] < 280:
+                        def do_pause_30():
+                            self.pihole_manager.disable(1800)  # 30 * 60 = 1800 seconds
+                        t = threading.Thread(target=do_pause_30)
+                        t.start()
+                        time.sleep(0.2)
 
             # 2. Update Update Screen (IDLE)
             elif self.state == "IDLE":
