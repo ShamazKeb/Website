@@ -41,7 +41,8 @@ class App:
         self.tapo_manager = TapoManager("johann@thygs.com", "SmartHome!")
         
         # Pi-hole Manager (localhost, port 8080)
-        self.pihole_manager = PiholeManager(host="localhost", port=8080)
+        # Password should match PIHOLE_PASSWORD from pi-hole/.env
+        self.pihole_manager = PiholeManager(host="localhost", port=8080, password="8T82tdRF!%")
         
         # Load Assets
         try:

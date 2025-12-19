@@ -6,22 +6,22 @@ from typing import Optional, Dict, Any
 
 class PiholeManager:
     """
-    Manager class for Pi-hole API communication.
+    Manager class for Pi-hole v6 API communication.
     Controls Pi-hole status and retrieves statistics.
-    Uses urllib (stdlib) to avoid conflicts with plugp100.requests.
     """
     
-    def __init__(self, host: str = "localhost", port: int = 8080, api_token: str = ""):
+    def __init__(self, host: str = "localhost", port: int = 8080, password: str = ""):
         """
         Initialize PiholeManager.
         
         Args:
             host: Pi-hole server hostname/IP
             port: Web interface port (default 8080)
-            api_token: API token from Pi-hole settings
+            password: Pi-hole web interface password
         """
-        self.base_url = f"http://{host}:{port}/admin/api.php"
-        self.api_token = api_token
+        self.base_url = f"http://{host}:{port}/api"
+        self.password = password
+        self.session_id = ""
         self.enabled = True
         self.stats = {
             "queries_today": 0,
@@ -29,83 +29,92 @@ class PiholeManager:
             "percent_blocked": 0.0
         }
     
-    def _request(self, params: Dict[str, Any]) -> Optional[Dict]:
-        """Make API request to Pi-hole using urllib."""
+    def _request(self, endpoint: str, method: str = "GET", data: Dict = None) -> Optional[Dict]:
+        """Make API request to Pi-hole v6."""
         try:
-            if self.api_token:
-                params["auth"] = self.api_token
+            url = f"{self.base_url}/{endpoint}"
             
-            # Build query string - Pi-hole expects ?summaryRaw not ?summaryRaw=
-            query_parts = []
-            for key, value in params.items():
-                if value == "":
-                    query_parts.append(key)  # Just the key, no =
-                else:
-                    query_parts.append(f"{key}={urllib.parse.quote(str(value))}")
+            # Add session ID if we have one
+            headers = {'User-Agent': 'PiholeManager/1.0'}
+            if self.session_id:
+                headers['X-FTL-SID'] = self.session_id
             
-            query_string = "&".join(query_parts)
-            url = f"{self.base_url}?{query_string}"
+            if method == "POST" and data:
+                json_data = json.dumps(data).encode('utf-8')
+                req = urllib.request.Request(url, data=json_data, method='POST')
+                req.add_header('Content-Type', 'application/json')
+            else:
+                req = urllib.request.Request(url, method=method)
             
-            req = urllib.request.Request(url, method='GET')
-            req.add_header('User-Agent', 'PiholeManager/1.0')
+            for key, value in headers.items():
+                req.add_header(key, value)
             
             with urllib.request.urlopen(req, timeout=5) as response:
-                data = response.read().decode('utf-8')
-                return json.loads(data)
+                result = response.read().decode('utf-8')
+                return json.loads(result) if result else {}
+        except urllib.error.HTTPError as e:
+            error_body = e.read().decode('utf-8') if e.fp else ""
+            print(f"[PiholeManager] HTTP {e.code}: {error_body}")
+            return None
         except Exception as e:
             print(f"[PiholeManager] Request failed: {e}")
             return None
     
-    def get_status(self) -> bool:
-        """
-        Get current Pi-hole status.
+    def login(self) -> bool:
+        """Authenticate with Pi-hole and get session ID."""
+        if not self.password:
+            print("[PiholeManager] No password configured")
+            return False
         
-        Returns:
-            True if enabled, False if disabled
-        """
-        data = self._request({"status": ""})
-        if data and "status" in data:
-            self.enabled = data["status"] == "enabled"
+        data = {"password": self.password}
+        result = self._request("auth", method="POST", data=data)
+        
+        if result and "session" in result:
+            self.session_id = result["session"].get("sid", "")
+            print(f"[PiholeManager] Logged in successfully")
+            return True
+        return False
+    
+    def get_status(self) -> bool:
+        """Get current Pi-hole blocking status."""
+        # Try to login if we don't have a session
+        if not self.session_id:
+            self.login()
+        
+        result = self._request("dns/blocking")
+        if result and "blocking" in result:
+            self.enabled = result["blocking"]
             return self.enabled
         return self.enabled
     
     def enable(self) -> bool:
-        """
-        Enable Pi-hole blocking.
+        """Enable Pi-hole blocking."""
+        if not self.session_id:
+            self.login()
         
-        Returns:
-            True if successful
-        """
-        data = self._request({"enable": ""})
-        if data and data.get("status") == "enabled":
+        result = self._request("dns/blocking", method="POST", data={"blocking": True})
+        if result:
             self.enabled = True
             return True
         return False
     
     def disable(self, seconds: int = 0) -> bool:
-        """
-        Disable Pi-hole blocking.
+        """Disable Pi-hole blocking."""
+        if not self.session_id:
+            self.login()
         
-        Args:
-            seconds: Duration in seconds (0 = indefinitely)
-            
-        Returns:
-            True if successful
-        """
-        params = {"disable": str(seconds) if seconds > 0 else ""}
-        data = self._request(params)
-        if data and data.get("status") == "disabled":
+        data = {"blocking": False}
+        if seconds > 0:
+            data["timer"] = seconds
+        
+        result = self._request("dns/blocking", method="POST", data=data)
+        if result:
             self.enabled = False
             return True
         return False
     
     def toggle(self) -> bool:
-        """
-        Toggle Pi-hole status.
-        
-        Returns:
-            New status (True = enabled)
-        """
+        """Toggle Pi-hole status."""
         self.get_status()
         if self.enabled:
             self.disable()
@@ -114,21 +123,18 @@ class PiholeManager:
         return self.enabled
     
     def update_stats(self) -> Dict[str, Any]:
-        """
-        Fetch current statistics from Pi-hole.
+        """Fetch current statistics from Pi-hole."""
+        if not self.session_id:
+            self.login()
         
-        Returns:
-            Dictionary with stats
-        """
-        data = self._request({"summaryRaw": ""})
-        if data:
+        result = self._request("stats/summary")
+        if result:
             self.stats = {
-                "queries_today": int(data.get("dns_queries_today", 0)),
-                "blocked_today": int(data.get("ads_blocked_today", 0)),
-                "percent_blocked": float(data.get("ads_percentage_today", 0.0))
+                "queries_today": int(result.get("queries", {}).get("total", 0)),
+                "blocked_today": int(result.get("queries", {}).get("blocked", 0)),
+                "percent_blocked": float(result.get("queries", {}).get("percent_blocked", 0.0))
             }
-            # Also update enabled status
-            self.enabled = data.get("status") == "enabled"
+            self.enabled = result.get("gravity", {}).get("blocking", True)
         return self.stats
     
     def get_stats(self) -> Dict[str, Any]:
