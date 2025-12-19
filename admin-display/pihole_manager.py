@@ -35,7 +35,15 @@ class PiholeManager:
             if self.api_token:
                 params["auth"] = self.api_token
             
-            query_string = urllib.parse.urlencode(params)
+            # Build query string - Pi-hole expects ?summaryRaw not ?summaryRaw=
+            query_parts = []
+            for key, value in params.items():
+                if value == "":
+                    query_parts.append(key)  # Just the key, no =
+                else:
+                    query_parts.append(f"{key}={urllib.parse.quote(str(value))}")
+            
+            query_string = "&".join(query_parts)
             url = f"{self.base_url}?{query_string}"
             
             req = urllib.request.Request(url, method='GET')
