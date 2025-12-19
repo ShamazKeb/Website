@@ -1,5 +1,9 @@
-from requests import get as requests_get
+import importlib
+import sys
 from typing import Optional, Dict, Any
+
+# Force import of the real requests module (not plugp100.requests)
+requests = importlib.import_module('requests')
 
 
 class PiholeManager:
@@ -31,7 +35,7 @@ class PiholeManager:
         try:
             if self.api_token:
                 params["auth"] = self.api_token
-            response = requests_get(self.base_url, params=params, timeout=5)
+            response = requests.get(self.base_url, params=params, timeout=5)
             response.raise_for_status()
             return response.json()
         except Exception as e:
