@@ -1,4 +1,4 @@
-import requests
+from requests import get as requests_get
 from typing import Optional, Dict, Any
 
 
@@ -31,7 +31,7 @@ class PiholeManager:
         try:
             if self.api_token:
                 params["auth"] = self.api_token
-            response = requests.get(self.base_url, params=params, timeout=5)
+            response = requests_get(self.base_url, params=params, timeout=5)
             response.raise_for_status()
             return response.json()
         except Exception as e:
