@@ -10,10 +10,13 @@ from tapo_manager import TapoManager
 from pihole_manager import PiholeManager
 
 # --- Configuration ---
-FAVICON_PATH = "../landing-page/images/favicon.png"
-KETO_IMG_PATH = "../landing-page/images/keto-monitor.png"
-HANDBALL_IMG_PATH = "../landing-page/images/handball-tracker.png"
-UPDATE_SCRIPT = "../update.sh"
+# Use absolute paths based on script location
+import os
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+FAVICON_PATH = os.path.join(SCRIPT_DIR, "../landing-page/images/favicon.png")
+KETO_IMG_PATH = os.path.join(SCRIPT_DIR, "../landing-page/images/keto-monitor.png")
+HANDBALL_IMG_PATH = os.path.join(SCRIPT_DIR, "../landing-page/images/handball-tracker.png")
+UPDATE_SCRIPT = os.path.join(SCRIPT_DIR, "../update.sh")
 
 class App:
     def __init__(self):
