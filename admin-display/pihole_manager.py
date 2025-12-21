@@ -83,7 +83,8 @@ class PiholeManager:
         
         result = self._request("dns/blocking")
         if result and "blocking" in result:
-            self.enabled = result["blocking"]
+            # API returns string "enabled"/"disabled", convert to bool
+            self.enabled = result["blocking"] == "enabled"
             return self.enabled
         return self.enabled
     
@@ -93,9 +94,11 @@ class PiholeManager:
             self.login()
         
         result = self._request("dns/blocking", method="POST", data={"blocking": True})
-        if result:
+        if result and result.get("blocking") == "enabled":
             self.enabled = True
+            print("[PiholeManager] Blocking enabled")
             return True
+        print(f"[PiholeManager] Enable failed: {result}")
         return False
     
     def disable(self, seconds: int = 0) -> bool:
@@ -108,9 +111,11 @@ class PiholeManager:
             data["timer"] = seconds
         
         result = self._request("dns/blocking", method="POST", data=data)
-        if result:
+        if result and result.get("blocking") == "disabled":
             self.enabled = False
+            print("[PiholeManager] Blocking disabled")
             return True
+        print(f"[PiholeManager] Disable failed: {result}")
         return False
     
     def toggle(self) -> bool:
