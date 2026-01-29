@@ -93,7 +93,8 @@ check_and_create_env() {
 
 check_and_create_env "infrastructure" "Infrastructure"
 check_and_create_env "keto-monitor" "Keto Monitor"
-check_and_create_env "handball-tracker" "Handball Tracker"
+check_and_create_env "handball-tracker" "Handball Tracker (Legacy)"
+check_and_create_env "Handball_DB" "Handball DB (Complex App)"
 
 if [ $ENV_MISSING -eq 1 ]; then
     echo -e "\n${RED}STOPPING DEPLOYMENT${NC}"
@@ -107,7 +108,7 @@ fi
 # ============================================================
 # Step 1: Create Docker network
 # ============================================================
-echo -e "\n${BLUE}[1/5] Creating Docker network 'web-public'...${NC}"
+echo -e "\n${BLUE}[1/6] Creating Docker network 'web-public'...${NC}"
 
 if docker network inspect web-public &> /dev/null; then
     echo -e "${GREEN}✅ Network 'web-public' already exists${NC}"
@@ -119,7 +120,7 @@ fi
 # ============================================================
 # Step 2: Setup Infrastructure (Nginx Proxy Manager + DDNS)
 # ============================================================
-echo -e "\n${BLUE}[2/5] Setting up Infrastructure (NPM + DDNS)...${NC}"
+echo -e "\n${BLUE}[2/6] Setting up Infrastructure (NPM + DDNS)...${NC}"
 
 if [ -d "infrastructure" ]; then
     cd infrastructure
@@ -133,7 +134,7 @@ fi
 # ============================================================
 # Step 3: Setup Landing Page
 # ============================================================
-echo -e "\n${BLUE}[3/5] Setting up Landing Page...${NC}"
+echo -e "\n${BLUE}[3/6] Setting up Landing Page...${NC}"
 
 if [ -d "landing-page" ]; then
     cd landing-page
@@ -147,7 +148,7 @@ fi
 # ============================================================
 # Step 4: Setup Keto Monitor
 # ============================================================
-echo -e "\n${BLUE}[4/5] Setting up Keto Monitor...${NC}"
+echo -e "\n${BLUE}[4/6] Setting up Keto Monitor...${NC}"
 
 if [ -d "keto-monitor" ]; then
     cd keto-monitor
@@ -162,9 +163,9 @@ else
 fi
 
 # ============================================================
-# Step 5: Setup Handball Tracker
+# Step 5: Setup Handball Tracker (Legacy)
 # ============================================================
-echo -e "\n${BLUE}[5/5] Setting up Handball Tracker...${NC}"
+echo -e "\n${BLUE}[5/6] Setting up Handball Tracker (Legacy)...${NC}"
 
 if [ -d "handball-tracker" ]; then
     cd handball-tracker
@@ -173,6 +174,20 @@ if [ -d "handball-tracker" ]; then
     cd "$SCRIPT_DIR"
 else
     echo -e "${YELLOW}⚠️  handball-tracker/ directory not found, skipping${NC}"
+fi
+
+# ============================================================
+# Step 6: Setup Handball DB (Complex App)
+# ============================================================
+echo -e "\n${BLUE}[6/6] Setting up Handball DB (Complex App)...${NC}"
+
+if [ -d "Handball_DB" ]; then
+    cd Handball_DB
+    docker compose up -d --build
+    echo -e "${GREEN}✅ Handball DB started${NC}"
+    cd "$SCRIPT_DIR"
+else
+    echo -e "${YELLOW}⚠️  Handball_DB/ directory not found, skipping${NC}"
 fi
 
 # ============================================================
@@ -191,6 +206,8 @@ echo -e "  Nginx Proxy Manager:  http://$PI_IP:81"
 echo -e "  Landing Page:         via NPM proxy"
 echo -e "  Keto Monitor:         http://$PI_IP:5000"
 echo -e "  Handball Tracker:     http://$PI_IP:8000"
+echo -e "  Handball DB Backend:  http://$PI_IP:8000 (Complex)"
+echo -e "  Handball DB Frontend: http://$PI_IP:80 (Complex)"
 
 echo -e "\n${YELLOW}NPM Default Login:${NC}"
 echo -e "  Email:    admin@example.com"
