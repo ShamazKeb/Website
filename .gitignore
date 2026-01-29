@@ -23,6 +23,11 @@ infrastructure/npm/data/
 infrastructure/npm/letsencrypt/
 keto-monitor/keto.db
 keto-monitor/data/
+Handball_DB/*.db
+Handball_DB/logs/
+Handball_DB/__pycache__/
+Handball_DB/frontend/build/
+Handball_DB/frontend/node_modules/
 
 # Backup Folder
 keto_monitor3.0/
