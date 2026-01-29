@@ -4,163 +4,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="images/favicon.png">
-    <title>Thy Projects Portfolio</title>
+    <title>Johann's Projekt-Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #1a1a1a;
-            --text-color: #f0f0f0;
-            --accent-color: #e67e22;
-        }
-
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        header {
-            padding: 2rem;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            letter-spacing: 2px;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 2rem;
-            max-width: 1200px;
-            width: 100%;
-        }
-
-        .project-card {
-            position: relative;
-            background: #2a2a2a;
-            border-radius: 12px;
-            overflow: hidden;
-            aspect-ratio: 4/3;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .project-card:hover {
-            transform: scale(1.02);
-            z-index: 10;
-        }
-
-        .project-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: opacity 0.3s ease;
-        }
-
-        .project-card:hover .project-image {
-            opacity: 0.4;
-        }
-
-        .project-info {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            padding: 20px;
-            box-sizing: border-box;
-            background: rgba(0, 0, 0, 0.7);
+            background-color: #050505;
             color: white;
-            text-align: center;
         }
 
-        .project-card:hover .project-info {
-            opacity: 1;
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .project-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .project-desc {
-            font-size: 1rem;
-            line-height: 1.4;
-        }
-
-        .link-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 20;
+        .glow:hover {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body class="font-sans antialiased overflow-x-hidden">
 
-    <header>
-        <h1>Thy Projects</h1>
-        <p>Personal Workbench</p>
-    </header>
-
-    <div class="grid-container">
-
-        <!-- Keto Monitor Project -->
-        <div class="project-card">
-            <img src="images/keto-monitor.png" alt="Keto Monitor" class="project-image">
-            <div class="project-info">
-                <div class="project-title">Keto Monitor</div>
-                <div class="project-desc">AI-powered news aggregation and analysis for Companies. Real-time
-                    updates and smart summaries.</div>
-            </div>
-            <a href="http://keto.thy-projects.com" class="link-overlay"></a>
+    <section class="h-screen flex flex-col justify-center items-center text-center px-4">
+        <h1 data-aos="zoom-out" data-aos-duration="1500"
+            class="text-6xl md:text-8xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600 mb-4">
+            JOHANN THYGS
+        </h1>
+        <p data-aos="fade-up" data-aos-delay="500" class="text-gray-400 text-xl md:text-2xl max-w-2xl italic">
+            "Personal Projects"
+        </p>
+        <div class="mt-12 animate-bounce">
+            <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M19 14l-7 7-7-7m14-8l-7 7-7-7"></path>
+            </svg>
         </div>
+    </section>
 
-        <!-- Handball Tracker Project -->
-        <div class="project-card">
-            <img src="images/handball-tracker.png" alt="Handball Tracker" class="project-image">
-            <div class="project-info">
-                <div class="project-title">Handball Tracker</div>
-                <div class="project-desc">Advanced team management and performance tracking API for handball coaches and
-                    players.</div>
+    <section class="max-w-6xl mx-auto px-4 py-20">
+        <h2 data-aos="fade-right" class="text-3xl font-bold mb-12 border-l-4 border-blue-600 pl-4">MEINE PROJEKTE</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Handball DB -->
+            <a href="https://handball.thy-projects.com" data-aos="fade-up"
+                class="glass p-8 rounded-3xl glow transition-all duration-300 group block">
+                <div class="text-blue-500 mb-4">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7c-2 0-3 1-3 3z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold mb-2 group-hover:text-blue-400 transition-colors">Handball DB</h3>
+                <p class="text-gray-400 mb-6">Automatisierte Datenbank-Struktur mit Gemini-Integration auf dem Pi.</p>
+                <div class="flex gap-2">
+                    <span
+                        class="text-[10px] uppercase tracking-widest bg-blue-500/10 text-blue-400 px-2 py-1 rounded">Python</span>
+                    <span
+                        class="text-[10px] uppercase tracking-widest bg-purple-500/10 text-purple-400 px-2 py-1 rounded">SQL</span>
+                    <span
+                        class="text-[10px] uppercase tracking-widest bg-green-500/10 text-green-400 px-2 py-1 rounded">FastAPI</span>
+                </div>
+            </a>
+
+            <!-- Keto Monitor -->
+            <a href="https://keto.thy-projects.com" data-aos="fade-up" data-aos-delay="100"
+                class="glass p-8 rounded-3xl glow transition-all duration-300 group block">
+                <div class="text-orange-500 mb-4">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold mb-2 group-hover:text-orange-400 transition-colors">Keto Monitor</h3>
+                <p class="text-gray-400 mb-6">KI-gestützte News-Aggregation und Analyse für Unternehmen.</p>
+                <div class="flex gap-2">
+                    <span
+                        class="text-[10px] uppercase tracking-widest bg-orange-500/10 text-orange-400 px-2 py-1 rounded">AI</span>
+                    <span
+                        class="text-[10px] uppercase tracking-widest bg-blue-500/10 text-blue-400 px-2 py-1 rounded">React</span>
+                </div>
+            </a>
+
+            <!-- Portfolio Pi -->
+            <div data-aos="fade-up" data-aos-delay="200"
+                class="glass p-8 rounded-3xl glow transition-all duration-300 group">
+                <div class="text-purple-500 mb-4">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold mb-2 group-hover:text-purple-400 transition-colors">Portfolio Pi</h3>
+                <p class="text-gray-400 mb-6">Diese Website – gehostet auf einem Raspberry Pi 5.</p>
+                <div class="flex gap-2 text-[10px]">
+                    <span class="bg-yellow-500/10 text-yellow-400 px-2 py-1 rounded">HTML5</span>
+                    <span class="bg-teal-500/10 text-teal-400 px-2 py-1 rounded">Tailwind</span>
+                    <span class="bg-red-500/10 text-red-400 px-2 py-1 rounded">Docker</span>
+                </div>
             </div>
-            <a href="http://handball.thy-projects.com" class="link-overlay"></a>
-        </div>
 
-        <!-- Placeholder for future projects -->
-        <div class="project-card"
-            style="background: #222; display: flex; align-items: center; justify-content: center;">
-            <div style="color: #444; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px;">Coming Soon
+            <div data-aos="fade-up" data-aos-delay="300"
+                class="glass p-8 rounded-3xl glow transition-all duration-300 flex items-center justify-center border-dashed">
+                <p class="text-gray-600 font-mono">Projekt #004_LADE...</p>
             </div>
+            <div data-aos="fade-up" data-aos-delay="400"
+                class="glass p-8 rounded-3xl glow transition-all duration-300 flex items-center justify-center border-dashed">
+                <p class="text-gray-600 font-mono">Projekt #005_LADE...</p>
+            </div>
+
         </div>
+    </section>
 
-    </div>
+    <footer class="py-10 text-center text-gray-600 text-sm font-mono">
+        <p>© 2026 Johann Thygs // Built with Gemini & Raspberry Pi</p>
+    </footer>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ once: false });
+    </script>
 </body>
 
 </html>
