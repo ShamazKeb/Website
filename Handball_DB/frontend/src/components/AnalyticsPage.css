@@ -1,0 +1,150 @@
+.analytics-container {
+    padding: var(--spacing-lg);
+    max-width: 1400px; /* Wider for analytics */
+    margin: var(--spacing-md) auto;
+}
+
+.analytics-title {
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+    color: var(--text-main);
+    font-size: var(--font-size-h1);
+}
+
+.analytics-filters-card {
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    /* Inherits from global .card styles */
+}
+
+.analytics-filter-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.analytics-label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-muted);
+    font-weight: bold;
+    font-size: var(--font-size-md);
+}
+
+/* Inherits input/select styles from global index.css */
+.analytics-select,
+.analytics-input {
+    width: 100%;
+}
+
+.analytics-checkbox-container {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm);
+    background-color: var(--background-input);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.analytics-checkbox-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-xs);
+}
+
+.analytics-checkbox-option input[type="checkbox"] {
+    width: auto; /* Override global input width */
+    margin-right: var(--spacing-sm);
+}
+
+.analytics-checkbox-option label {
+    color: var(--text-main);
+    margin-bottom: 0; /* Override analytics-label margin */
+    font-size: var(--font-size-md);
+    font-weight: normal; /* Override analytics-label font-weight */
+}
+
+.analytics-checkbox-option label.select-all {
+    font-weight: bold;
+}
+
+
+.analytics-date-range-group {
+    display: flex;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap; /* Allow date inputs to wrap */
+}
+
+.analytics-date-range-group > div {
+    flex: 1;
+    min-width: 250px; /* Ensure inputs don't get too small */
+}
+
+.analytics-chart-container {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--background-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-card);
+    height: 500px; /* Fixed height for charts, will be responsive */
+    position: relative; /* For Chart.js canvas */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.analytics-no-data-message {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: var(--font-size-lg);
+    padding: var(--spacing-xl);
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .analytics-container {
+        padding: var(--spacing-md);
+    }
+
+    .analytics-title {
+        font-size: var(--font-size-h2);
+    }
+}
+
+@media (max-width: 768px) {
+    .analytics-title {
+        font-size: var(--font-size-h3);
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .analytics-filters-card {
+        padding: var(--spacing-md);
+    }
+
+    .analytics-date-range-group {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .analytics-date-range-group > div {
+        min-width: unset;
+    }
+
+    .analytics-chart-container {
+        height: 400px; /* Adjust height for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .analytics-title {
+        font-size: var(--font-size-h4);
+    }
+
+    .analytics-checkbox-container {
+        max-height: 150px;
+    }
+
+    .analytics-chart-container {
+        height: 300px; /* Further adjust height for very small screens */
+    }
+}

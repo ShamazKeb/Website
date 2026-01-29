@@ -1,0 +1,28 @@
+services:
+  handball-backend:
+    build: .
+    container_name: handball-backend
+    restart: unless-stopped
+    volumes:
+      - ./handball.db:/app/handball.db
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./handball.db
+      - SECRET_KEY=19e6e44dd1c2afb18dcccf4867f09f3bcf44b5ef43ac80c2a83de7bf391cfed5
+    networks:
+      - web-public
+
+  handball-frontend:
+    build:
+      context: ./frontend
+      args:
+        # Replace this with your actual public URL or Pi IP if accessed from outside
+        # For internal NPM proxying, this must be reachable by the client-side browser
+        - REACT_APP_API_URL=https://api.thy-projects.com
+    container_name: handball-frontend
+    restart: unless-stopped
+    networks:
+      - web-public
+
+networks:
+  web-public:
+    external: true

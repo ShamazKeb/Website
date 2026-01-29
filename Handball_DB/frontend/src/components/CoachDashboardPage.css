@@ -1,0 +1,164 @@
+.coach-dashboard-container {
+    padding: var(--spacing-lg);
+    max-width: 1200px;
+    margin: var(--spacing-md) auto;
+}
+
+.coach-dashboard-title {
+    font-size: var(--font-size-h1);
+    color: var(--text-main);
+    margin-bottom: var(--spacing-sm);
+}
+
+.coach-dashboard-welcome-text {
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-xl);
+    font-size: var(--font-size-md);
+}
+
+.coach-dashboard-actions {
+    margin-bottom: var(--spacing-xl);
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap; /* Allow buttons to wrap */
+    justify-content: center;
+}
+
+.coach-dashboard-section-title {
+    font-size: var(--font-size-h2);
+    color: var(--text-main);
+    margin-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-sm);
+}
+
+.coach-teams-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.coach-team-card {
+    /* Inherits from global .card, but can add specific styles here if needed */
+}
+
+.coach-team-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm); /* Spacing between title and link on wrap */
+}
+
+.coach-team-name {
+    font-size: var(--font-size-h3);
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.coach-team-season {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-left: var(--spacing-sm);
+}
+
+.coach-team-details-link {
+    font-size: var(--font-size-sm);
+    color: var(--primary-color);
+    text-decoration: none;
+    white-space: nowrap; /* Prevent link from breaking */
+}
+
+.coach-team-details-link:hover {
+    color: var(--primary-hover);
+}
+
+.coach-team-players-count {
+    font-size: var(--font-size-md);
+    color: var(--text-light);
+    margin-bottom: var(--spacing-md);
+}
+
+.coach-activity-title {
+    font-size: var(--font-size-h4);
+    color: var(--text-main);
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-xs);
+}
+
+.coach-activity-list {
+    padding-left: var(--spacing-xl);
+    color: var(--text-muted);
+    list-style-type: disc; /* Ensure disc bullet points */
+}
+
+.coach-activity-list li {
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+}
+
+.coach-activity-date {
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-right: var(--spacing-xs);
+}
+
+.coach-no-activity {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-sm);
+}
+
+.coach-loading,
+.coach-error {
+    text-align: center;
+    font-size: var(--font-size-lg);
+    color: var(--text-main);
+    padding: var(--spacing-xl);
+}
+
+.coach-error {
+    color: var(--danger-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .coach-dashboard-title {
+        font-size: var(--font-size-h2);
+    }
+
+    .coach-dashboard-section-title {
+        font-size: var(--font-size-h3);
+    }
+
+    .coach-team-name {
+        font-size: var(--font-size-h4);
+    }
+
+    .coach-dashboard-actions {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .coach-dashboard-container {
+        padding: var(--spacing-md);
+    }
+
+    .coach-dashboard-title {
+        font-size: var(--font-size-h3);
+    }
+    
+    .coach-team-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .coach-team-season {
+        margin-left: 0;
+    }
+}

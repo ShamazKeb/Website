@@ -1,0 +1,199 @@
+.create-exercise-container {
+    padding: var(--spacing-lg);
+    max-width: 800px;
+    margin: var(--spacing-xl) auto;
+    background-color: var(--background-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-card);
+}
+
+.create-exercise-title {
+    color: var(--text-main);
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+    font-size: var(--font-size-h1);
+}
+
+.create-exercise-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.create-exercise-form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.create-exercise-label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-light);
+    font-weight: bold;
+    font-size: var(--font-size-md);
+}
+
+/* Inherits input/textarea styles from global index.css */
+.create-exercise-input,
+.create-exercise-textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.create-exercise-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.create-exercise-checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    background-color: var(--background-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+}
+
+.create-exercise-checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: var(--text-main);
+    font-size: var(--font-size-md);
+}
+
+.create-exercise-checkbox-label input[type="checkbox"] {
+    margin-right: var(--spacing-xs);
+    width: auto; /* Override global input width */
+}
+
+.create-exercise-measurement-type-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--background-input);
+}
+
+.create-exercise-measurement-type-item .create-exercise-select {
+    flex-grow: 1;
+    min-width: 150px; /* Ensure select doesn't get too small */
+}
+
+.create-exercise-measurement-type-item .btn-danger {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
+}
+
+.create-exercise-add-measurement-button {
+    /* Uses global btn-success, customize if needed */
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    align-self: flex-start; /* Align button to the start */
+    background-color: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.create-exercise-add-measurement-button:hover {
+    background-color: #218838;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
+}
+
+.create-exercise-add-measurement-button:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+
+/* Inherits select styles from global index.css */
+.create-exercise-select {
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-md);
+    background-color: var(--background-input);
+    color: var(--text-main);
+}
+
+.create-exercise-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(176, 0, 0, 0.4);
+}
+
+.create-exercise-error,
+.create-exercise-success {
+    margin-top: var(--spacing-md);
+    text-align: center;
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-md);
+}
+
+.create-exercise-error {
+    color: var(--danger-color);
+    background-color: rgba(var(--danger-color-rgb, 220, 53, 69), 0.1);
+    border: 1px solid var(--danger-color);
+}
+
+.create-exercise-success {
+    color: var(--success-color);
+    background-color: rgba(var(--success-color-rgb, 40, 167, 69), 0.1);
+    border: 1px solid var(--success-color);
+}
+
+.create-exercise-submit-button {
+    /* Uses global .btn-primary styles */
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.create-exercise-submit-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .create-exercise-container {
+        padding: var(--spacing-md);
+    }
+
+    .create-exercise-title {
+        font-size: var(--font-size-h2);
+    }
+
+    .create-exercise-measurement-type-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .create-exercise-measurement-type-item .create-exercise-select {
+        min-width: unset;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .create-exercise-container {
+        padding: var(--spacing-sm);
+    }
+
+    .create-exercise-title {
+        font-size: var(--font-size-h3);
+    }
+}

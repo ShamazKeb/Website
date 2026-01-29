@@ -1,0 +1,360 @@
+:root {
+  --primary-color: #B00000;
+  /* Club Red */
+  --primary-hover: #d30000;
+
+  --background-dark: #0a0a0a;
+  /* Deep Black */
+  --background-card: #1c1c1c;
+  /* Slightly lighter for cards, refined */
+  --background-input: #2a2a2a;
+  /* Input background, refined */
+  --background-light: #2c2c2c; /* Lighter background for subtle contrast */
+
+  --text-main: #ffffff;
+  --text-muted: #a0a0a0;
+  --text-light: #e0e0e0; /* Lighter text for secondary info */
+
+  --border-color: #3f3f3f;
+  /* Darker border for subtle separation */
+
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+
+  --shadow-card: 0 6px 20px rgba(0, 0, 0, 0.7);
+  /* Enhanced shadow for depth */
+  --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.9); /* Shadow for hover effects */
+
+  --border-radius: 8px;
+  /* Consistent border radius */
+
+  /* Font Sizes (Responsive - using rem for scalability) */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-md: 1rem;
+  /* 16px (base) */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-h1: 2.5rem; /* 40px */
+  --font-size-h2: 2rem;
+  /* 32px */
+  --font-size-h3: 1.75rem; /* 28px */
+  --font-size-h4: 1.5rem; /* 24px */
+  --font-size-h5: 1.25rem; /* 20px */
+  --font-size-h6: 1rem;
+  /* 16px */
+
+  /* Spacing Units (Responsive - using rem for scalability) */
+  --spacing-xs: 0.25rem; /* 4px */
+  --spacing-sm: 0.5rem;
+  /* 8px */
+  --spacing-md: 1rem;
+  /* 16px */
+  --spacing-lg: 1.5rem; /* 24px */
+  --spacing-xl: 2rem;
+  /* 32px */
+  --spacing-xxl: 3rem; /* 48px */
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-dark);
+  color: var(--text-main);
+  font-size: var(--font-size-md);
+  line-height: 1.6;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* Global Elements */
+a {
+  text-decoration: none;
+  color: var(--primary-color);
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+}
+
+h3 {
+  font-size: var(--font-size-h3);
+}
+
+h4 {
+  font-size: var(--font-size-h4);
+}
+
+h5 {
+  font-size: var(--font-size-h5);
+}
+
+h6 {
+  font-size: var(--font-size-h6);
+}
+
+
+/* Buttons */
+button {
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease-in-out;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-md);
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Inputs */
+input,
+select,
+textarea {
+  background-color: var(--background-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-md);
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  /* Ensure padding doesn't add to width */
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(176, 0, 0, 0.4);
+}
+
+/* Utility Classes */
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  color: white;
+  border: none;
+}
+
+.card {
+  background-color: var(--background-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-card);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  body {
+    font-size: var(--font-size-sm);
+  }
+
+  h1 {
+    font-size: var(--font-size-h2);
+  }
+
+  h2 {
+    font-size: var(--font-size-h3);
+  }
+
+  h3 {
+    font-size: var(--font-size-h4);
+  }
+}
+
+/* Navbar Styles */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: var(--background-card);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+  /* Allow items to wrap on smaller screens */
+}
+
+.navbar-brand a {
+  font-size: var(--font-size-h4);
+  font-weight: bold;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.navbar-links {
+  display: flex;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+  /* Allow links to wrap */
+}
+
+.navbar-links a {
+  color: var(--text-muted);
+  font-weight: 500;
+  padding: var(--spacing-xs) 0;
+  position: relative;
+}
+
+.navbar-links a:hover,
+.navbar-links a.active {
+  color: var(--text-main);
+}
+
+.navbar-links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.user-email {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.btn-logout {
+  background-color: transparent;
+  border: 1px solid var(--danger-color);
+  color: var(--danger-color);
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.btn-logout:hover {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    width: 100%;
+  }
+
+  .navbar-user {
+    width: 100%;
+    justify-content: space-between;
+    margin-top: var(--spacing-sm);
+  }
+}
+
+/* Custom Checkbox Styles */
+input[type="checkbox"] {
+  /* Hide default checkbox */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 1.25rem; /* 20px */
+  height: 1.25rem; /* 20px */
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--background-input);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+  flex-shrink: 0; /* Prevent checkbox from shrinking in flex containers */
+}
+
+input[type="checkbox"]:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(176, 0, 0, 0.2);
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+input[type="checkbox"]:checked::before {
+  content: '✔';
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(176, 0, 0, 0.5);
+}
+
+/* When checkbox is part of a label, ensure proper spacing */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+}

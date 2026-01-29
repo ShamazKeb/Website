@@ -1,0 +1,160 @@
+.performance-history-container {
+    padding: var(--spacing-lg);
+    max-width: 1200px;
+    margin: var(--spacing-md) auto;
+}
+
+.performance-history-title {
+    color: var(--text-main);
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+    font-size: var(--font-size-h1);
+}
+
+.performance-history-filter-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--background-card);
+}
+
+.performance-history-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.performance-history-label {
+    margin-bottom: var(--spacing-sm);
+    font-weight: bold;
+    color: var(--text-light);
+    font-size: var(--font-size-md);
+}
+
+/* Inherits select/input styles from global index.css */
+.performance-history-select,
+.performance-history-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.performance-history-filter-button {
+    /* Inherits btn-primary styles */
+    align-self: flex-end; /* Align button to the bottom if other inputs are taller */
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-md);
+}
+
+.performance-history-chart-container {
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--background-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-card);
+    height: 400px; /* Fixed height for chart, responsive */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.performance-history-chart-title {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-main);
+    font-size: var(--font-size-h4);
+}
+
+.performance-history-no-data-message {
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: var(--spacing-lg);
+    font-size: var(--font-size-md);
+}
+
+.performance-history-section-title {
+    color: var(--text-main);
+    font-size: var(--font-size-h2);
+    margin-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-sm);
+    margin-top: var(--spacing-xl);
+}
+
+.performance-history-measurement-list {
+    list-style: none;
+    padding: 0;
+}
+
+.performance-history-measurement-item {
+    background-color: var(--background-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.6;
+    color: var(--text-light);
+    font-size: var(--font-size-md);
+}
+
+.performance-history-measurement-item strong {
+    color: var(--primary-color);
+}
+
+.performance-history-error {
+    color: var(--danger-color);
+    text-align: center;
+    font-size: var(--font-size-lg);
+    padding: var(--spacing-xl);
+    background-color: var(--background-card);
+    border-radius: var(--border-radius);
+    margin: var(--spacing-lg) auto;
+    max-width: 500px;
+}
+
+.performance-history-loading {
+    text-align: center;
+    font-size: var(--font-size-lg);
+    color: var(--text-main);
+    padding: var(--spacing-xl);
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .performance-history-container {
+        padding: var(--spacing-md);
+    }
+
+    .performance-history-title {
+        font-size: var(--font-size-h2);
+    }
+
+    .performance-history-section-title {
+        font-size: var(--font-size-h3);
+    }
+
+    .performance-history-filter-section {
+        grid-template-columns: 1fr; /* Stack filters on small screens */
+    }
+
+    .performance-history-chart-container {
+        height: 350px;
+    }
+}
+
+@media (max-width: 480px) {
+    .performance-history-title {
+        font-size: var(--font-size-h3);
+    }
+
+    .performance-history-chart-container {
+        height: 300px;
+    }
+}
