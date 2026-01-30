@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext'; // Corrected import path
-import './LoginPage.css'; // Import the new CSS file
+import { useAuth } from './AuthContext';
+import './LoginPage.css';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -22,34 +22,49 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="login-container">
-            <h2 className="login-title">Anmelden</h2>
-            <form onSubmit={handleSubmit} className="login-form">
-                <div className="login-form-group">
-                    <label htmlFor="email" className="login-label">E-Mail:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="login-input"
-                    />
-                </div>
-                <div className="login-form-group">
-                    <label htmlFor="password" className="login-label">Passwort:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="login-input"
-                    />
-                </div>
-                {error && <p className="login-error">{error}</p>}
-                <button type="submit" className="login-button">Anmelden</button>
-            </form>
+        <div className="login-page">
+            <div className="login-branding">
+                <h1 className="branding-title">
+                    <span>Handball</span>
+                    Statistik
+                </h1>
+                <p className="branding-subtitle">
+                    Verfolge die Leistung deines Teams. Analysiere Spieldaten. Erreiche neue Ziele.
+                </p>
+            </div>
+            <div className="login-container">
+                <form onSubmit={handleSubmit} className="login-form">
+                    <h2 className="login-title">Login</h2>
+                    <p className="login-subtitle">Willkommen zurück!</p>
+                    <div className="login-form-group">
+                        <label htmlFor="email" className="form-label">E-Mail</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            className="form-control"
+                            placeholder="deine.email@beispiel.de"
+                        />
+                    </div>
+                    <div className="login-form-group">
+                        <label htmlFor="password" className="form-label">Passwort</label>
+                        <input
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className="form-control"
+                            placeholder="Dein Passwort"
+                        />
+                    </div>
+                    
+                    <button type="submit" className="login-button">Anmelden</button>
+                    {error && <p className="login-error">{error}</p>}
+                </form>
+            </div>
         </div>
     );
 };

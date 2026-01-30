@@ -1,0 +1,13 @@
+services:
+  upe-frontend:
+    build: .
+    container_name: upe-frontend
+    restart: unless-stopped
+    ports:
+      - "8086:80"
+    networks:
+      - web-public
+
+networks:
+  web-public:
+    external: true

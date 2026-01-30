@@ -178,7 +178,6 @@
     <a href="../index.html"><img src="../css/img/logo.png" class="logo" alt="Logo" /></a>
     <nav>
       <ul>
-
         <li><a href="../index.html">Home</a></li>
         <li><a href="kontakt.html">Kontakt</a></li>
         <li><a href="meine-arbeit.html">Meine Arbeit</a></li>
@@ -188,13 +187,10 @@
     <img src="../css/img/menu.png" class="menu-icon" alt="Menü" />
   </div>
 
-
-
   <!-- SEKUNDÄRE NAVBAR (erscheint beim Scrollen) -->
   <div class="navbar secondary-navbar" id="secondaryNavbar">
     <nav>
       <ul>
-
         <li><a href="../index.html">Home</a></li>
         <li><a href="karte.html">Region</a></li>
         <li><a href="anfahrt.html">Anfahrt</a></li>
@@ -276,16 +272,7 @@
     </div>
   </footer>
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <script>
-    // Supabase configuration
-    const SUPABASE_URL = 'https://hfopvhwxysvqgprhigue.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhmb3B2aHd4eXN2cWdwcmhpZ3VlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzMTg5MTAsImV4cCI6MjA2Njg5NDkxMH0.vq7tOO2u9rVHYCeHudnZMjApi5maCyj7kUp_2MAmHIs';
-
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     // Star rating functionality
     let selectedRating = 0;
     const stars = document.querySelectorAll('.star');
@@ -296,7 +283,7 @@
         selectedRating = rating;
         document.getElementById('rating').value = rating;
 
-        // Update star display - fill all stars up to the selected rating
+        // Update star display
         stars.forEach((s, index) => {
           if (index < rating) {
             s.classList.add('active');
@@ -331,12 +318,11 @@
 
     // Form submission
     document.getElementById('reviewForm').addEventListener('submit', async (e) => {
-      e.preventDefault(); // Prevent form from submitting normally
+      e.preventDefault();
 
       const submitBtn = document.getElementById('submitBtn');
       const messageDiv = document.getElementById('message');
 
-      // Validate form
       const name = document.getElementById('name').value.trim();
       const rating = document.getElementById('rating').value;
       const comment = document.getElementById('comment').value.trim();
@@ -349,41 +335,29 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Wird gesendet...';
 
-      const reviewData = {
-        name: name,
-        rating: parseInt(rating),
-        comment: comment,
-        created_at: new Date().toISOString()
-      };
-
-      console.log('Sending review data:', reviewData); // Debug log
-
       try {
-        const { data, error } = await supabaseClient
-          .from('reviews')
-          .insert([reviewData]);
-
-        if (error) {
-          console.error('Supabase error:', error);
-          throw error;
-        }
-
-        console.log('Review submitted successfully:', data); // Debug log
-
-        messageDiv.innerHTML = '<div class="success">Vielen Dank für Ihre Bewertung!</div>';
-
-        // Reset form
-        document.getElementById('name').value = '';
-        document.getElementById('comment').value = '';
-        document.getElementById('rating').value = '';
-        selectedRating = 0;
-        stars.forEach(star => {
-          star.classList.remove('active');
-          star.style.color = '#ddd';
+        const response = await fetch('/api/reviews', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, rating: parseInt(rating), content: comment })
         });
 
-        // Reload reviews
-        loadReviews();
+        if (response.ok) {
+          messageDiv.innerHTML = '<div class="success">Vielen Dank! Ihre Bewertung wird nach Prüfung freigeschaltet.</div>';
+
+          // Reset form
+          document.getElementById('name').value = '';
+          document.getElementById('comment').value = '';
+          document.getElementById('rating').value = '';
+          selectedRating = 0;
+          stars.forEach(star => {
+            star.classList.remove('active');
+            star.style.color = '#ddd';
+          });
+
+        } else {
+          throw new Error('Server error');
+        }
 
       } catch (error) {
         console.error('Error submitting review:', error);
@@ -399,19 +373,8 @@
       const reviewsList = document.getElementById('reviewsList');
 
       try {
-        console.log('Loading reviews...'); // Debug log
-
-        const { data: reviews, error } = await supabaseClient
-          .from('reviews')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          console.error('Supabase error loading reviews:', error);
-          throw error;
-        }
-
-        console.log('Reviews loaded:', reviews); // Debug log
+        const response = await fetch('/api/reviews');
+        const reviews = await response.json();
 
         if (!reviews || reviews.length === 0) {
           reviewsList.innerHTML = '<p>Noch keine Bewertungen vorhanden.</p>';
@@ -422,12 +385,12 @@
           <div class="review-item">
             <div class="review-header">
               <span class="reviewer-name">${review.name}</span>
-              <span class="review-date">${new Date(review.created_at).toLocaleDateString('de-DE')}</span>
+              <span class="review-date">${new Date(review.date).toLocaleDateString('de-DE')}</span>
             </div>
             <div class="review-stars">
               ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
             </div>
-            <div class="review-text">${review.comment}</div>
+            <div class="review-text">${review.content}</div>
           </div>
         `).join('');
 
@@ -459,7 +422,6 @@
       }
     });
   </script>
-
 </body>
 
 </html>

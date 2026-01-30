@@ -1,17 +1,14 @@
+/* CreateExercisePage.css */
+
 .create-exercise-container {
-    padding: var(--spacing-lg);
+    composes: card from '../index.css';
     max-width: 800px;
     margin: var(--spacing-xl) auto;
-    background-color: var(--background-card);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-card);
 }
 
 .create-exercise-title {
-    color: var(--text-main);
-    margin-bottom: var(--spacing-xl);
     text-align: center;
-    font-size: var(--font-size-h1);
+    margin-bottom: var(--spacing-xl);
 }
 
 .create-exercise-form {
@@ -19,26 +16,11 @@
     flex-direction: column;
 }
 
-.create-exercise-form-group {
-    margin-bottom: var(--spacing-lg);
-}
-
-.create-exercise-label {
-    display: block;
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-light);
-    font-weight: bold;
-    font-size: var(--font-size-md);
-}
-
-/* Inherits input/textarea styles from global index.css */
-.create-exercise-input,
-.create-exercise-textarea {
-    width: 100%;
-    box-sizing: border-box;
-}
+/* All form groups, labels, and inputs should use global styles */
+/* .form-group, .form-label, .form-control */
 
 .create-exercise-textarea {
+    composes: form-control from '../index.css';
     resize: vertical;
     min-height: 100px;
 }
@@ -47,153 +29,83 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-md);
-    background-color: var(--background-input);
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
     padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
 }
+/* Individual checkbox styling is now global */
 
-.create-exercise-checkbox-label {
+.create-exercise-measurement-type-list {
     display: flex;
-    align-items: center;
-    cursor: pointer;
-    color: var(--text-main);
-    font-size: var(--font-size-md);
-}
-
-.create-exercise-checkbox-label input[type="checkbox"] {
-    margin-right: var(--spacing-xs);
-    width: auto; /* Override global input width */
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-sm);
 }
 
 .create-exercise-measurement-type-item {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-sm);
-    padding: var(--spacing-sm);
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    background-color: var(--background-input);
 }
 
-.create-exercise-measurement-type-item .create-exercise-select {
+.create-exercise-measurement-type-item .form-control {
     flex-grow: 1;
-    min-width: 150px; /* Ensure select doesn't get too small */
+    min-width: 150px;
 }
 
-.create-exercise-measurement-type-item .btn-danger {
+.btn-add-measurement {
+    composes: btn btn-secondary from '../index.css';
+    align-self: flex-start;
+}
+
+.btn-remove-measurement {
+    composes: btn btn-danger from '../index.css';
     padding: var(--spacing-xs) var(--spacing-sm);
-    font-size: var(--font-size-sm);
-}
-
-.create-exercise-add-measurement-button {
-    /* Uses global btn-success, customize if needed */
-    margin-top: var(--spacing-sm);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    font-size: var(--font-size-sm);
-    align-self: flex-start; /* Align button to the start */
-    background-color: var(--success-color);
-    color: white;
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.create-exercise-add-measurement-button:hover {
-    background-color: #218838;
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-hover);
-}
-
-.create-exercise-add-measurement-button:active {
-    transform: translateY(0);
-    box-shadow: none;
-}
-
-
-/* Inherits select styles from global index.css */
-.create-exercise-select {
-    padding: var(--spacing-sm);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    font-size: var(--font-size-md);
-    background-color: var(--background-input);
-    color: var(--text-main);
-}
-
-.create-exercise-select:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(176, 0, 0, 0.4);
+    font-size: 0.875rem;
 }
 
 .create-exercise-error,
 .create-exercise-success {
     margin-top: var(--spacing-md);
     text-align: center;
-    font-size: var(--font-size-sm);
-    padding: var(--spacing-sm);
-    border-radius: var(--border-radius);
+    font-size: 0.875rem;
+    padding: var(--spacing-md);
+    border: 1px solid;
     margin-bottom: var(--spacing-md);
 }
 
 .create-exercise-error {
     color: var(--danger-color);
-    background-color: rgba(var(--danger-color-rgb, 220, 53, 69), 0.1);
-    border: 1px solid var(--danger-color);
+    border-color: var(--danger-color);
+    background-color: rgba(220, 53, 69, 0.05);
 }
 
 .create-exercise-success {
     color: var(--success-color);
-    background-color: rgba(var(--success-color-rgb, 40, 167, 69), 0.1);
-    border: 1px solid var(--success-color);
+    border-color: var(--success-color);
+    background-color: rgba(40, 167, 69, 0.05);
 }
 
 .create-exercise-submit-button {
-    /* Uses global .btn-primary styles */
+    composes: btn btn-primary from '../index.css';
     width: 100%;
-    padding: var(--spacing-md) var(--spacing-lg);
-    font-size: var(--font-size-lg);
+    padding: var(--spacing-md);
+    font-size: 1.125rem;
     margin-top: var(--spacing-lg);
 }
 
 .create-exercise-submit-button:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+    background-color: var(--border-color);
+    border-color: var(--border-color);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .create-exercise-container {
-        padding: var(--spacing-md);
-    }
-
-    .create-exercise-title {
-        font-size: var(--font-size-h2);
-    }
-
-    .create-exercise-measurement-type-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .create-exercise-measurement-type-item .create-exercise-select {
-        min-width: unset;
-        width: 100%;
-    }
-}
-
-@media (max-width: 480px) {
-    .create-exercise-container {
-        padding: var(--spacing-sm);
-    }
-
-    .create-exercise-title {
-        font-size: var(--font-size-h3);
+        margin: var(--spacing-lg) var(--spacing-md);
     }
 }

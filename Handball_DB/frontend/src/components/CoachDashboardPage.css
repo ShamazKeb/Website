@@ -1,45 +1,37 @@
-.coach-dashboard-container {
-    padding: var(--spacing-lg);
-    max-width: 1200px;
-    margin: var(--spacing-md) auto;
-}
+/* CoachDashboardPage.css */
 
-.coach-dashboard-title {
-    font-size: var(--font-size-h1);
-    color: var(--text-main);
-    margin-bottom: var(--spacing-sm);
+.coach-dashboard-container {
+    padding: 0 var(--spacing-lg);
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .coach-dashboard-welcome-text {
     color: var(--text-muted);
     margin-bottom: var(--spacing-xl);
-    font-size: var(--font-size-md);
 }
 
 .coach-dashboard-actions {
     margin-bottom: var(--spacing-xl);
     display: flex;
     gap: var(--spacing-md);
-    flex-wrap: wrap; /* Allow buttons to wrap */
-    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .coach-dashboard-section-title {
-    font-size: var(--font-size-h2);
-    color: var(--text-main);
-    margin-bottom: var(--spacing-lg);
     border-bottom: 1px solid var(--border-color);
     padding-bottom: var(--spacing-sm);
 }
 
 .coach-teams-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: var(--spacing-lg);
 }
 
+/* Use the global .card class */
 .coach-team-card {
-    /* Inherits from global .card, but can add specific styles here if needed */
+    composes: card from '../index.css';
 }
 
 .coach-team-header {
@@ -48,41 +40,31 @@
     align-items: center;
     margin-bottom: var(--spacing-md);
     flex-wrap: wrap;
-    gap: var(--spacing-sm); /* Spacing between title and link on wrap */
+    gap: var(--spacing-sm);
 }
 
 .coach-team-name {
-    font-size: var(--font-size-h3);
     color: var(--primary-color);
     margin: 0;
 }
 
 .coach-team-season {
-    font-size: var(--font-size-sm);
+    font-size: 0.875rem;
     color: var(--text-muted);
     margin-left: var(--spacing-sm);
 }
 
 .coach-team-details-link {
-    font-size: var(--font-size-sm);
-    color: var(--primary-color);
-    text-decoration: none;
-    white-space: nowrap; /* Prevent link from breaking */
-}
-
-.coach-team-details-link:hover {
-    color: var(--primary-hover);
+    font-size: 0.875rem;
+    white-space: nowrap;
 }
 
 .coach-team-players-count {
-    font-size: var(--font-size-md);
-    color: var(--text-light);
+    color: var(--text-main);
     margin-bottom: var(--spacing-md);
 }
 
 .coach-activity-title {
-    font-size: var(--font-size-h4);
-    color: var(--text-main);
     margin-top: var(--spacing-lg);
     margin-bottom: var(--spacing-sm);
     border-bottom: 1px solid var(--border-color);
@@ -90,34 +72,33 @@
 }
 
 .coach-activity-list {
-    padding-left: var(--spacing-xl);
+    padding-left: var(--spacing-lg);
     color: var(--text-muted);
-    list-style-type: disc; /* Ensure disc bullet points */
+    list-style-type: '— '; /* Brutalist list style */
 }
 
 .coach-activity-list li {
     margin-bottom: var(--spacing-xs);
-    font-size: var(--font-size-sm);
+    font-size: 0.875rem;
 }
 
 .coach-activity-date {
     color: var(--primary-color);
-    font-weight: bold;
-    margin-right: var(--spacing-xs);
+    font-weight: 500;
+    margin-right: var(--spacing-sm);
 }
 
 .coach-no-activity {
     color: var(--text-muted);
     font-style: italic;
-    font-size: var(--font-size-sm);
+    font-size: 0.875rem;
     margin-top: var(--spacing-sm);
 }
 
 .coach-loading,
 .coach-error {
+    composes: card from '../index.css';
     text-align: center;
-    font-size: var(--font-size-lg);
-    color: var(--text-main);
     padding: var(--spacing-xl);
 }
 
@@ -125,32 +106,24 @@
     color: var(--danger-color);
 }
 
-/* Responsive adjustments */
+@media (min-width: 992px) {
+    .coach-teams-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
-    .coach-dashboard-title {
-        font-size: var(--font-size-h2);
-    }
-
-    .coach-dashboard-section-title {
-        font-size: var(--font-size-h3);
-    }
-
-    .coach-team-name {
-        font-size: var(--font-size-h4);
-    }
-
     .coach-dashboard-actions {
         flex-direction: column;
+    }
+    .coach-dashboard-actions .btn {
+        width: 100%;
     }
 }
 
 @media (max-width: 480px) {
     .coach-dashboard-container {
         padding: var(--spacing-md);
-    }
-
-    .coach-dashboard-title {
-        font-size: var(--font-size-h3);
     }
     
     .coach-team-header {

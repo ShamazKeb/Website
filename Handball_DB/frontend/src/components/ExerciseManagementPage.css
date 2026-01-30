@@ -1,57 +1,51 @@
+/* ExerciseManagementPage.css */
+
 .exercise-management-container {
-    padding: var(--spacing-lg);
+    padding: 0 var(--spacing-lg);
     max-width: 900px;
-    margin: var(--spacing-md) auto;
+    margin: 0 auto;
 }
 
 .exercise-management-title {
-    color: var(--text-main);
-    margin-bottom: var(--spacing-xl);
     text-align: center;
-    font-size: var(--font-size-h1);
+    margin-bottom: var(--spacing-xl);
 }
 
 .exercise-management-create-button {
-    /* Inherits btn-primary styles */
+    composes: btn btn-primary from '../index.css';
     margin-bottom: var(--spacing-xl);
     width: 100%;
-    max-width: 300px; /* Limit width for larger screens */
+    max-width: 300px;
     display: block;
     margin-left: auto;
     margin-right: auto;
-    font-size: var(--font-size-lg);
-    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1.125rem;
+    padding: var(--spacing-md);
 }
 
 .exercise-management-filter-card {
+    composes: card from '../index.css';
     margin-bottom: var(--spacing-xl);
-    /* Inherits global .card styles */
-    padding: var(--spacing-lg);
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap; /* Allow wrapping */
+    flex-wrap: wrap;
     gap: var(--spacing-md);
 }
 
 .exercise-management-filter-label {
-    margin-right: var(--spacing-sm);
-    font-weight: bold;
-    color: var(--text-main);
-    font-size: var(--font-size-md);
-    white-space: nowrap; /* Prevent label from wrapping */
+    composes: form-label from '../index.css';
+    margin-bottom: 0;
 }
 
-/* Inherits select styles from global index.css */
 .exercise-management-select {
+    composes: form-control from '../index.css';
     min-width: 200px;
     width: auto;
-    flex-grow: 1; /* Allow select to grow */
+    flex-grow: 1;
 }
 
 .exercise-management-section-title {
-    color: var(--text-main);
-    font-size: var(--font-size-h2);
     margin-top: var(--spacing-xl);
     margin-bottom: var(--spacing-lg);
     border-bottom: 1px solid var(--border-color);
@@ -64,7 +58,6 @@
     font-style: italic;
     text-align: center;
     margin-bottom: var(--spacing-xl);
-    font-size: var(--font-size-md);
 }
 
 .exercise-management-list {
@@ -74,10 +67,9 @@
 }
 
 .exercise-management-item {
+    composes: card from '../index.css';
+    padding: 0;
     cursor: pointer;
-    overflow: hidden;
-    /* Inherits global .card styles */
-    padding: 0; /* Override card padding, header/details will have padding */
 }
 
 .exercise-management-item-header {
@@ -85,36 +77,28 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--background-card);
-    transition: background-color 0.2s ease;
-}
-
-.exercise-management-item:hover .exercise-management-item-header {
-    background-color: var(--background-light); /* Slightly lighter on hover */
 }
 
 .exercise-management-item-title {
     margin: 0;
-    font-size: var(--font-size-lg);
-    color: var(--text-main);
+    font-size: 1.125rem;
 }
 
 .exercise-management-expand-icon {
-    font-size: var(--font-size-lg);
+    font-size: 1.25rem;
     color: var(--primary-color);
     transition: transform 0.3s ease;
 }
 
 .exercise-management-item.expanded .exercise-management-expand-icon {
-    transform: rotate(90deg); /* Rotate icon when expanded */
+    transform: rotate(90deg);
 }
 
 .exercise-management-item-details {
     padding: var(--spacing-md);
     border-top: 1px solid var(--border-color);
     background-color: var(--background-dark);
-    color: var(--text-light);
-    font-size: var(--font-size-md);
+    font-size: 1rem;
 }
 
 .exercise-management-item-details p {
@@ -132,84 +116,32 @@
     flex-wrap: wrap;
 }
 
-/* Specific button styles for edit/archive - already have btn-primary/btn-danger */
 .exercise-management-edit-button {
-    /* Uses global .btn-primary, customize if needed */
-    background-color: var(--warning-color);
-    color: var(--background-dark); /* Ensure text is readable on warning color */
-}
-
-.exercise-management-edit-button:hover {
-    background-color: #ffda6a;
+    composes: btn btn-warning from '../index.css';
 }
 
 .exercise-management-archive-button {
-    /* Uses global .btn-danger */
+    composes: btn btn-danger from '../index.css';
 }
 
 .exercise-management-loading,
 .exercise-management-error {
+    composes: card from '../index.css';
     text-align: center;
-    font-size: var(--font-size-lg);
-    color: var(--text-main);
     padding: var(--spacing-xl);
-    background-color: var(--background-card);
-    border-radius: var(--border-radius);
-    margin: var(--spacing-lg) auto;
-    max-width: 500px;
 }
 
 .exercise-management-error {
     color: var(--danger-color);
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
-    .exercise-management-container {
-        padding: var(--spacing-md);
-    }
-
-    .exercise-management-title {
-        font-size: var(--font-size-h2);
-    }
-
-    .exercise-management-create-button {
-        max-width: 100%;
-    }
-
     .exercise-management-filter-card {
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--spacing-sm);
-    }
-
-    .exercise-management-filter-label {
-        margin-right: 0;
     }
 
     .exercise-management-select {
         width: 100%;
-    }
-
-    .exercise-management-section-title {
-        font-size: var(--font-size-h3);
-    }
-
-    .exercise-management-item-title {
-        font-size: var(--font-size-md);
-    }
-
-    .exercise-management-item-actions {
-        flex-direction: column;
-    }
-}
-
-@media (max-width: 480px) {
-    .exercise-management-container {
-        padding: var(--spacing-sm);
-    }
-
-    .exercise-management-title {
-        font-size: var(--font-size-h3);
     }
 }

@@ -148,6 +148,20 @@ const AnalyticsPage = () => {
     };
 
 
+    const chartColors = [
+        '#B00000', // Primary Red
+        '#FF5733', // Orange
+        '#FFC300', // Yellow
+        '#DAF7A6', // Light Green
+        '#00AEEF', // Cyan
+        '#E6E6FA', // Lavender
+    ];
+
+    const getColor = (index) => {
+        return chartColors[index % chartColors.length];
+    };
+
+
     const getChartData = () => {
         const datasets = [];
         const exercise = exercises.find(ex => ex.id === parseInt(selectedExercise));
@@ -160,7 +174,7 @@ const AnalyticsPage = () => {
 
             const labels = uniqueTimestamps.map(ts => new Date(ts).toLocaleDateString());
 
-            selectedPlayers.forEach(playerId => {
+            selectedPlayers.forEach((playerId, index) => {
                 const playerMeasurements = measurementData.filter(m => m.player_id === parseInt(playerId));
                 const playerData = uniqueTimestamps.map(ts => {
                     const measurement = playerMeasurements.find(m => new Date(m.recorded_at).setHours(0, 0, 0, 0) === ts);
@@ -174,7 +188,8 @@ const AnalyticsPage = () => {
                 datasets.push({
                     label: player ? `${player.first_name} ${player.last_name}` : `Player ${playerId}`,
                     data: playerData,
-                    borderColor: getRandomColor(),
+                    borderColor: getColor(index),
+                    backgroundColor: getColor(index) + '33', // Add transparency for area fill if used
                     tension: 0.1,
                     fill: false,
                     spanGaps: true,
@@ -202,7 +217,7 @@ const AnalyticsPage = () => {
             datasets.push({
                 label: `Performance Index (e.g. 1RM or Value)`,
                 data: data,
-                backgroundColor: selectedPlayers.map(() => getRandomColor()),
+                backgroundColor: selectedPlayers.map((_, index) => getColor(index)),
             });
             return { labels, datasets };
         }

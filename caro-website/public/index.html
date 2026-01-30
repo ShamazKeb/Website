@@ -39,9 +39,9 @@
   <header class="hero-section">
     <div class="hero-content">
       <span class="hero-subtitle">Willkommen in Bilk</span>
-      <h1>Guiding into Higher Frequencies</h1>
-      <p class="hero-text">Ganzheitliche Körpertherapie & Cranio-Sacrale Balance für mehr innere Ruhe und Lebenskraft.
-      </p>
+      <h1 data-content-key="home_hero_title">Guiding into Higher Frequencies</h1>
+      <p class="hero-text" data-content-key="home_hero_subtitle">Ganzheitliche Körpertherapie & Cranio-Sacrale Balance
+        für mehr innere Ruhe und Lebenskraft.</p>
       <div class="hero-buttons">
         <a href="#about" class="btn-secondary">Mehr erfahren</a>
         <a href="sites/kontakt.html" class="btn-primary">Kontakt aufnehmen</a>
@@ -69,18 +69,16 @@
       </div>
       <div class="about-content">
         <h2>Über mich</h2>
-        <p>
+        <div data-content-key="home_about_text" style="white-space: pre-line; line-height: 1.6; margin-bottom: 20px;">
           Ich möchte gar nicht viel über mich sprechen, da es hier um Dich geht. Du bist hier, weil ein Teil in Dir
           entschieden hat, eine tiefere Verbindung mit Dir selbst einzugehen.
-        </p>
-        <p>
+
           Als ausgebildete Physiotherapeutin habe ich gelernt, dass wir so viel mehr sind als unser physischer Körper.
           Der Körper gibt uns wunderbare Hinweise – er ist der Einstieg zu dem, was es wirklich gilt zu erkennen,
           anzunehmen und loszulassen.
-        </p>
-        <p>
+
           Meine größte Ausbildung ist das Leben selbst. Ich lade dich ein, diesen Weg gemeinsam zu gehen.
-        </p>
+        </div>
         <a href="sites/meine-arbeit.html" class="text-link">Mehr über meinen Ansatz →</a>
       </div>
     </div>
@@ -91,7 +89,8 @@
     <div class="container">
       <div class="section-header text-center">
         <h2>Cranio-Sacrale Balance</h2>
-        <p class="section-intro">Eine sanfte Methode zur Entspannung des Nervensystems.</p>
+        <p class="section-intro" data-content-key="home_cranio_text" style="white-space: pre-line">Eine sanfte Methode
+          zur Entspannung des Nervensystems.</p>
       </div>
 
       <div class="grid-2-col service-detail">
@@ -205,6 +204,7 @@
       });
     }
   </script>
+  <script src="js/cms.js"></script>
 </body>
 
 </html>

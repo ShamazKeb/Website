@@ -1,17 +1,14 @@
+/* CreatePlayerPage.css */
+
 .create-player-container {
-    padding: var(--spacing-lg);
+    composes: card from '../index.css';
     max-width: 600px;
     margin: var(--spacing-xl) auto;
-    background-color: var(--background-card);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-card);
 }
 
 .create-player-title {
-    color: var(--text-main);
-    margin-bottom: var(--spacing-xl);
     text-align: center;
-    font-size: var(--font-size-h2);
+    margin-bottom: var(--spacing-xl);
 }
 
 .create-player-form {
@@ -19,83 +16,47 @@
     flex-direction: column;
 }
 
-.create-player-form-group {
-    margin-bottom: var(--spacing-lg);
-}
-
-.create-player-label {
-    display: block;
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-light);
-    font-weight: bold;
-    font-size: var(--font-size-md);
-}
-
-/* Inherits input styles from global index.css */
-.create-player-input {
-    width: 100%;
-    box-sizing: border-box;
-}
+/* Form elements should use global classes .form-group, .form-label, .form-control */
 
 .create-player-button {
-    /* Uses global .btn-primary styles */
+    composes: btn btn-primary from '../index.css';
     width: 100%;
-    padding: var(--spacing-md) var(--spacing-lg);
-    font-size: var(--font-size-lg);
+    padding: var(--spacing-md);
+    font-size: 1.125rem;
     margin-top: var(--spacing-lg);
 }
 
 .create-player-button:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+    background-color: var(--border-color);
+    border-color: var(--border-color);
 }
 
 .create-player-error,
 .create-player-success {
     margin-top: var(--spacing-md);
     text-align: center;
-    font-size: var(--font-size-sm);
-    padding: var(--spacing-sm);
-    border-radius: var(--border-radius);
+    font-size: 0.875rem;
+    padding: var(--spacing-md);
+    border: 1px solid;
     margin-bottom: var(--spacing-md);
 }
 
 .create-player-error {
     color: var(--danger-color);
-    background-color: rgba(var(--danger-color-rgb, 220, 53, 69), 0.1);
-    border: 1px solid var(--danger-color);
+    border-color: var(--danger-color);
+    background-color: rgba(220, 53, 69, 0.05);
 }
 
 .create-player-success {
     color: var(--success-color);
-    background-color: rgba(var(--success-color-rgb, 40, 167, 69), 0.1);
-    border: 1px solid var(--success-color);
+    border-color: var(--success-color);
+    background-color: rgba(40, 167, 69, 0.05);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .create-player-container {
-        padding: var(--spacing-md);
-    }
-
-    .create-player-title {
-        font-size: var(--font-size-h3);
-    }
-
-    .create-player-button {
-        font-size: var(--font-size-md);
-        padding: var(--spacing-sm) var(--spacing-md);
-    }
-}
-
-@media (max-width: 480px) {
-    .create-player-container {
-        padding: var(--spacing-sm);
-    }
-
-    .create-player-title {
-        font-size: var(--font-size-h4);
+        margin: var(--spacing-lg) var(--spacing-md);
     }
 }

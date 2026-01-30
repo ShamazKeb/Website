@@ -1,25 +1,21 @@
+/* TeamDetailsPage.css */
+
 .team-details-container {
-    padding: var(--spacing-lg);
+    padding: 0 var(--spacing-lg);
     max-width: 900px;
-    margin: var(--spacing-md) auto;
+    margin: 0 auto;
 }
 
-.team-details-title {
-    font-size: var(--font-size-h1);
-    color: var(--text-main);
-    margin-bottom: var(--spacing-sm);
+.team-details-header {
     text-align: center;
+    margin-bottom: var(--spacing-xl);
 }
 
 .team-details-description {
     color: var(--text-muted);
-    margin-bottom: var(--spacing-xl);
-    text-align: center;
 }
 
 .team-details-players-section-title {
-    font-size: var(--font-size-h2);
-    color: var(--text-main);
     margin-top: var(--spacing-xl);
     margin-bottom: var(--spacing-lg);
     border-bottom: 1px solid var(--border-color);
@@ -33,11 +29,7 @@
 }
 
 .team-details-player-item {
-    background-color: var(--background-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
+    composes: card from '../index.css';
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -47,42 +39,23 @@
 
 .team-details-player-info {
     flex-grow: 1;
-    color: var(--text-light);
-    font-size: var(--font-size-md);
+    font-size: 1rem;
+}
+
+.team-details-player-info strong {
+    color: var(--text-main);
 }
 
 .team-details-player-actions {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-sm);
-    justify-content: flex-end;
 }
 
-.team-details-link-button {
-    text-decoration: none;
-    /* Inherits button styling from global or specific .btn class */
-}
-
+/* Let the component use global .btn classes */
 .btn-deactivate-player {
-    background-color: var(--danger-color);
-    color: white;
-    border: none;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    font-size: var(--font-size-sm);
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-}
-
-.btn-deactivate-player:hover {
-    background-color: #bd2130; /* Darker red */
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-hover);
-}
-
-.btn-deactivate-player:active {
-    transform: translateY(0);
-    box-shadow: none;
+    composes: btn btn-danger from '../index.css';
+    font-size: 0.875rem;
 }
 
 .team-details-no-players {
@@ -100,18 +73,10 @@
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-    .team-details-title {
-        font-size: var(--font-size-h2);
-    }
-
-    .team-details-players-section-title {
-        font-size: var(--font-size-h3);
-    }
-
     .team-details-player-item {
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--spacing-sm);
+        gap: var(--spacing-md);
     }
 
     .team-details-player-actions {
@@ -119,17 +84,7 @@
         justify-content: flex-start;
     }
 
-    .btn-deactivate-player {
+    .team-details-player-actions .btn {
         width: 100%;
-    }
-}
-
-@media (max-width: 480px) {
-    .team-details-container {
-        padding: var(--spacing-md);
-    }
-
-    .team-details-title {
-        font-size: var(--font-size-h3);
     }
 }

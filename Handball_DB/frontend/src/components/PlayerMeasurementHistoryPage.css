@@ -1,27 +1,22 @@
+/* PlayerMeasurementHistoryPage.css */
+
 .player-measurement-history-container {
-    padding: var(--spacing-lg);
+    padding: 0 var(--spacing-lg);
     max-width: 900px;
-    margin: var(--spacing-md) auto;
+    margin: 0 auto;
 }
 
 .player-measurement-history-title {
-    color: var(--text-main);
-    margin-bottom: var(--spacing-xl);
     text-align: center;
-    font-size: var(--font-size-h1);
+    margin-bottom: var(--spacing-xl);
 }
 
 .player-measurement-history-loading,
 .player-measurement-history-error,
 .player-measurement-history-no-data {
+    composes: card from '../index.css';
     text-align: center;
-    font-size: var(--font-size-lg);
-    color: var(--text-main);
     padding: var(--spacing-xl);
-    background-color: var(--background-card);
-    border-radius: var(--border-radius);
-    margin: var(--spacing-lg) auto;
-    max-width: 500px;
 }
 
 .player-measurement-history-error {
@@ -36,27 +31,24 @@
 .player-measurement-history-list {
     list-style: none;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
 }
 
 .player-measurement-history-item {
-    background-color: var(--background-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
+    composes: card from '../index.css';
     line-height: 1.6;
-    color: var(--text-light);
-    font-size: var(--font-size-md);
 }
 
 .player-measurement-history-item strong {
     color: var(--primary-color);
-    margin-right: var(--spacing-xs);
+    margin-right: var(--spacing-sm);
 }
 
 .player-measurement-history-item span {
     display: block;
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
 }
 
 .player-measurement-history-item .value-pair {
@@ -65,38 +57,11 @@
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--border-radius);
     margin-right: var(--spacing-sm);
-    margin-bottom: var(--spacing-xs);
-    font-size: var(--font-size-sm);
-    color: var(--text-light);
+    margin-bottom: var(--spacing-sm);
+    font-size: 0.875rem;
 }
 
 .player-measurement-history-item .value-pair strong {
     color: var(--text-main);
     margin-right: 0;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .player-measurement-history-container {
-        padding: var(--spacing-md);
-    }
-
-    .player-measurement-history-title {
-        font-size: var(--font-size-h2);
-    }
-}
-
-@media (max-width: 480px) {
-    .player-measurement-history-container {
-        padding: var(--spacing-sm);
-    }
-
-    .player-measurement-history-title {
-        font-size: var(--font-size-h3);
-    }
-
-    .player-measurement-history-item .value-pair {
-        display: block;
-        margin-right: 0;
-    }
 }

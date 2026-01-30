@@ -1,7 +1,9 @@
+/* DashboardPage.css */
+
 .dashboard-container {
-    padding: var(--spacing-lg);
-    max-width: 1200px; /* Increased max-width for better desktop experience */
-    margin: var(--spacing-md) auto;
+    padding: 0 var(--spacing-lg);
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .dashboard-header {
@@ -11,18 +13,15 @@
     margin-bottom: var(--spacing-lg);
     border-bottom: 1px solid var(--border-color);
     padding-bottom: var(--spacing-md);
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    flex-wrap: wrap;
 }
 
 .dashboard-title {
     margin: 0;
-    font-size: var(--font-size-h2);
-    color: var(--text-main);
 }
 
 .dashboard-role-text {
     color: var(--text-muted);
-    font-size: var(--font-size-md);
     margin-bottom: var(--spacing-xl);
 }
 
@@ -30,12 +29,10 @@
     display: flex;
     gap: var(--spacing-md);
     margin-bottom: var(--spacing-xl);
-    justify-content: center;
-    flex-wrap: wrap; /* Allow buttons to wrap */
+    flex-wrap: wrap;
 }
 
 .dashboard-section-title {
-    font-size: var(--font-size-h3);
     margin-bottom: var(--spacing-md);
     border-bottom: 1px solid var(--border-color);
     padding-bottom: var(--spacing-sm);
@@ -45,11 +42,12 @@
 .dashboard-measurement-list {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md); /* Spacing between cards */
+    gap: var(--spacing-md);
 }
 
+/* Let the component use the global .card class */
 .dashboard-measurement-card {
-    margin-bottom: 0; /* Remove individual card margin if using gap in list */
+    composes: card from '../index.css';
 }
 
 .dashboard-measurement-header {
@@ -58,34 +56,34 @@
     align-items: center;
     margin-bottom: var(--spacing-sm);
     flex-wrap: wrap;
+    gap: var(--spacing-sm);
 }
 
 .dashboard-measurement-exercise {
-    font-weight: bold;
-    color: var(--primary-color); /* Highlight exercise name */
-    font-size: var(--font-size-lg);
+    font-family: 'Saira Stencil One', sans-serif;
+    color: var(--primary-color);
+    font-size: 1.25rem;
 }
 
 .dashboard-measurement-date {
     color: var(--text-muted);
-    font-size: var(--font-size-sm);
+    font-size: 0.875rem;
 }
 
 .dashboard-measurement-values {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
 }
 
 .dashboard-measurement-value-item {
     background-color: var(--background-input);
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--border-radius);
-    font-size: var(--font-size-sm);
-    color: var(--text-light);
-    display: inline-flex; /* Use inline-flex for better alignment */
-    align-items: center;
-    white-space: nowrap; /* Prevent values from breaking */
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    white-space: nowrap;
 }
 
 .dashboard-measurement-value-item strong {
@@ -94,49 +92,20 @@
 }
 
 .dashboard-error {
+    composes: card from '../index.css';
     color: var(--danger-color);
     text-align: center;
-    font-size: var(--font-size-md);
     padding: var(--spacing-md);
-    background-color: var(--background-card);
-    border-radius: var(--border-radius);
-    margin: var(--spacing-lg) auto;
-    max-width: 500px;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
-    .dashboard-container {
-        padding: var(--spacing-md);
-    }
-
-    .dashboard-title {
-        font-size: var(--font-size-h3);
-    }
-
-    .dashboard-section-title {
-        font-size: var(--font-size-h4);
-    }
-
     .dashboard-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: var(--spacing-sm);
     }
     
-    .dashboard-button-group button {
-        width: 100%; /* Full width buttons on small screens */
-        min-width: unset !important; /* Override inline style */
-    }
-}
-
-@media (max-width: 480px) {
-    .dashboard-measurement-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--spacing-xs);
-    }
-    .dashboard-measurement-value-item {
-        font-size: var(--font-size-xs);
-        padding: var(--spacing-xs);
+    .dashboard-button-group .btn {
+        width: 100%;
     }
 }
