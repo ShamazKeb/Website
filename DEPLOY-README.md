@@ -33,6 +33,7 @@ The Pi 3B+ supports 64-bit OS, which provides better Docker image compatibility.
 | Landing Page | via NPM | Static website |
 | Keto Monitor | 5000 | News aggregator |
 | Handball Tracker | 8000 | FastAPI application |
+| Caro Website | 8080 (internal) | Portfolio/Website via NPM |
 
 ## Configuration Files Needed
 

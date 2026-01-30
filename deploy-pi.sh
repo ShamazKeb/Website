@@ -108,7 +108,7 @@ fi
 # ============================================================
 # Step 1: Create Docker network
 # ============================================================
-echo -e "\n${BLUE}[1/6] Creating Docker network 'web-public'...${NC}"
+echo -e "\n${BLUE}[1/7] Creating Docker network 'web-public'...${NC}"
 
 if docker network inspect web-public &> /dev/null; then
     echo -e "${GREEN}✅ Network 'web-public' already exists${NC}"
@@ -120,7 +120,7 @@ fi
 # ============================================================
 # Step 2: Setup Infrastructure (Nginx Proxy Manager + DDNS)
 # ============================================================
-echo -e "\n${BLUE}[2/6] Setting up Infrastructure (NPM + DDNS)...${NC}"
+echo -e "\n${BLUE}[2/7] Setting up Infrastructure (NPM + DDNS)...${NC}"
 
 if [ -d "infrastructure" ]; then
     cd infrastructure
@@ -134,7 +134,7 @@ fi
 # ============================================================
 # Step 3: Setup Landing Page
 # ============================================================
-echo -e "\n${BLUE}[3/6] Setting up Landing Page...${NC}"
+echo -e "\n${BLUE}[3/7] Setting up Landing Page...${NC}"
 
 if [ -d "landing-page" ]; then
     cd landing-page
@@ -148,7 +148,7 @@ fi
 # ============================================================
 # Step 4: Setup Keto Monitor
 # ============================================================
-echo -e "\n${BLUE}[4/6] Setting up Keto Monitor...${NC}"
+echo -e "\n${BLUE}[4/7] Setting up Keto Monitor...${NC}"
 
 if [ -d "keto-monitor" ]; then
     cd keto-monitor
@@ -169,7 +169,7 @@ fi
 # ============================================================
 # Step 5: Setup Handball Tracker (Legacy)
 # ============================================================
-echo -e "\n${BLUE}[5/6] Setting up Handball Tracker (Legacy)...${NC}"
+echo -e "\n${BLUE}[5/7] Setting up Handball Tracker (Legacy)...${NC}"
 
 if [ -d "handball-tracker" ]; then
     cd handball-tracker
@@ -183,7 +183,7 @@ fi
 # ============================================================
 # Step 6: Setup Handball DB (Complex App)
 # ============================================================
-echo -e "\n${BLUE}[6/6] Setting up Handball DB (Complex App)...${NC}"
+echo -e "\n${BLUE}[6/7] Setting up Handball DB (Complex App)...${NC}"
 
 if [ -d "Handball_DB" ]; then
     cd Handball_DB
@@ -198,6 +198,20 @@ if [ -d "Handball_DB" ]; then
     cd "$SCRIPT_DIR"
 else
     echo -e "${YELLOW}⚠️  Handball_DB/ directory not found, skipping${NC}"
+fi
+
+# ============================================================
+# Step 7: Setup Caro Website
+# ============================================================
+echo -e "\n${BLUE}[7/7] Setting up Caro Website...${NC}"
+
+if [ -d "caro-website" ]; then
+    cd caro-website
+    docker compose up -d --build
+    echo -e "${GREEN}✅ Caro Website started${NC}"
+    cd "$SCRIPT_DIR"
+else
+    echo -e "${YELLOW}⚠️  caro-website/ directory not found, skipping${NC}"
 fi
 
 # ============================================================
@@ -217,7 +231,7 @@ echo -e "  Landing Page:         via NPM proxy"
 echo -e "  Keto Monitor:         http://$PI_IP:5000"
 echo -e "  Handball Tracker:     http://$PI_IP:8000"
 echo -e "  Handball DB Backend:  http://$PI_IP:8000 (Complex)"
-echo -e "  Handball DB Frontend: http://$PI_IP:80 (Complex)"
+echo -e "  Caro Website:         http://$PI_IP:8080 (via NPM with domain)"
 
 echo -e "\n${YELLOW}NPM Default Login:${NC}"
 echo -e "  Email:    admin@example.com"
