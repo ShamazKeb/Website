@@ -1,11 +1,20 @@
 from flask import Flask, render_template, request
 from datetime import datetime
-from app.db import get_session
+from app.db import get_session, init_db, sync_companies_from_yaml
 from app.models import Company, Topic, Summary, Article, TopicArticle
 from sqlalchemy.orm import joinedload
 from sqlalchemy import func, select
 
 app = Flask(__name__, template_folder='../templates')
+
+# Initialize DB and sync companies on startup
+with app.app_context():
+    init_db()
+    session = get_session()
+    try:
+        sync_companies_from_yaml(session)
+    finally:
+        session.close()
 
 def get_companies(session):
     return session.query(Company).order_by(Company.name).all()
