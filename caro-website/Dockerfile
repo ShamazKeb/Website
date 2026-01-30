@@ -7,7 +7,7 @@ FROM node:20-alpine AS backend-builder
 
 WORKDIR /app/backend
 COPY backend/package*.json ./
-RUN npm install --only=production
+RUN npm ci --only=production
 
 # Stage 2: Production image with nginx + Node.js
 FROM node:20-alpine

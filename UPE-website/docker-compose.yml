@@ -1,7 +1,7 @@
 services:
-  upe:
+  upe-frontend:
     build: .
-    container_name: upe
+    container_name: upe-frontend
     restart: unless-stopped
     ports:
       - "8086:80"
