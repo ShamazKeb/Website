@@ -49,18 +49,18 @@ async def populate():
         admin_user = result.scalars().first()
         
         if not admin_user:
-            print("Admin user not found. Please create it first via the app or initial setup.")
-            # Fallback or exit? Let's try to fetch any coach/admin
+            print("Admin user (admin@handball.de) not found. Creating default admin...")
+            hashed_pwd = hash_password("admin123")
+            admin_user = models.User(email="admin@handball.de", password_hash=hashed_pwd, role=models.Role.admin)
+            db.add(admin_user)
+            await db.commit()
+            # Re-fetch with coach options
             result = await db.execute(
                 select(models.User)
                 .options(selectinload(models.User.coach))
-                .filter(models.User.role.in_([models.Role.admin, models.Role.coach]))
-                .limit(1)
+                .filter(models.User.email == "admin@handball.de")
             )
             admin_user = result.scalars().first()
-            if not admin_user:
-                print("No suitable user found to be owner of data. Exiting.")
-                return
         
         # Ensure admin has a coach profile if they are admin
         owner_id = admin_user.id
