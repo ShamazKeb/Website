@@ -1,0 +1,33 @@
+services:
+  caro-website:
+    build: .
+    container_name: caro-website
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:80" # nginx (Frontend) - localhost only, NPM proxies externally
+    networks:
+      - web-public
+      - default
+    volumes:
+      # Persist SQLite database
+      - caro-data:/app/backend/data
+    environment:
+      - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost/api/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  caro-data:
+    driver: local
+
+networks:
+  web-public:
+    external: true

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Töpfern in Bilk</title>
+  <link rel="icon" href="../css/img/logohell.png" type="image/x-icon" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Quicksand&family=Dancing+Script&display=swap" rel="stylesheet" />
+  <style>
+    .admin-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--color-accent);
+    }
+    
+    .admin-header h1 {
+      color: var(--color-text);
+      margin: 0;
+    }
+    
+    .admin-nav {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .admin-nav button {
+      background: var(--color-accent);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .admin-nav button:hover {
+      background: #d4894a;
+    }
+    
+    .admin-nav button.logout {
+      background: #dc3545;
+    }
+    
+    .admin-nav button.logout:hover {
+      background: #c82333;
+    }
+    
+    .admin-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+    
+    .admin-section {
+      background: var(--color-ui);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .admin-section h2 {
+      color: var(--color-text);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .review-item {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border-left: 4px solid var(--color-accent);
+    }
+    
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .reviewer-name {
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    
+    .review-date {
+      color: #666;
+      font-size: 12px;
+    }
+    
+    .review-stars {
+      color: #ffd700;
+      margin-bottom: 10px;
+    }
+    
+    .review-text {
+      color: var(--color-text);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    
+    .review-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn-delete {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    
+    .btn-delete:hover {
+      background: #c82333;
+    }
+    
+    .content-editor {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    
+    .content-editor h3 {
+      color: var(--color-text);
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    
+    .content-editor textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+    }
+    
+    .content-editor button {
+      background: var(--color-accent);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+    
+    .content-editor button:hover {
+      background: #d4894a;
+    }
+    
+    .success {
+      background: #e8f5e8;
+      color: #2e7d32;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+    
+    .error {
+      background: #ffebee;
+      color: #c62828;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: var(--color-text);
+    }
+    
+    @media (max-width: 768px) {
+      .admin-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .admin-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1>Admin Dashboard</h1>
+      <div class="admin-nav">
+        <button onclick="window.open('../index.html', '_blank')">Website anzeigen</button>
+        <button onclick="refreshReviews()">Bewertungen aktualisieren</button>
+        <button class="logout" onclick="logout()">Abmelden</button>
+      </div>
+    </div>
+    
+    <div id="message"></div>
+    
+    <div class="admin-content">
+      <!-- Reviews Management -->
+      <div class="admin-section">
+        <h2>Bewertungen verwalten</h2>
+        <div id="reviewsList">
+          <div class="loading">Lade Bewertungen...</div>
+        </div>
+      </div>
+      
+      <!-- Content Editor -->
+      <div class="admin-section">
+        <h2>Website-Inhalte bearbeiten</h2>
+        
+        <div class="content-editor">
+          <h3>Hero-Titel (Hauptseite)</h3>
+          <textarea id="heroTitle" placeholder="Haupttitel der Startseite...">Guiding into higher Frequencies</textarea>
+          <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button onclick="saveContent('heroTitle', 'index.html')">Speichern</button>
+            <button onclick="refreshWebsite()" style="background: #28a745;">Website aktualisieren</button>
+          </div>
+        </div>
+        
+        <div class="content-editor">
+          <h3>Hero-Untertitel</h3>
+          <textarea id="heroSubtitle" placeholder="Untertitel der Startseite...">& Cranio-Sacrale Balance</textarea>
+          <button onclick="saveContent('heroSubtitle', 'index.html')">Speichern</button>
+        </div>
+        
+        <div class="content-editor">
+          <h3>Über mich Text</h3>
+          <textarea id="aboutText" placeholder="Text im 'Über mich' Bereich...">Ich möchte gar nicht viel über mich sprechen, da es hier um Dich geht.
+Du bist hier auf dieser Seite gelandet, weil ein Teil in Dir entschieden hat eine tiefere Verbindung mit Dir einzugehen.
+Ich bin ausgebildete Physiotherapeutin und bin es schon lange nicht mehr.
+Wir sind so viel mehr als unser physischer Körper!
+
+Der Körper mit all seinen Signalen oder Symptomen gibt uns wunderbare Hinweise und kann als Einstieg genutzt werden zu dem,
+ was es wirklich gilt zu erkennen, anzunehmen, loszulassen oder zu verändern.
+
+Durch viele Methoden und Techniken im Physischen wie im Energetischen, 
+durch Begegnungen mit großen und kleinen Lehrern durfte ich mich stetig weiterentwickelt.
+Meine größte Ausbildung jedoch ist das Leben selbst.</textarea>
+          <button onclick="saveContent('aboutText', 'index.html')">Speichern</button>
+        </div>
+        
+        <div class="content-editor">
+          <h3>Cranio-Sacrale Text</h3>
+          <textarea id="cranioText" placeholder="Text im Cranio-Sacrale Bereich...">Cranio ist eine sanfte Methode zur Entspannung des Nervensystems und lädt dazu ein, 
+ tiefer in die eigene Mitte einzutauchen.</textarea>
+          <button onclick="saveContent('cranioText', 'index.html')">Speichern</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <script>
+    // Check authentication
+    if (localStorage.getItem('adminLoggedIn') !== 'true') {
+      window.location.href = 'login.html';
+    }
+    
+    // Check session timeout (24 hours)
+    const loginTime = parseInt(localStorage.getItem('adminLoginTime') || '0');
+    const now = Date.now();
+    if (now - loginTime > 24 * 60 * 60 * 1000) {
+      localStorage.removeItem('adminLoggedIn');
+      localStorage.removeItem('adminLoginTime');
+      window.location.href = 'login.html';
+    }
+
+    // Supabase configuration
+    const SUPABASE_URL = 'https://hfopvhwxysvqgprhigue.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhmb3B2aHd4eXN2cWdwcmhpZ3VlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzMTg5MTAsImV4cCI6MjA2Njg5NDkxMH0.vq7tOO2u9rVHYCeHudnZMjApi5maCyj7kUp_2MAmHIs';
+    
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Load reviews
+    async function loadReviews() {
+      const reviewsList = document.getElementById('reviewsList');
+      
+      try {
+        console.log('Loading reviews...');
+        
+        const { data: reviews, error } = await supabaseClient
+          .from('reviews')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          console.error('Error loading reviews:', error);
+          throw error;
+        }
+        
+        console.log('Reviews loaded:', reviews);
+        
+        if (!reviews || reviews.length === 0) {
+          reviewsList.innerHTML = '<p>Keine Bewertungen vorhanden.</p>';
+          return;
+        }
+        
+        const reviewsHTML = reviews.map(review => `
+          <div class="review-item" data-review-id="${review.id}">
+            <div class="review-header">
+              <span class="reviewer-name">${review.name}</span>
+              <span class="review-date">${new Date(review.created_at).toLocaleDateString('de-DE')}</span>
+            </div>
+            <div class="review-stars">
+              ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+            </div>
+            <div class="review-text">${review.comment}</div>
+            <div class="review-actions">
+              <button class="btn-delete" onclick="deleteReview(${review.id})">Löschen</button>
+            </div>
+          </div>
+        `).join('');
+        
+        reviewsList.innerHTML = reviewsHTML;
+        console.log('Reviews HTML updated');
+        
+      } catch (error) {
+        console.error('Error loading reviews:', error);
+        reviewsList.innerHTML = '<div class="error">Fehler beim Laden der Bewertungen.</div>';
+      }
+    }
+
+    // Delete review - with detailed debugging
+    async function deleteReview(reviewId) {
+      if (!confirm('Sind Sie sicher, dass Sie diese Bewertung löschen möchten?')) {
+        return;
+      }
+      
+      try {
+        console.log('=== DELETE REVIEW DEBUG ===');
+        console.log('Review ID to delete:', reviewId);
+        console.log('Supabase client:', supabaseClient);
+        
+        // First, let's check if the review exists
+        console.log('Checking if review exists...');
+        const { data: existingReview, error: checkError } = await supabaseClient
+          .from('reviews')
+          .select('*')
+          .eq('id', reviewId)
+          .single();
+        
+        if (checkError) {
+          console.error('Error checking review:', checkError);
+          showMessage(`Bewertung nicht gefunden: ${checkError.message}`, 'error');
+          return;
+        }
+        
+        console.log('Review found:', existingReview);
+        
+        // Now try to delete
+        console.log('Attempting to delete review...');
+        const { data, error } = await supabaseClient
+          .from('reviews')
+          .delete()
+          .eq('id', reviewId)
+          .select(); // Add select() to see what was deleted
+        
+        console.log('Delete response - data:', data);
+        console.log('Delete response - error:', error);
+        
+        if (error) {
+          console.error('Delete error details:', error);
+          showMessage(`Fehler beim Löschen: ${error.message}`, 'error');
+          return;
+        }
+        
+        if (data && data.length > 0) {
+          console.log('Successfully deleted review:', data[0]);
+          showMessage('Bewertung erfolgreich gelöscht', 'success');
+          
+          // Remove from DOM immediately
+          const reviewElement = document.querySelector(`[data-review-id="${reviewId}"]`);
+          if (reviewElement) {
+            reviewElement.remove();
+            console.log('Review removed from DOM');
+          } else {
+            console.warn('Review element not found in DOM');
+          }
+        } else {
+          console.warn('No data returned from delete operation');
+          showMessage('Löschung durchgeführt, aber keine Bestätigung erhalten', 'warning');
+          
+          // Still remove from DOM
+          const reviewElement = document.querySelector(`[data-review-id="${reviewId}"]`);
+          if (reviewElement) {
+            reviewElement.remove();
+          }
+        }
+        
+        console.log('=== DELETE REVIEW DEBUG END ===');
+        
+      } catch (error) {
+        console.error('Unexpected error:', error);
+        showMessage(`Unerwarteter Fehler: ${error.message}`, 'error');
+      }
+    }
+
+    // Save content to Supabase
+    async function saveContent(elementId, page) {
+      const content = document.getElementById(elementId).value;
+      
+      try {
+        console.log('Saving content:', elementId, content);
+        
+        // Map element IDs to content keys
+        const contentKeyMap = {
+          'heroTitle': 'hero_title',
+          'heroSubtitle': 'hero_subtitle',
+          'aboutText': 'about_text',
+          'cranioText': 'cranio_text'
+        };
+        
+        const contentKey = contentKeyMap[elementId];
+        if (!contentKey) {
+          showMessage('Unbekanntes Element', 'error');
+          return;
+        }
+        
+        // First try to update existing record
+        const { data: existingData, error: selectError } = await supabaseClient
+          .from('website_content')
+          .select('*')
+          .eq('content_key', contentKey)
+          .single();
+        
+        if (selectError && selectError.code !== 'PGRST116') {
+          console.error('Error checking existing content:', selectError);
+        }
+        
+        let result;
+        if (existingData) {
+          // Update existing record
+          result = await supabaseClient
+            .from('website_content')
+            .update({
+              content_value: content,
+              page_name: page,
+              updated_at: new Date().toISOString()
+            })
+            .eq('content_key', contentKey);
+        } else {
+          // Insert new record
+          result = await supabaseClient
+            .from('website_content')
+            .insert({
+              content_key: contentKey,
+              content_value: content,
+              page_name: page
+            });
+        }
+        
+        if (result.error) {
+          console.error('Supabase error:', result.error);
+          throw result.error;
+        }
+        
+        console.log('Content saved successfully:', result);
+        showMessage('Inhalt erfolgreich gespeichert!', 'success');
+        
+      } catch (error) {
+        console.error('Error saving content:', error);
+        showMessage(`Fehler beim Speichern: ${error.message}`, 'error');
+      }
+    }
+
+    // Load content from Supabase
+    async function loadContent() {
+      try {
+        const { data: content, error } = await supabaseClient
+          .from('website_content')
+          .select('*');
+        
+        if (error) throw error;
+        
+        // Populate form fields with current content
+        content.forEach(item => {
+          const elementId = getElementIdFromContentKey(item.content_key);
+          if (elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+              element.value = item.content_value;
+            }
+          }
+        });
+        
+      } catch (error) {
+        console.error('Error loading content:', error);
+        showMessage('Fehler beim Laden der Inhalte', 'error');
+      }
+    }
+
+    // Helper function to map content keys to element IDs
+    function getElementIdFromContentKey(contentKey) {
+      const reverseMap = {
+        'hero_title': 'heroTitle',
+        'hero_subtitle': 'heroSubtitle',
+        'about_text': 'aboutText',
+        'cranio_text': 'cranioText'
+      };
+      return reverseMap[contentKey];
+    }
+
+    // Refresh reviews
+    function refreshReviews() {
+      loadReviews();
+      showMessage('Bewertungen aktualisiert', 'success');
+    }
+
+
+
+    // Refresh website content
+    function refreshWebsite() {
+      // Open website in new tab to see changes
+      const websiteUrl = window.location.origin + '/index.html';
+      window.open(websiteUrl, '_blank');
+      showMessage('Website in neuem Tab geöffnet - Änderungen sollten sichtbar sein', 'success');
+    }
+
+    // Show message
+    function showMessage(text, type) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.innerHTML = `<div class="${type}">${text}</div>`;
+      
+      setTimeout(() => {
+        messageDiv.innerHTML = '';
+      }, 3000);
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem('adminLoggedIn');
+      localStorage.removeItem('adminLoginTime');
+      window.location.href = 'login.html';
+    }
+
+    // Load reviews and content on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadReviews();
+      loadContent();
+    });
+  </script>
+</body>
+</html> 

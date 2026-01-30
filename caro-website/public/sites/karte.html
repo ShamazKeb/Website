@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Töpfern in Bilk</title>
+  <link rel="icon" href="css/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <!-- PRIMÄRE NAVBAR -->
+  <div class="navbar primary-navbar">
+    <a href="../index.html"><img src="../css/img/logo.png" class="logo" alt="Logo" /></a>
+    <nav>
+      <ul>
+
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="kontakt.html">Kontakt</a></li>
+        <li><a href="meine-arbeit.html">Meine Arbeit</a></li>
+        <li><a href="rezensionen.html">Rezensionen</a></li>
+      </ul>
+    </nav>
+    <img src="../css/img/menu.png" class="menu-icon" alt="Menü" />
+  </div>
+
+
+
+  <!-- SEKUNDÄRE NAVBAR (erscheint beim Scrollen) -->
+  <div class="navbar secondary-navbar" id="secondaryNavbar">
+    <nav>
+      <ul>
+
+        <li><a href="../index.html">Home</a></li>
+        <li><a class="active" href="karte.html">Region</a></li>
+        <li><a href="anfahrt.html">Anfahrt</a></li>
+      </ul>
+    </nav>
+  </div>
+
+
+  <!-- SCROLL-OVERLAY -->
+  <div class="white-bar"></div>
+
+  <!-- HERO -->
+  <div class="container">
+
+    <div class="row">
+      <div class="col">
+        <h1>Region</h1>
+        <p>Die Praxis befindet sich in Düsseldorf-Bilk, einem zentralen und gut erreichbaren Stadtteil.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-info">
+          <h4>Caroline Lülker</h4>
+          <p>Praxis für Körpertherapie und ganzheitliches Coaching</p>
+          <p>Bilk, Düsseldorf</p>
+        </div>
+        <div class="footer-links">
+          <a href="impressum.html">Impressum</a>
+          <a href="datenschutz.html">Datenschutz</a>
+          <a href="../admin/login.html">Admin</a>
+        </div>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2023 Caroline Lülker. Alle Rechte vorbehalten.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    const navbar = document.querySelector('.primary-navbar');
+    const whiteBar = document.querySelector('.white-bar');
+    const secondaryNavbar = document.getElementById('secondaryNavbar');
+
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 70) {
+        navbar.classList.add('hidden');
+        whiteBar.classList.add('hidden');
+        secondaryNavbar.classList.add('visible');
+      } else {
+        navbar.classList.remove('hidden');
+        whiteBar.classList.remove('hidden');
+        secondaryNavbar.classList.remove('visible');
+      }
+    });
+  </script>
+
+</body>
+
+</html>

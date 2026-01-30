@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reviews Test - Töpfern in Bilk</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .review-item { 
+      background: #f8f9fa; 
+      padding: 15px; 
+      margin: 10px 0; 
+      border-radius: 5px; 
+      border-left: 4px solid #007bff; 
+    }
+    .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+    .success { background: #d4edda; color: #155724; }
+    .error { background: #f8d7da; color: #721c24; }
+    .info { background: #d1ecf1; color: #0c5460; }
+    button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    .delete-btn { background: #dc3545; color: white; border: none; border-radius: 3px; padding: 5px 10px; }
+  </style>
+</head>
+
+<body>
+  <h1>Reviews Management Test</h1>
+  
+  <div id="results"></div>
+  
+  <button onclick="loadReviews()">Bewertungen laden</button>
+  <button onclick="addTestReview()">Test-Bewertung hinzufügen</button>
+  <button onclick="clearResults()">Ergebnisse löschen</button>
+
+  <div id="reviewsList"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <script>
+    const SUPABASE_URL = 'https://hfopvhwxysvqgprhigue.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhmb3B2aHd4eXN2cWdwcmhpZ3VlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzMTg5MTAsImV4cCI6MjA2Njg5NDkxMH0.vq7tOO2u9rVHYCeHudnZMjApi5maCyj7kUp_2MAmHIs';
+    
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function addResult(message, type = 'info') {
+      const results = document.getElementById('results');
+      const div = document.createElement('div');
+      div.className = `test-result ${type}`;
+      div.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+      results.appendChild(div);
+    }
+
+    function clearResults() {
+      document.getElementById('results').innerHTML = '';
+    }
+
+    async function loadReviews() {
+      try {
+        addResult('Loading reviews...', 'info');
+        
+        const { data: reviews, error } = await supabase
+          .from('reviews')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          addResult(`Error loading reviews: ${error.message}`, 'error');
+          return;
+        }
+        
+        addResult(`Loaded ${reviews.length} reviews`, 'success');
+        
+        const reviewsList = document.getElementById('reviewsList');
+        if (reviews.length === 0) {
+          reviewsList.innerHTML = '<p>Keine Bewertungen vorhanden.</p>';
+          return;
+        }
+        
+        const reviewsHTML = reviews.map(review => `
+          <div class="review-item" data-review-id="${review.id}">
+            <strong>${review.name}</strong> - ${new Date(review.created_at).toLocaleDateString('de-DE')}
+            <br>Rating: ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+            <br>${review.comment}
+            <br><button class="delete-btn" onclick="deleteReview(${review.id})">Löschen</button>
+          </div>
+        `).join('');
+        
+        reviewsList.innerHTML = reviewsHTML;
+        
+      } catch (error) {
+        addResult(`Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function addTestReview() {
+      try {
+        addResult('Adding test review...', 'info');
+        
+        const { data, error } = await supabase
+          .from('reviews')
+          .insert({
+            name: 'Test User ' + Date.now(),
+            rating: 5,
+            comment: 'Test review ' + new Date().toLocaleTimeString(),
+            created_at: new Date().toISOString()
+          });
+        
+        if (error) {
+          addResult(`Error adding review: ${error.message}`, 'error');
+        } else {
+          addResult('Test review added successfully', 'success');
+          loadReviews(); // Reload to show new review
+        }
+      } catch (error) {
+        addResult(`Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function deleteReview(reviewId) {
+      if (!confirm('Bewertung wirklich löschen?')) {
+        return;
+      }
+      
+      try {
+        addResult(`Deleting review ${reviewId}...`, 'info');
+        
+        // First check if review exists
+        const { data: existingReview, error: checkError } = await supabase
+          .from('reviews')
+          .select('*')
+          .eq('id', reviewId)
+          .single();
+        
+        if (checkError) {
+          addResult(`Review not found: ${checkError.message}`, 'error');
+          return;
+        }
+        
+        addResult(`Found review: ${existingReview.name}`, 'info');
+        
+        // Delete the review
+        const { data, error } = await supabase
+          .from('reviews')
+          .delete()
+          .eq('id', reviewId);
+        
+        if (error) {
+          addResult(`Delete error: ${error.message}`, 'error');
+        } else {
+          addResult(`Review deleted successfully`, 'success');
+          
+          // Remove from DOM
+          const reviewElement = document.querySelector(`[data-review-id="${reviewId}"]`);
+          if (reviewElement) {
+            reviewElement.remove();
+            addResult('Review removed from display', 'success');
+          }
+        }
+        
+      } catch (error) {
+        addResult(`Error: ${error.message}`, 'error');
+      }
+    }
+
+    // Auto-load reviews on page load
+    window.addEventListener('load', () => {
+      addResult('Page loaded, testing reviews...', 'info');
+      setTimeout(loadReviews, 1000);
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Content Test - Töpfern in Bilk</title>
+  <link rel="icon" href="css/img/logohell.png" type="image/x-icon" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Quicksand&family=Dancing+Script&display=swap" rel="stylesheet" />
+  <style>
+    .test-container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: var(--color-ui);
+      border-radius: 15px;
+    }
+    
+    .test-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+    }
+    
+    .test-section h3 {
+      color: var(--color-text);
+      margin-bottom: 15px;
+    }
+    
+    .content-display {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      border-left: 4px solid var(--color-accent);
+      margin-bottom: 10px;
+    }
+    
+    .content-display h4 {
+      margin: 0 0 10px 0;
+      color: var(--color-text);
+      font-size: 14px;
+    }
+    
+    .content-display p {
+      margin: 0;
+      color: var(--color-text);
+    }
+    
+    .test-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .test-btn {
+      background: var(--color-accent);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    .test-btn:hover {
+      background: #d4894a;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="test-container">
+    <h1>Content Loading Test</h1>
+    <p>Diese Seite testet, ob die dynamischen Inhalte korrekt geladen werden.</p>
+    
+    <div class="test-section">
+      <h3>Hero-Bereich</h3>
+      <div class="content-display">
+        <h4>Hero-Titel:</h4>
+        <p id="heroTitleDisplay">Wird geladen...</p>
+      </div>
+      <div class="content-display">
+        <h4>Hero-Untertitel:</h4>
+        <p id="heroSubtitleDisplay">Wird geladen...</p>
+      </div>
+    </div>
+    
+    <div class="test-section">
+      <h3>Über mich</h3>
+      <div class="content-display">
+        <h4>Über mich Text:</h4>
+        <p id="aboutTextDisplay">Wird geladen...</p>
+      </div>
+    </div>
+    
+    <div class="test-section">
+      <h3>Cranio-Sacrale</h3>
+      <div class="content-display">
+        <h4>Cranio Text:</h4>
+        <p id="cranioTextDisplay">Wird geladen...</p>
+      </div>
+    </div>
+    
+    <div class="test-buttons">
+      <button class="test-btn" onclick="loadContent()">Inhalte neu laden</button>
+      <button class="test-btn" onclick="window.open('admin/login.html', '_blank')">Admin öffnen</button>
+      <button class="test-btn" onclick="window.location.href='index.html'">Zur Hauptseite</button>
+    </div>
+  </div>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <script>
+    // Supabase configuration
+    const SUPABASE_URL = 'https://hfopvhwxysvqgprhigue.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhmb3B2aHd4eXN2cWdwcmhpZ3VlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzMTg5MTAsImV4cCI6MjA2Njg5NDkxMH0.vq7tOO2u9rVHYCeHudnZMjApi5maCyj7kUp_2MAmHIs';
+    
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Load content and display it
+    async function loadContent() {
+      try {
+        console.log('Loading content for test page...');
+        
+        const { data: content, error } = await supabaseClient
+          .from('website_content')
+          .select('*');
+        
+        if (error) {
+          console.error('Error loading content:', error);
+          return;
+        }
+        
+        console.log('Content loaded:', content);
+        
+        // Display content in test elements
+        content.forEach(item => {
+          const displayElement = document.getElementById(item.content_key + 'Display');
+          if (displayElement) {
+            displayElement.textContent = item.content_value;
+            console.log(`Updated ${item.content_key} display`);
+          }
+        });
+        
+        console.log('Test page content updated');
+        
+      } catch (error) {
+        console.error('Error in loadContent:', error);
+      }
+    }
+
+    // Load content on page load
+    document.addEventListener('DOMContentLoaded', loadContent);
+  </script>
+</body>
+</html> 

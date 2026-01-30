@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delete Debug - Töpfern in Bilk</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .debug-section { 
+      background: #f8f9fa; 
+      padding: 20px; 
+      margin: 20px 0; 
+      border-radius: 8px; 
+      border-left: 4px solid #007bff; 
+    }
+    .review-item { 
+      background: white; 
+      padding: 15px; 
+      margin: 10px 0; 
+      border-radius: 5px; 
+      border: 1px solid #ddd; 
+    }
+    .log { 
+      background: #000; 
+      color: #0f0; 
+      padding: 15px; 
+      border-radius: 5px; 
+      font-family: monospace; 
+      font-size: 12px; 
+      max-height: 300px; 
+      overflow-y: auto; 
+    }
+    button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    .delete-btn { background: #dc3545; color: white; border: none; border-radius: 3px; padding: 5px 10px; }
+  </style>
+</head>
+
+<body>
+  <h1>Delete Operation Debug</h1>
+  
+  <div class="debug-section">
+    <h3>Reviews in Database</h3>
+    <button onclick="loadReviews()">Bewertungen laden</button>
+    <button onclick="addTestReview()">Test-Bewertung hinzufügen</button>
+    <button onclick="clearLog()">Log löschen</button>
+    <div id="reviewsList"></div>
+  </div>
+  
+  <div class="debug-section">
+    <h3>Debug Log</h3>
+    <div id="debugLog" class="log"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <script>
+    const SUPABASE_URL = 'https://hfopvhwxysvqgprhigue.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhmb3B2aHd4eXN2cWdwcmhpZ3VlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzMTg5MTAsImV4cCI6MjA2Njg5NDkxMH0.vq7tOO2u9rVHYCeHudnZMjApi5maCyj7kUp_2MAmHIs';
+    
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function log(message) {
+      const logDiv = document.getElementById('debugLog');
+      const timestamp = new Date().toLocaleTimeString();
+      logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+      logDiv.scrollTop = logDiv.scrollHeight;
+      console.log(message);
+    }
+
+    function clearLog() {
+      document.getElementById('debugLog').innerHTML = '';
+    }
+
+    async function loadReviews() {
+      try {
+        log('Loading reviews...');
+        
+        const { data: reviews, error } = await supabase
+          .from('reviews')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          log(`ERROR loading reviews: ${error.message}`);
+          return;
+        }
+        
+        log(`Loaded ${reviews.length} reviews`);
+        
+        const reviewsList = document.getElementById('reviewsList');
+        if (reviews.length === 0) {
+          reviewsList.innerHTML = '<p>Keine Bewertungen vorhanden.</p>';
+          return;
+        }
+        
+        const reviewsHTML = reviews.map(review => `
+          <div class="review-item" data-review-id="${review.id}">
+            <strong>ID: ${review.id}</strong> - ${review.name} - ${new Date(review.created_at).toLocaleDateString('de-DE')}
+            <br>Rating: ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+            <br>${review.comment}
+            <br><button class="delete-btn" onclick="deleteReview(${review.id})">Löschen</button>
+          </div>
+        `).join('');
+        
+        reviewsList.innerHTML = reviewsHTML;
+        
+      } catch (error) {
+        log(`EXCEPTION: ${error.message}`);
+      }
+    }
+
+    async function addTestReview() {
+      try {
+        log('Adding test review...');
+        
+        const { data, error } = await supabase
+          .from('reviews')
+          .insert({
+            name: 'Test User ' + Date.now(),
+            rating: 5,
+            comment: 'Test review ' + new Date().toLocaleTimeString(),
+            created_at: new Date().toISOString()
+          })
+          .select();
+        
+        if (error) {
+          log(`ERROR adding review: ${error.message}`);
+        } else {
+          log(`SUCCESS: Added review with ID ${data[0].id}`);
+          loadReviews();
+        }
+      } catch (error) {
+        log(`EXCEPTION: ${error.message}`);
+      }
+    }
+
+    async function deleteReview(reviewId) {
+      if (!confirm(`Bewertung ${reviewId} wirklich löschen?`)) {
+        return;
+      }
+      
+      try {
+        log(`=== DELETE REVIEW ${reviewId} ===`);
+        
+        // Check if review exists
+        log('Checking if review exists...');
+        const { data: existingReview, error: checkError } = await supabase
+          .from('reviews')
+          .select('*')
+          .eq('id', reviewId)
+          .single();
+        
+        if (checkError) {
+          log(`ERROR checking review: ${checkError.message}`);
+          return;
+        }
+        
+        log(`Found review: ${JSON.stringify(existingReview)}`);
+        
+        // Try to delete
+        log('Attempting delete...');
+        const { data, error } = await supabase
+          .from('reviews')
+          .delete()
+          .eq('id', reviewId)
+          .select();
+        
+        log(`Delete response - data: ${JSON.stringify(data)}`);
+        log(`Delete response - error: ${error ? error.message : 'null'}`);
+        
+        if (error) {
+          log(`ERROR deleting: ${error.message}`);
+        } else {
+          log(`SUCCESS: Review deleted`);
+          
+          // Remove from DOM
+          const reviewElement = document.querySelector(`[data-review-id="${reviewId}"]`);
+          if (reviewElement) {
+            reviewElement.remove();
+            log('Removed from DOM');
+          }
+          
+          // Reload to verify
+          setTimeout(() => {
+            log('Reloading to verify deletion...');
+            loadReviews();
+          }, 1000);
+        }
+        
+        log(`=== DELETE REVIEW ${reviewId} END ===`);
+        
+      } catch (error) {
+        log(`EXCEPTION: ${error.message}`);
+      }
+    }
+
+    // Auto-load on page load
+    window.addEventListener('load', () => {
+      log('Page loaded, starting debug...');
+      setTimeout(loadReviews, 1000);
+    });
+  </script>
+</body>
+</html> 

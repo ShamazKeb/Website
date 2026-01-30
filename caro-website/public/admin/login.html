@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login - Töpfern in Bilk</title>
+  <link rel="icon" href="../css/img/logohell.png" type="image/x-icon" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Quicksand&family=Dancing+Script&display=swap" rel="stylesheet" />
+  <style>
+    .admin-login-container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 40px;
+      background: var(--color-ui);
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .admin-login-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .admin-login-header h1 {
+      color: var(--color-text);
+      margin-bottom: 10px;
+    }
+    
+    .admin-login-header p {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--color-accent);
+    }
+    
+    .login-btn {
+      width: 100%;
+      background: var(--color-accent);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .login-btn:hover {
+      background: #d4894a;
+    }
+    
+    .login-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .error {
+      background: #ffebee;
+      color: #c62828;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .back-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .back-link a {
+      color: var(--color-accent);
+      text-decoration: none;
+      font-size: 14px;
+    }
+    
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="admin-login-container">
+    <div class="admin-login-header">
+      <h1>Admin Login</h1>
+      <p>Bitte melden Sie sich an, um die Website zu verwalten</p>
+    </div>
+    
+    <div id="message"></div>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">Benutzername</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Passwort</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      
+      <button type="submit" class="login-btn" id="loginBtn">Anmelden</button>
+    </form>
+    
+    <div class="back-link">
+      <a href="../index.html">← Zurück zur Website</a>
+    </div>
+  </div>
+
+  <script>
+    // Check if already logged in
+    if (localStorage.getItem('adminLoggedIn') === 'true') {
+      window.location.href = 'dashboard.html';
+    }
+
+    // Login form submission
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const loginBtn = document.getElementById('loginBtn');
+      const messageDiv = document.getElementById('message');
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Anmeldung...';
+      
+      // Simple authentication (in production, use proper server-side auth)
+      if (username === 'admin' && password === 'admin') {
+        // Set admin session
+        localStorage.setItem('adminLoggedIn', 'true');
+        localStorage.setItem('adminLoginTime', Date.now().toString());
+        
+        // Redirect to dashboard
+        window.location.href = 'dashboard.html';
+      } else {
+        messageDiv.innerHTML = '<div class="error">Falscher Benutzername oder Passwort</div>';
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Anmelden';
+      }
+    });
+  </script>
+</body>
+</html> 
