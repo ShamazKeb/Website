@@ -1,0 +1,3 @@
+[submodule "caro-website"]
+	path = caro-website
+	url = https://gitlab.git.nrw/johann.thygs/caro-website.git
