@@ -9,6 +9,7 @@ Thumbs.db
 # Environment Variables (CRITICAL: Do not commit secrets)
 .env
 .env.*
+!.env.example
 
 # Docker
 docker-compose.override.yml
