@@ -1,6 +1,7 @@
 services:
   web:
     build: .
+    container_name: keto-monitor
     ports:
       - "5000:5000"
     volumes:
