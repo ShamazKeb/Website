@@ -152,8 +152,12 @@ echo -e "\n${BLUE}[4/6] Setting up Keto Monitor...${NC}"
 
 if [ -d "keto-monitor" ]; then
     cd keto-monitor
-    # Create config directory if needed
+    # Create config directory and empty db file if missing (prevents Docker directory issue)
     mkdir -p config
+    if [ ! -f "keto.db" ] && [ ! -d "keto.db" ]; then
+        touch keto.db
+        echo -e "${YELLOW}Created empty keto.db file${NC}"
+    fi
     
     docker compose up -d --build
     echo -e "${GREEN}✅ Keto Monitor started${NC}"
@@ -183,6 +187,12 @@ echo -e "\n${BLUE}[6/6] Setting up Handball DB (Complex App)...${NC}"
 
 if [ -d "Handball_DB" ]; then
     cd Handball_DB
+    # Ensure database file exists as file, not directory
+    if [ ! -f "handball.db" ] && [ ! -d "handball.db" ]; then
+        touch handball.db
+        echo -e "${YELLOW}Created empty handball.db file${NC}"
+    fi
+    
     docker compose up -d --build
     echo -e "${GREEN}✅ Handball DB started${NC}"
     cd "$SCRIPT_DIR"
