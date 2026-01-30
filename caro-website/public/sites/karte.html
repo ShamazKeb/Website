@@ -5,9 +5,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Region – Caroline Lülker</title>
-  <link rel="icon" href="../css/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="../css/style.css">
+  <title>Töpfern in Bilk</title>
+  <link rel="icon" href="css/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
@@ -15,32 +15,39 @@
   <!-- PRIMÄRE NAVBAR -->
   <div class="navbar primary-navbar">
     <a href="../index.html"><img src="../css/img/logo.png" class="logo" alt="Logo" /></a>
-    <nav class="nav-links">
+    <nav>
       <ul>
+
         <li><a href="../index.html">Home</a></li>
+        <li><a href="kontakt.html">Kontakt</a></li>
         <li><a href="meine-arbeit.html">Meine Arbeit</a></li>
         <li><a href="rezensionen.html">Rezensionen</a></li>
-        <li><a href="kontakt.html">Kontakt</a></li>
       </ul>
     </nav>
-    <div class="mobile-menu-icon">
-      <img src="../css/img/menu.png" alt="Menü" />
-    </div>
+    <img src="../css/img/menu.png" class="menu-icon" alt="Menü" />
   </div>
+
+
 
   <!-- SEKUNDÄRE NAVBAR (erscheint beim Scrollen) -->
   <div class="navbar secondary-navbar" id="secondaryNavbar">
     <nav>
       <ul>
-        <li><a href="../index.html#about">Über mich</a></li>
+
+        <li><a href="../index.html">Home</a></li>
+        <li><a class="active" href="karte.html">Region</a></li>
         <li><a href="anfahrt.html">Anfahrt</a></li>
-        <li><a href="impressum.html">Impressum</a></li>
       </ul>
     </nav>
   </div>
 
+
+  <!-- SCROLL-OVERLAY -->
+  <div class="white-bar"></div>
+
   <!-- HERO -->
-  <div class="container" style="padding-top: 120px;">
+  <div class="container">
+
     <div class="row">
       <div class="col">
         <h1>Region</h1>
@@ -71,7 +78,24 @@
   </footer>
 
   <!-- SCRIPTS -->
-  <script src="../js/script.js"></script>
+  <script>
+    const navbar = document.querySelector('.primary-navbar');
+    const whiteBar = document.querySelector('.white-bar');
+    const secondaryNavbar = document.getElementById('secondaryNavbar');
+
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 70) {
+        navbar.classList.add('hidden');
+        whiteBar.classList.add('hidden');
+        secondaryNavbar.classList.add('visible');
+      } else {
+        navbar.classList.remove('hidden');
+        whiteBar.classList.remove('hidden');
+        secondaryNavbar.classList.remove('visible');
+      }
+    });
+  </script>
+
 </body>
 
 </html>

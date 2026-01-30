@@ -200,44 +200,37 @@ img {
   border-bottom-color: var(--color-accent);
 }
 
-
-/* ========================================
-   Navbar Styles
-======================================== */
+/* NAVBAR */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
+  background-color: rgba(245, 240, 235, 0.95);
+  backdrop-filter: blur(10px);
   z-index: 1000;
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+  padding: 15px 0;
 }
 
-
-.primary-navbar {
+.nav-container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  background-color: rgba(245, 240, 235, 0.95);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
 }
 
-.primary-navbar .nav-links { /* Target the nav element directly */
-  flex-grow: 1; /* Allow it to take up available space */
-  display: flex;
-  justify-content: center; /* Center the ul inside */
-  gap: 30px;
-  align-items: center;
+.logo {
+  height: 50px;
 }
 
-.nav-links ul {
+.nav-links {
   display: flex;
   gap: 30px;
   align-items: center;
 }
-
 
 .nav-links a {
   font-weight: 500;
@@ -262,21 +255,287 @@ img {
   width: 30px;
 }
 
-.secondary-navbar nav ul {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+/* PHILOSOPHY */
+.philosophy-section {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  text-align: center;
 }
 
+.quote-container blockquote {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-style: italic;
+  max-width: 900px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* ABOUT SECTION */
+.about-image {
+  position: relative;
+}
+
+.profile-img {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.about-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: var(--color-primary);
+}
+
+.about-content p {
+  margin-bottom: 20px;
+  font-size: 1.05rem;
+}
+
+/* SERVICES */
+.section-header {
+  margin-bottom: 60px;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.section-intro {
+  font-size: 1.2rem;
+  color: var(--color-accent);
+  font-family: var(--font-heading);
+  font-style: italic;
+}
+
+.service-detail {
+  align-items: start;
+}
+
+.accordion {
+  margin-top: 20px;
+}
+
+.accordion-toggle {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.accordion-toggle::after {
+  content: '+';
+  font-size: 1.2rem;
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.accordion-content.open {
+  max-height: 500px;
+  margin-top: 15px;
+}
+
+.highlight-box {
+  background-color: var(--color-secondary);
+  padding: 40px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+}
+
+.highlight-box h3 {
+  margin-bottom: 20px;
+  color: var(--color-primary);
+}
+
+.highlight-box ul li {
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.highlight-box ul li::before {
+  content: '•';
+  color: var(--color-accent);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+/* REVIEWS */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.review-card {
+  background-color: var(--color-white);
+  padding: 30px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+  position: relative;
+}
+
+.review-icon {
+  font-size: 3rem;
+  color: var(--color-secondary);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.review-text {
+  font-style: italic;
+  margin-bottom: 20px;
+  color: var(--color-dark-gray);
+}
+
+.review-author {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+/* FOOTER */
+.footer {
+  background-color: var(--color-text);
+  color: var(--color-secondary);
+  padding: 60px 0 20px;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.footer-info h4 {
+  color: var(--color-white);
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-links a:hover {
+  color: var(--color-accent);
+}
+
+.footer-copyright {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* HERO SECTION */
+.hero-section {
+  position: relative;
+  height: 90vh;
+  min-height: 600px;
+  background-image: url('img/hero2.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  margin-top: 80px;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 20px;
+  text-align: left;
+  color: var(--color-white);
+}
+
+.hero-subtitle {
+  display: block;
+  font-family: var(--font-accent);
+  font-size: 2.5rem;
+  color: var(--color-white);
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-section h1 {
+  font-size: 4.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  color: var(--color-white);
+  max-width: 800px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-text {
+  font-size: 1.3rem;
+  margin-bottom: 40px;
+  max-width: 600px;
+  opacity: 1;
+  color: var(--color-white);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-weight: 500;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.hero-buttons .btn-secondary {
+  color: var(--color-white);
+  border-color: var(--color-white);
+}
+
+.hero-buttons .btn-secondary:hover {
+  background-color: var(--color-white);
+  color: var(--color-text);
+}
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .grid-2-col {
     grid-template-columns: 1fr;
   }
-  
-  .nav-links {
-    display: none; /* Hide nav links by default */
+
+  .nav-links,
+  .btn-primary {
+    display: none;
   }
 
   .nav-links.active {
@@ -290,19 +549,9 @@ img {
     padding: 20px;
     box-shadow: var(--shadow-soft);
   }
-  
-  .nav-links.active ul {
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
-  }
 
   .mobile-menu-icon {
     display: block;
-  }
-
-  .secondary-navbar {
-    display: none; /* Hide secondary navbar on mobile */
   }
 
   .hero-section h1 {
@@ -318,6 +567,72 @@ img {
   }
 }
 
+/* ========================================
+   LEGACY / COMPATIBILITY STYLES
+   (Ensures sub-pages like kontakt.html still work)
+======================================== */
+
+/* White Bar Scroll Effect */
+.white-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background-color: var(--color-secondary);
+  box-shadow: 0 9px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  transition: transform 0.4s ease, opacity 1.4s ease;
+}
+
+.white-bar.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+/* Old Navbar Variations */
+.primary-navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  align-items: center;
+}
+
+.primary-navbar nav ul {
+  display: flex;
+  gap: 30px;
+}
+
+.primary-navbar.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.secondary-navbar {
+  position: fixed;
+  top: 80px;
+  right: -250px;
+  width: max-content;
+  max-width: 200px;
+  background: var(--color-secondary);
+  border-radius: 12px 0 0 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  transition: right 0.6s ease, opacity 0.4s ease;
+  opacity: 0;
+  z-index: 30;
+  padding: 20px;
+}
+
+.secondary-navbar.visible {
+  right: 0;
+  opacity: 1;
+}
+
+.secondary-navbar nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
 /* Visitenkarte (Contact Card) */
 .visitenkarte {

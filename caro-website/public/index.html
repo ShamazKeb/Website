@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-widt,h initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Caroline Lülker | Körpertherapie & Cranio-Sacrale Balance</title>
   <link rel="icon" href="css/img/logohell.png" type="image/x-icon" />
   <link rel="stylesheet" href="css/style.css" />
@@ -12,32 +12,28 @@
 
 <body>
 
-  <!-- PRIMÄRE NAVBAR -->
-  <div class="navbar primary-navbar">
-    <a href="index.html"><img src="css/img/logo.png" class="logo" alt="Logo" /></a>
-    <nav class="nav-links">
-      <ul>
+  <!-- NAVIGATION -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo-link">
+        <img src="css/img/logo.png" class="logo" alt="Caroline Lülker Logo" />
+      </a>
+
+      <ul class="nav-links">
         <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="#about">Über mich</a></li>
         <li><a href="sites/meine-arbeit.html">Meine Arbeit</a></li>
         <li><a href="sites/rezensionen.html">Rezensionen</a></li>
         <li><a href="sites/kontakt.html">Kontakt</a></li>
       </ul>
-    </nav>
-    <div class="mobile-menu-icon">
-      <img src="css/img/menu.png" alt="Menü" />
-    </div>
-  </div>
 
-  <!-- SEKUNDÄRE NAVBAR (erscheint beim Scrollen) -->
-  <div class="navbar secondary-navbar" id="secondaryNavbar">
-    <nav>
-      <ul>
-        <li><a href="#about">Über mich</a></li>
-        <li><a href="sites/anfahrt.html">Anfahrt</a></li>
-        <li><a href="sites/impressum.html">Impressum</a></li>
-      </ul>
-    </nav>
-  </div>
+      <a href="sites/kontakt.html" class="btn-primary">Termin vereinbaren</a>
+
+      <div class="mobile-menu-icon">
+        <img src="css/img/menu.png" alt="Menü" />
+      </div>
+    </div>
+  </nav>
 
   <!-- HERO SECTION -->
   <header class="hero-section">
@@ -197,8 +193,17 @@
         button.textContent = "Details zur Wirkung lesen";
       }
     }
+
+    // Mobile Menu Toggle (Simple implementation)
+    const menuIcon = document.querySelector('.mobile-menu-icon');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (menuIcon) {
+      menuIcon.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+    }
   </script>
-  <script src="js/script.js"></script>
   <script src="js/cms.js"></script>
 </body>
 

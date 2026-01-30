@@ -4,8 +4,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rezensionen – Caroline Lülker</title>
-  <link rel="icon" href="../css/img/logo.png" type="image/x-icon" />
+  <title>Rezensionen - Töpfern in Bilk</title>
+  <link rel="icon" href="../css/img/logohell.png" type="image/x-icon" />
   <link rel="stylesheet" href="../css/style.css" />
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Quicksand&family=Dancing+Script&display=swap"
@@ -176,33 +176,31 @@
   <!-- PRIMÄRE NAVBAR -->
   <div class="navbar primary-navbar">
     <a href="../index.html"><img src="../css/img/logo.png" class="logo" alt="Logo" /></a>
-    <nav class="nav-links">
+    <nav>
       <ul>
         <li><a href="../index.html">Home</a></li>
-        <li><a href="meine-arbeit.html">Meine Arbeit</a></li>
-        <li><a href="rezensionen.html" class="active">Rezensionen</a></li>
         <li><a href="kontakt.html">Kontakt</a></li>
+        <li><a href="meine-arbeit.html">Meine Arbeit</a></li>
+        <li><a class="active" href="rezensionen.html">Rezensionen</a></li>
       </ul>
     </nav>
-    <div class="mobile-menu-icon">
-      <img src="../css/img/menu.png" alt="Menü" />
-    </div>
+    <img src="../css/img/menu.png" class="menu-icon" alt="Menü" />
   </div>
 
   <!-- SEKUNDÄRE NAVBAR (erscheint beim Scrollen) -->
   <div class="navbar secondary-navbar" id="secondaryNavbar">
     <nav>
       <ul>
-        <li><a href="../index.html#about">Über mich</a></li>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="karte.html">Region</a></li>
         <li><a href="anfahrt.html">Anfahrt</a></li>
-        <li><a href="impressum.html">Impressum</a></li>
       </ul>
     </nav>
   </div>
 
   <div class="white-bar"></div>
 
-  <div class="container" style="padding-top: 120px;">
+  <div class="container">
     <div class="row">
       <div class="col">
         <h1>Rezensionen & Bewertungen</h1>
@@ -274,5 +272,156 @@
     </div>
   </footer>
 
-  <script src="../js/script.js"></script>
+  <script>
+    // Star rating functionality
+    let selectedRating = 0;
+    const stars = document.querySelectorAll('.star');
+
+    stars.forEach(star => {
+      star.addEventListener('click', () => {
+        const rating = parseInt(star.dataset.rating);
+        selectedRating = rating;
+        document.getElementById('rating').value = rating;
+
+        // Update star display
+        stars.forEach((s, index) => {
+          if (index < rating) {
+            s.classList.add('active');
+          } else {
+            s.classList.remove('active');
+          }
+        });
+      });
+
+      // Hover effect
+      star.addEventListener('mouseenter', () => {
+        const rating = parseInt(star.dataset.rating);
+        stars.forEach((s, index) => {
+          if (index < rating) {
+            s.style.color = '#ffd700';
+          } else {
+            s.style.color = '#ddd';
+          }
+        });
+      });
+
+      star.addEventListener('mouseleave', () => {
+        stars.forEach((s, index) => {
+          if (index < selectedRating) {
+            s.style.color = '#ffd700';
+          } else {
+            s.style.color = '#ddd';
+          }
+        });
+      });
+    });
+
+    // Form submission
+    document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById('submitBtn');
+      const messageDiv = document.getElementById('message');
+
+      const name = document.getElementById('name').value.trim();
+      const rating = document.getElementById('rating').value;
+      const comment = document.getElementById('comment').value.trim();
+
+      if (!name || !rating || !comment) {
+        messageDiv.innerHTML = '<div class="error">Bitte füllen Sie alle Felder aus und wählen Sie eine Bewertung.</div>';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Wird gesendet...';
+
+      try {
+        const response = await fetch('/api/reviews', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, rating: parseInt(rating), content: comment })
+        });
+
+        if (response.ok) {
+          messageDiv.innerHTML = '<div class="success">Vielen Dank! Ihre Bewertung wird nach Prüfung freigeschaltet.</div>';
+
+          // Reset form
+          document.getElementById('name').value = '';
+          document.getElementById('comment').value = '';
+          document.getElementById('rating').value = '';
+          selectedRating = 0;
+          stars.forEach(star => {
+            star.classList.remove('active');
+            star.style.color = '#ddd';
+          });
+
+        } else {
+          throw new Error('Server error');
+        }
+
+      } catch (error) {
+        console.error('Error submitting review:', error);
+        messageDiv.innerHTML = '<div class="error">Fehler beim Senden der Bewertung. Bitte versuchen Sie es erneut.</div>';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Bewertung absenden';
+      }
+    });
+
+    // Load and display reviews
+    async function loadReviews() {
+      const reviewsList = document.getElementById('reviewsList');
+
+      try {
+        const response = await fetch('/api/reviews');
+        const reviews = await response.json();
+
+        if (!reviews || reviews.length === 0) {
+          reviewsList.innerHTML = '<p>Noch keine Bewertungen vorhanden.</p>';
+          return;
+        }
+
+        const reviewsHTML = reviews.map(review => `
+          <div class="review-item">
+            <div class="review-header">
+              <span class="reviewer-name">${review.name}</span>
+              <span class="review-date">${new Date(review.date).toLocaleDateString('de-DE')}</span>
+            </div>
+            <div class="review-stars">
+              ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+            </div>
+            <div class="review-text">${review.content}</div>
+          </div>
+        `).join('');
+
+        reviewsList.innerHTML = reviewsHTML;
+
+      } catch (error) {
+        console.error('Error loading reviews:', error);
+        reviewsList.innerHTML = '<div class="error">Fehler beim Laden der Bewertungen. Bitte versuchen Sie es später erneut.</div>';
+      }
+    }
+
+    // Load reviews on page load
+    document.addEventListener('DOMContentLoaded', loadReviews);
+
+    // Navbar scroll effect
+    const navbar = document.querySelector('.primary-navbar');
+    const whiteBar = document.querySelector('.white-bar');
+    const secondaryNavbar = document.getElementById('secondaryNavbar');
+
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 70) {
+        navbar.classList.add('hidden');
+        whiteBar.classList.add('hidden');
+        secondaryNavbar.classList.add('visible');
+      } else {
+        navbar.classList.remove('hidden');
+        whiteBar.classList.remove('hidden');
+        secondaryNavbar.classList.remove('visible');
+      }
+    });
+  </script>
 </body>
+
+</html>
