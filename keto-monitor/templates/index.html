@@ -1,324 +1,371 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keto Monitor 3.0</title>
+    <title>Keto Monitor 3.0 | Media Intelligence</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;500;600&display=swap');
 
         :root {
-            --primary-bg: #f8f9fa;
-            --secondary-bg: #ffffff;
-            --text-color: #343a40;
-            --secondary-text-color: #6c757d;
-            --accent-color: #28a745;
-            --accent-hover-color: #218838;
-            /* Darker green for hover */
-            --border-color: #dee2e6;
-            --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-            --filter-bg: #e9ecef;
-            /* Slightly darker for filter bar */
-            --summary-border-color: #17a2b8;
-            /* A nice blue for summary */
+            /* Palette: Deep Business Blue & Fresh Emerald */
+            --bg-main: #f4f7f9;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent: #10b981;
+            /* Modern Emerald */
+            --accent-soft: rgba(16, 185, 129, 0.1);
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            padding: 30px 20px;
-            /* Increased padding */
-            max-width: 1100px;
-            /* Slightly reduced max-width for better readability on larger screens */
-            color: var(--text-color);
-            background-color: var(--primary-bg);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
             line-height: 1.6;
+            padding: 40px 20px;
         }
 
-        h1,
-        h2,
-        h3 {
-            font-family: 'Playfair Display', serif;
-            color: var(--accent-color);
-            /* Use accent for main titles */
-            margin-bottom: 15px;
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
-        h1 {
+        /* Header Area */
+        header {
             text-align: center;
-            font-size: 2.8em;
-            margin-bottom: 30px;
+            margin-bottom: 50px;
         }
 
-        h2.topic-title {
-            font-size: 1.8em;
-            margin-bottom: 5px;
-            color: var(--text-color);
-            /* Topic title should be primary text */
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+            margin-bottom: 10px;
         }
 
-        h3 {
-            font-size: 1.3em;
-            color: var(--text-color);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 5px;
+        header p {
+            color: var(--text-secondary);
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.85rem;
         }
 
-        .filter-bar {
-            background: var(--filter-bg);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            display: flex;
-            gap: 15px;
-            /* Increased gap */
-            align-items: center;
-            box-shadow: var(--card-shadow);
-            flex-wrap: wrap;
-            /* Allow wrapping on smaller screens */
-        }
-
-        .filter-bar label {
-            font-weight: 600;
-            color: var(--secondary-text-color);
-        }
-
-        .filter-bar select,
-        .filter-bar input[type="date"],
-        .filter-bar button {
-            padding: 10px 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 1em;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .filter-bar button {
-            background-color: var(--accent-color);
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .filter-bar button:hover {
-            background-color: var(--accent-hover-color);
-        }
-
-        .filter-bar a {
-            color: var(--text-color);
-            /* Reset link color for "Reset" */
-            text-decoration: underline;
-            font-weight: 600;
-            margin-left: auto;
-            /* Pushes reset to the right */
-            transition: color 0.3s ease;
-        }
-
-        .filter-bar a:hover {
-            color: var(--accent-color);
-            text-decoration: none;
-        }
-
-        .topic-card {
-            background: var(--secondary-bg);
-            border: 1px solid var(--border-color);
+        /* Advanced Filter Bar */
+        .filter-section {
+            background: var(--bg-card);
             padding: 25px;
-            margin-bottom: 25px;
-            border-radius: 12px;
-            /* More rounded corners */
-            box-shadow: var(--card-shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .filter-form select,
+        .filter-form input {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            color: var(--text-primary);
+            background-color: #f8fafc;
+            transition: all 0.2s;
+        }
+
+        .filter-form select:focus,
+        .filter-form input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background-color: #fff;
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+
+        .btn-submit {
+            background-color: var(--text-primary);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #0f172a;
+            transform: translateY(-1px);
+        }
+
+        .link-reset {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 10px;
+            transition: color 0.2s;
+        }
+
+        .link-reset:hover {
+            color: var(--accent);
+        }
+
+        /* Topic Cards Styling */
+        .topic-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
         .topic-card:hover {
-            transform: translateY(-5px);
-            /* Subtle lift on hover */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
-        .topic-header {
+        .card-body {
+            padding: 35px;
+        }
+
+        .topic-meta {
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
+            align-items: center;
             margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-            /* Separator */
         }
 
         .topic-date {
-            color: var(--secondary-text-color);
-            font-size: 0.9em;
-            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: var(--bg-main);
+            padding: 4px 12px;
+            border-radius: 20px;
         }
 
-        .summary {
-            background: rgba(40, 167, 69, 0.05);
-            /* Light green background for summary */
-            padding: 20px;
-            border-left: 5px solid var(--summary-border-color);
-            /* Use summary border color */
-            margin: 20px 0;
-            border-radius: 8px;
+        .topic-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.85rem;
+            margin-bottom: 20px;
+            line-height: 1.3;
         }
 
-        .summary strong {
-            color: var(--accent-color);
-            /* Accent for "Summary:" */
-            font-weight: 600;
+        /* The AI Summary Block */
+        .summary-block {
+            background-color: #f0fdf4;
+            /* Very light emerald */
+            border-left: 4px solid var(--accent);
+            padding: 20px 25px;
+            margin-bottom: 30px;
+            border-radius: 0 8px 8px 0;
         }
 
-        .summary p {
-            margin: 10px 0 0 0;
-            font-style: italic;
-            /* Italicize summary text */
+        .summary-block h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .summary-text {
+            font-size: 1.05rem;
+            color: #064e3b;
+            font-weight: 400;
+        }
+
+        /* Sources List */
+        .sources-section h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sources-section h3::after {
+            content: "";
+            flex-grow: 1;
+            height: 1px;
+            background: var(--border-color);
         }
 
         .article-list {
             list-style: none;
-            padding: 0;
         }
 
         .article-item {
-            margin-bottom: 8px;
-            /* More spacing */
-            font-size: 1.05em;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
             display: flex;
-            align-items: baseline;
-            gap: 8px;
-            /* Space between title and source */
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .article-item a {
-            color: var(--accent-color);
+        .article-item:last-child {
+            border-bottom: none;
+        }
+
+        .article-link {
             text-decoration: none;
-            transition: color 0.3s ease, text-decoration 0.3s ease;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+            flex: 1;
+            margin-right: 20px;
         }
 
-        .article-item a:hover {
-            color: var(--accent-hover-color);
-            text-decoration: underline;
+        .article-link:hover {
+            color: var(--accent);
         }
 
-        .article-source {
-            color: var(--secondary-text-color);
-            font-size: 0.8em;
-            flex-shrink: 0;
-            /* Prevent source from shrinking */
+        .source-tag {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
         }
 
-        /* Responsive adjustments */
+        /* Empty State */
+        .no-data {
+            text-align: center;
+            padding: 60px;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            color: var(--text-secondary);
+        }
+
         @media (max-width: 768px) {
-            body {
-                padding: 20px 15px;
+            .filter-form {
+                grid-template-columns: 1fr;
             }
 
-            h1 {
-                font-size: 2.2em;
-            }
-
-            .filter-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .filter-bar form {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .filter-bar a {
-                margin-left: 0;
-                margin-top: 10px;
-                text-align: center;
-            }
-
-            .topic-card {
-                padding: 20px;
-            }
-
-            .topic-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .topic-title {
-                font-size: 1.5em;
-            }
-
-            .article-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-            }
-
-            .article-source {
-                margin-left: 0;
-                margin-top: 3px;
+            header h1 {
+                font-size: 2.2rem;
             }
         }
     </style>
 </head>
 
 <body>
-    <h1>Keto Monitor 3.0</h1>
+    <div class="container">
+        <header>
+            <p>Intelligence Platform</p>
+            <h1>Keto Monitor 3.0</h1>
+        </header>
 
-    <div class="filter-bar">
-        <form action="/" method="get" style="display: flex; gap: 10px; align-items: center; width: 100%;">
-            <label>Company:</label>
-            <select name="company">
-                <option value="">All Companies</option>
-                {% for company in companies %}
-                <option value="{{ company.slug }}" {% if selected_company==company.slug %}selected{% endif %}>
-                    {{ company.name }}
-                </option>
-                {% endfor %}
-            </select>
+        <section class="filter-section">
+            <form action="/" method="get" class="filter-form">
+                <div class="filter-group">
+                    <label>Unternehmen</label>
+                    <select name="company">
+                        <option value="">Alle Unternehmen</option>
+                        {% for company in companies %}
+                        <option value="{{ company.slug }}" {% if selected_company==company.slug %}selected{% endif %}>
+                            {{ company.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-            <label>From:</label>
-            <input type="date" name="from" value="{{ selected_from or '' }}">
+                <div class="filter-group">
+                    <label>Von</label>
+                    <input type="date" name="from" value="{{ selected_from or '' }}">
+                </div>
 
-            <label>To:</label>
-            <input type="date" name="to" value="{{ selected_to or '' }}">
+                <div class="filter-group">
+                    <label>Bis</label>
+                    <input type="date" name="to" value="{{ selected_to or '' }}">
+                </div>
 
-            <button type="submit">Filter</button>
-            <a href="/" style="margin-left: auto;">Reset</a>
-        </form>
-    </div>
+                <div class="filter-group">
+                    <button type="submit" class="btn-submit">Analyse starten</button>
+                    <a href="/" class="link-reset">Zurücksetzen</a>
+                </div>
+            </form>
+        </section>
 
-    <div class="topics-container">
-        {% if not topics %}
-        <p>No topics found for the selected criteria.</p>
-        {% endif %}
-
-        {% for topic in topics %}
-        <div class="topic-card">
-            <div class="topic-header">
-                <h2 class="topic-title">{{ topic.title }}</h2>
-                <span class="topic-date">{{ topic.updated_at.strftime('%Y-%m-%d %H:%M') }}</span>
-            </div>
-
-            {% if topic.summaries %}
-            <div class="summary">
-                <strong>Summary:</strong>
-                <p style="margin: 5px 0;">{{ topic.summaries[-1].summary_text }}</p>
+        <main class="topics-container">
+            {% if not topics %}
+            <div class="no-data">
+                <p>Keine Themen für die gewählten Kriterien gefunden.</p>
             </div>
             {% endif %}
 
-            <h3>Sources</h3>
-            <ul class="article-list">
-                {% for ta in topic.topic_articles %}
-                <li class="article-item">
-                    <a href="{{ ta.article.url }}" target="_blank">{{ ta.article.title }}</a>
-                    <span class="article-source">
-                        ({{ ta.article.source_name }} - {{ ta.article.published_at.strftime('%Y-%m-%d') if
-                        ta.article.published_at else 'N/A' }})
-                    </span>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endfor %}
+            {% for topic in topics %}
+            <article class="topic-card">
+                <div class="card-body">
+                    <div class="topic-meta">
+                        <span class="topic-date">{{ topic.updated_at.strftime('%d. %b %Y, %H:%M') }}</span>
+                    </div>
+
+                    <h2 class="topic-title">{{ topic.title }}</h2>
+
+                    {% if topic.summaries %}
+                    <div class="summary-block">
+                        <h4>KI-Zusammenfassung</h4>
+                        <div class="summary-text">
+                            {{ topic.summaries[-1].summary_text }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="sources-section">
+                        <h3>Quellenbericht</h3>
+                        <ul class="article-list">
+                            {% for ta in topic.topic_articles %}
+                            <li class="article-item">
+                                <a href="{{ ta.article.url }}" target="_blank" class="article-link">
+                                    {{ ta.article.title }}
+                                </a>
+                                <span class="source-tag">
+                                    {{ ta.article.source_name }} • {{ ta.article.published_at.strftime('%d.%m.%y') if
+                                    ta.article.published_at else 'N/A' }}
+                                </span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </main>
     </div>
 </body>
 
