@@ -12,9 +12,9 @@ from app.routers import auth, test_rbac, teams, exercises, measurements, player_
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # This is not needed if you use Alembic for migrations
-    # async with engine.begin() as conn:
-    #     await conn.run_sync(Base.metadata.create_all)
+    # Enable automatic table creation for initialization
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     yield
 
 
