@@ -19,6 +19,7 @@
     <div class="nav-container">
       <a href="index.html" class="logo-link">
         <img src="css/img/logo.png" class="logo" alt="Caroline Lülker Logo" />
+        <span class="logo-text">Caroline Lülker</span>
       </a>
 
       <ul class="nav-links">
@@ -26,7 +27,7 @@
         <li><a href="#about">Über mich</a></li>
         <li><a href="sites/meine-arbeit.html">Meine Arbeit</a></li>
         <li><a href="sites/rezensionen.html">Rezensionen</a></li>
-        <li><a href="sites/kontakt.html">Kontakt</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
       </ul>
 
       <!-- Button removed -->
@@ -74,7 +75,7 @@
       </div>
       <div class="about-content">
         <h2>Über mich</h2>
-        <div data-content-key="home_about_text" style="white-space: pre-line; line-height: 1.6; margin-bottom: 20px;">
+        <div data-content-key="home_about_text" class="content-block-text">
           Ich möchte gar nicht viel über mich sprechen, da es hier um Dich geht. Du bist hier, weil ein Teil in Dir
           entschieden hat, eine tiefere Verbindung mit Dir selbst einzugehen.
 
@@ -224,6 +225,13 @@
     if (mobileMenuIcon) {
       mobileMenuIcon.addEventListener('click', () => {
         navLinks.classList.toggle('active');
+      });
+
+      // Close mobile menu when a link is clicked
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('active');
+        });
       });
     }
   </script>
