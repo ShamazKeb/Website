@@ -32,17 +32,29 @@
       <!-- Button removed -->
 
       <div class="mobile-menu-icon">
-        <img src="../css/img/menu.png" alt="Menü" />
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </div>
   </nav>
 
+  <!-- SECONDARY NAVIGATION (appears on scroll) -->
 
-  <section class="section-padding bg-light">
-    <div class="container">
-      <h1 class="text-center page-title">Region</h1>
-      <div class="content-narrow">
-        <p>Die Praxis befindet sich in Düsseldorf-Bilk, einem zentralen und gut erreichbaren Stadtteil.</p>
+
+  <!-- MAIN CONTENT: KARTE -->
+  <section class="section-padding" style="margin-top: 80px;">
+    <div class="container" style="text-align: center;">
+      <h1>Interaktive Karte</h1>
+      <p style="margin-bottom: 20px;">Hier können Sie meine Praxis in Düsseldorf-Bilk finden.</p>
+
+      <div
+        style="width: 100%; max-width: 800px; margin: 0 auto; height: 500px; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-soft);">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9833.309876059873!2d7.6074904415099205!3d51.96445445260146!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9babf84b1ee0f%3A0xe460aa29239f371b!2sSchlosspl.%2C%2048143%20M%C3%BCnster!5e0!3m2!1sde!2sde!4v1747063613933!5m2!1sde!2sde"
+          width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
       </div>
     </div>
   </section>
@@ -93,6 +105,14 @@
     if (mobileMenuIcon) {
       mobileMenuIcon.addEventListener('click', () => {
         navLinks.classList.toggle('active');
+        mobileMenuIcon.classList.toggle('active');
+      });
+      // Close mobile menu when a link is clicked
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('active');
+          mobileMenuIcon.classList.remove('active');
+        });
       });
     }
   </script>

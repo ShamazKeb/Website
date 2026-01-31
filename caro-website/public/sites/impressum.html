@@ -31,7 +31,9 @@
       <!-- Button removed -->
 
       <div class="mobile-menu-icon">
-        <img src="../css/img/menu.png" alt="Menü" />
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </div>
   </nav>
@@ -39,14 +41,18 @@
   <!-- SECONDARY NAVIGATION (appears on scroll) -->
 
 
-  <section class="section-padding bg-light">
+  <!-- MAIN CONTENT -->
+  <section class="section-padding" style="margin-top: 80px;">
     <div class="container">
-      <h1 class="text-center page-title">Impressum</h1>
-      <div class="content-narrow">
-        <h3>Angaben gemäß § 5 TMG</h3>
+      <div class="content-block">
+        <h1>Impressum</h1>
+        <p>Angaben gemäß § 5 TMG</p>
+
+        <h3>Kontakt</h3>
         <p>
           Caroline Lülker<br>
-          Wilhelm-Dunkering-Weg 70<br>
+          Körpertherapie & Coaching<br>
+          Musterstraße 123<br>
           28357 Bremen-Borgfeld<br>
           Telefon: 0176 - 80 12 80 28<br>
           E-Mail: info@koerpertherapie-cl.de
@@ -179,6 +185,15 @@
     if (mobileMenuIcon) {
       mobileMenuIcon.addEventListener('click', () => {
         navLinks.classList.toggle('active');
+        mobileMenuIcon.classList.toggle('active');
+      });
+
+      // Close mobile menu when a link is clicked
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('active');
+          mobileMenuIcon.classList.remove('active');
+        });
       });
     }
   </script>

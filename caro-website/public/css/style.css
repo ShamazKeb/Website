@@ -265,14 +265,16 @@ img {
   white-space: nowrap;
 }
 
+/* Logo Styles */
 .logo {
   height: 50px;
+  mix-blend-mode: multiply;
+  /* Makes white background transparent */
 }
 
-/* Mobile Nav Links (Hidden by default) */
+/* Mobile Nav Links (Hidden by default with animation) */
 .nav-links {
-  display: none;
-  /* Hidden on mobile by default */
+  display: flex;
   flex-direction: column;
   position: fixed;
   top: 80px;
@@ -286,10 +288,54 @@ img {
   align-items: center;
   justify-content: flex-start;
   gap: 20px;
+
+  /* Animation State: Hidden */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease-in-out;
+  pointer-events: none;
+  /* Prevent clicks when hidden */
 }
 
 .nav-links.active {
-  display: flex;
+  /* Animation State: Visible */
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Staggered Link Animation */
+.nav-links li {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease-in-out;
+}
+
+.nav-links.active li {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.nav-links.active li:nth-child(1) {
+  transition-delay: 0.1s;
+}
+
+.nav-links.active li:nth-child(2) {
+  transition-delay: 0.15s;
+}
+
+.nav-links.active li:nth-child(3) {
+  transition-delay: 0.2s;
+}
+
+.nav-links.active li:nth-child(4) {
+  transition-delay: 0.25s;
+}
+
+.nav-links.active li:nth-child(5) {
+  transition-delay: 0.3s;
 }
 
 .nav-links a {
@@ -311,45 +357,80 @@ img {
   background-color: var(--color-accent);
 }
 
-/* Mobile Menu Icon */
+/* Mobile Menu Icon (CSS Hamburger) */
 .mobile-menu-icon {
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
   cursor: pointer;
-  width: 44px;
-  height: 44px;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.05);
-  border-radius: 50%;
+  background-color: transparent;
+  border-radius: 0;
+  z-index: 1001;
+  /* Ensure above nav-links if needed */
 }
 
-.mobile-menu-icon img {
-  width: 60%;
-  height: 60%;
-  filter: brightness(0.2);
+/* Hamburger Lines */
+.mobile-menu-icon span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: var(--color-text);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+/* Animation to Cross (X) */
+.mobile-menu-icon.active span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.mobile-menu-icon.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-icon.active span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
 }
 
 /* Desktop Styles */
 @media (min-width: 769px) {
+  .logo {
+    mix-blend-mode: normal;
+    /* Reset blend mode if background changes (optional) */
+  }
+
   .nav-container {
     padding: 0 40px;
   }
 
+  /* Nav Links Desktop Overrides */
   .nav-links {
     display: flex;
     flex-direction: row;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: auto;
+    position: static;
     height: auto;
+    width: auto;
     background-color: transparent;
     padding: 0;
     box-shadow: none;
     overflow-y: visible;
-    justify-content: center;
     gap: 30px;
+    justify-content: center;
+
+    /* Reset Animation Properties so it's always visible on desktop */
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .nav-links li {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 
   .nav-links a {

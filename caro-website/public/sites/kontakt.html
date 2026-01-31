@@ -31,7 +31,9 @@
       </ul>
 
       <div class="mobile-menu-icon">
-        <img src="../css/img/menu.png" alt="Menü" />
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </div>
   </nav>
@@ -128,10 +130,12 @@
     if (mobileMenuIcon) {
       mobileMenuIcon.addEventListener('click', () => {
         navLinks.classList.toggle('active');
+        mobileMenuIcon.classList.toggle('active');
       });
       navLinks.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
           navLinks.classList.remove('active');
+          mobileMenuIcon.classList.remove('active');
         });
       });
     }
