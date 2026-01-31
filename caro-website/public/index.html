@@ -12,8 +12,10 @@
 
 <body>
 
-  <!-- NAVIGATION -->
-  <nav class="navbar">
+
+
+  <!-- PRIMARY NAVIGATION -->
+  <nav class="navbar primary-navbar">
     <div class="nav-container">
       <a href="index.html" class="logo-link">
         <img src="css/img/logo.png" class="logo" alt="Caroline Lülker Logo" />
@@ -27,13 +29,16 @@
         <li><a href="sites/kontakt.html">Kontakt</a></li>
       </ul>
 
-      <a href="sites/kontakt.html" class="btn-primary">Termin vereinbaren</a>
+      <!-- Button removed -->
 
       <div class="mobile-menu-icon">
         <img src="css/img/menu.png" alt="Menü" />
       </div>
     </div>
   </nav>
+
+  <!-- SECONDARY NAVIGATION (appears on scroll) -->
+
 
   <!-- HERO SECTION -->
   <header class="hero-section">
@@ -194,12 +199,30 @@
       }
     }
 
-    // Mobile Menu Toggle (Simple implementation)
-    const menuIcon = document.querySelector('.mobile-menu-icon');
-    const navLinks = document.querySelector('.nav-links');
+    // Smart Scroll Navbar Logic
+    const primaryNavbar = document.querySelector('.primary-navbar');
+    let lastScrollY = window.scrollY;
 
-    if (menuIcon) {
-      menuIcon.addEventListener('click', () => {
+    window.addEventListener('scroll', function () {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY && currentScrollY > 70) {
+        // Scrolling DOWN and past threshold -> Hide
+        primaryNavbar.classList.add('hidden');
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling UP -> Show
+        primaryNavbar.classList.remove('hidden');
+      }
+
+      lastScrollY = currentScrollY;
+    });
+
+    // Mobile Menu Toggle (from primary navbar)
+    const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
+    const navLinks = document.querySelector('.primary-navbar .nav-links'); // Target primary nav-links
+
+    if (mobileMenuIcon) {
+      mobileMenuIcon.addEventListener('click', () => {
         navLinks.classList.toggle('active');
       });
     }

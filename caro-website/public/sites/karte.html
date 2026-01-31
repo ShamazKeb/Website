@@ -12,38 +12,31 @@
 </head>
 
 <body>
-  <!-- PRIMÄRE NAVBAR -->
-  <div class="navbar primary-navbar">
-    <a href="../index.html"><img src="../css/img/logo.png" class="logo" alt="Logo" /></a>
-    <nav>
-      <ul>
 
+
+  <!-- PRIMARY NAVIGATION -->
+  <nav class="navbar primary-navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo-link">
+        <img src="../css/img/logo.png" class="logo" alt="Caroline Lülker Logo" />
+      </a>
+
+      <ul class="nav-links">
         <li><a href="../index.html">Home</a></li>
-        <li><a href="kontakt.html">Kontakt</a></li>
+        <li><a href="../index.html#about">Über mich</a></li>
         <li><a href="meine-arbeit.html">Meine Arbeit</a></li>
         <li><a href="rezensionen.html">Rezensionen</a></li>
+        <li><a href="kontakt.html">Kontakt</a></li>
       </ul>
-    </nav>
-    <img src="../css/img/menu.png" class="menu-icon" alt="Menü" />
-  </div>
 
+      <!-- Button removed -->
 
+      <div class="mobile-menu-icon">
+        <img src="../css/img/menu.png" alt="Menü" />
+      </div>
+    </div>
+  </nav>
 
-  <!-- SEKUNDÄRE NAVBAR (erscheint beim Scrollen) -->
-  <div class="navbar secondary-navbar" id="secondaryNavbar">
-    <nav>
-      <ul>
-
-        <li><a href="../index.html">Home</a></li>
-        <li><a class="active" href="karte.html">Region</a></li>
-        <li><a href="anfahrt.html">Anfahrt</a></li>
-      </ul>
-    </nav>
-  </div>
-
-
-  <!-- SCROLL-OVERLAY -->
-  <div class="white-bar"></div>
 
   <!-- HERO -->
   <div class="container">
@@ -79,21 +72,31 @@
 
   <!-- SCRIPTS -->
   <script>
-    const navbar = document.querySelector('.primary-navbar');
-    const whiteBar = document.querySelector('.white-bar');
-    const secondaryNavbar = document.getElementById('secondaryNavbar');
+    // Smart Scroll Navbar Logic
+    const primaryNavbar = document.querySelector('.primary-navbar');
+    let lastScrollY = window.scrollY;
 
     window.addEventListener('scroll', function () {
-      if (window.scrollY > 70) {
-        navbar.classList.add('hidden');
-        whiteBar.classList.add('hidden');
-        secondaryNavbar.classList.add('visible');
-      } else {
-        navbar.classList.remove('hidden');
-        whiteBar.classList.remove('hidden');
-        secondaryNavbar.classList.remove('visible');
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY && currentScrollY > 70) {
+        primaryNavbar.classList.add('hidden');
+      } else if (currentScrollY < lastScrollY) {
+        primaryNavbar.classList.remove('hidden');
       }
+
+      lastScrollY = currentScrollY;
     });
+
+    // Mobile Menu Toggle (from primary navbar)
+    const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
+    const navLinks = document.querySelector('.primary-navbar .nav-links'); // Target primary nav-links
+
+    if (mobileMenuIcon) {
+      mobileMenuIcon.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+    }
   </script>
 
 </body>
