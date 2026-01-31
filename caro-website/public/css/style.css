@@ -693,6 +693,7 @@ img {
 .hero-section {
   position: relative;
   height: 90vh;
+  /* Default for Home */
   min-height: 600px;
   background-image: url('img/hero2.png');
   background-size: cover;
@@ -700,6 +701,12 @@ img {
   display: flex;
   align-items: center;
   margin-top: 80px;
+}
+
+/* Subpage Hero Modifier */
+.hero-section.subpage-hero {
+  height: 50vh;
+  min-height: 400px;
 }
 
 .hero-section::before {
