@@ -20,7 +20,7 @@ services:
         # Replace this with your actual public URL or Pi IP if accessed from outside
         # For internal NPM proxying, this must be reachable by the client-side browser
         # - REACT_APP_API_URL=https://api.thy-projects.com
-        - REACT_APP_API_URL=/api
+        - REACT_APP_API_URL=http://localhost:8001
     container_name: handball-frontend
     restart: unless-stopped
     ports:
