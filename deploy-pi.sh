@@ -244,7 +244,7 @@ echo -e "  Nginx Proxy Manager:  http://$PI_IP:81"
 echo -e "  Landing Page:         via NPM proxy"
 echo -e "  Keto Monitor:         http://$PI_IP:5000"
 echo -e "  Handball Tracker:     http://$PI_IP:8000"
-echo -e "  Handball DB Backend:  http://$PI_IP:8000 (Complex)"
+echo -e "  Handball DB Backend:  http://$PI_IP:8001 (Complex)"
 echo -e "  Caro Website:         http://$PI_IP:8080 (via NPM with domain)"
 echo -e "  UPE Website:          http://$PI_IP:8086"
 
