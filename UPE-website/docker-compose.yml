@@ -1,10 +1,21 @@
 services:
+  upe-backend:
+    build: ./backend
+    container_name: upe-backend
+    restart: unless-stopped
+    volumes:
+      - ./backend/upe.db:/app/upe.db
+    networks:
+      - web-public
+
   upe:
     build: .
     container_name: upe
     restart: unless-stopped
     ports:
       - "8087:80"
+    depends_on:
+      - upe-backend
     networks:
       - web-public
 
