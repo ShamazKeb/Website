@@ -23,6 +23,8 @@ services:
         - REACT_APP_API_URL=/api
     container_name: handball-frontend
     restart: unless-stopped
+    depends_on:
+      - handball-backend
     ports:
       - "3000:80"
     networks:

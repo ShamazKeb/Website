@@ -4,7 +4,7 @@ services:
     container_name: upe-backend
     restart: unless-stopped
     volumes:
-      - ./backend/upe.db:/app/upe.db
+      - ./backend/data:/app/data
     networks:
       - web-public
 
