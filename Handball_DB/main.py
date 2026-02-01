@@ -30,7 +30,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "https://handball.thy-projects.com",
-        "http://handball.thy-projects.com"
+        "http://handball.thy-projects.com",
+        "http://localhost"
     ],
     allow_credentials=True,
     allow_methods=["*"],
