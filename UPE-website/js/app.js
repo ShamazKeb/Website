@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const formMessage = document.getElementById('form-message');
 
     // --- API SETUP ---
-    const API_URL = 'http://127.0.0.1:8000';
+    const API_URL = '';
 
     // --- DATA ---
     let masterBeverageList = [];
@@ -19,14 +19,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const totalAlcoholVolume = volume * (alcohol / 100);
         return totalAlcoholVolume / price;
     };
-    
+
     const renderLeaderboard = (data) => {
         leaderboardContainer.innerHTML = '';
         if (data.length === 0) {
             leaderboardContainer.innerHTML = `<div class="text-center text-gray-300 p-8">Keine Ergebnisse gefunden.</div>`;
             return;
         }
-        
+
         data.forEach(bev => {
             bev.upe = calculateUPE(bev.volume, bev.price, bev.alcohol_content);
         });
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             leaderboardContainer.appendChild(item);
         });
     };
-    
+
     const applyFilters = () => {
         const typeFilter = filterType.value;
         const storeFilter = filterStore.value;
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const newUpe = calculateUPE(newBeverage.volume, newBeverage.price, newBeverage.alcohol_content);
         const isNewTopDeal = masterBeverageList.every(bev => newUpe > calculateUPE(bev.volume, bev.price, bev.alcohol_content));
-        
+
         const success = await addBeverage(newBeverage);
 
         if (success) {
@@ -133,12 +133,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             formMessage.textContent = 'Getränk erfolgreich hinzugefügt!';
             formMessage.style.color = '#34d399';
             beverageForm.reset();
-            
+
             if (isNewTopDeal && confetti) {
                 confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } });
             }
         }
-        
+
         setTimeout(() => formMessage.textContent = '', 3000);
         submitButton.disabled = false;
         submitButton.textContent = 'Berechnen & Einreichen';
