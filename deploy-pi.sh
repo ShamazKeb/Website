@@ -246,7 +246,7 @@ echo -e "  Keto Monitor:         http://$PI_IP:5000"
 echo -e "  Handball Tracker:     http://$PI_IP:8000"
 echo -e "  Handball DB Backend:  http://$PI_IP:8001 (Complex)"
 echo -e "  Caro Website:         http://$PI_IP:8080 (via NPM with domain)"
-echo -e "  UPE Website:          http://$PI_IP:8086"
+echo -e "  UPE Website:          http://$PI_IP:8087"
 
 echo -e "\n${YELLOW}NPM Default Login:${NC}"
 echo -e "  Email:    admin@example.com"
