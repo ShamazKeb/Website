@@ -217,7 +217,7 @@ fi
 # ============================================================
 # Step 8: Setup UPE Website
 # ============================================================
-echo -e "\n${BLUE}[8/8] Setting up UPE Website...${NC}"
+echo -e "\n${BLUE}[8/9] Setting up UPE Website...${NC}"
 
 if [ -d "UPE-website" ]; then
     cd UPE-website
@@ -226,6 +226,22 @@ if [ -d "UPE-website" ]; then
     cd "$SCRIPT_DIR"
 else
     echo -e "${YELLOW}⚠️  UPE-website/ directory not found, skipping${NC}"
+fi
+
+# ============================================================
+# Step 9: Setup 50Liter Challenge
+# ============================================================
+echo -e "\n${BLUE}[9/9] Setting up 50Liter Challenge...${NC}"
+
+if [ -d "50Liter" ]; then
+    cd 50Liter
+    # Create data directory for persistent database
+    mkdir -p data
+    docker compose up -d --build
+    echo -e "${GREEN}✅ 50Liter Challenge started${NC}"
+    cd "$SCRIPT_DIR"
+else
+    echo -e "${YELLOW}⚠️  50Liter/ directory not found, skipping${NC}"
 fi
 
 # ============================================================
@@ -247,6 +263,7 @@ echo -e "  Handball Tracker:     http://$PI_IP:8000"
 echo -e "  Handball DB Backend:  http://$PI_IP:8001 (Complex)"
 echo -e "  Caro Website:         http://$PI_IP:8080 (via NPM with domain)"
 echo -e "  UPE Website:          http://$PI_IP:8087 (with backend)"
+echo -e "  50Liter Challenge:    http://$PI_IP:8085"
 
 echo -e "\n${YELLOW}NPM Default Login:${NC}"
 echo -e "  Email:    admin@example.com"
