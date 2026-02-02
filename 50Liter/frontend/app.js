@@ -55,7 +55,7 @@ function setupEventListeners() {
     pushupCountInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') submitPushups();
     });
-    
+
     searchInput.addEventListener('input', (e) => renderPlayers(e.target.value));
 }
 
@@ -72,7 +72,7 @@ function setupTabs() {
             // Update content
             document.getElementById('players-tab').classList.toggle('hidden', tab !== 'players');
             document.getElementById('leaderboard-tab').classList.toggle('hidden', tab !== 'leaderboard');
-            
+
             // Show/hide search based on tab
             searchInput.parentElement.style.display = tab === 'players' ? 'block' : 'none';
 
@@ -102,7 +102,7 @@ async function loadData() {
         players = await playersRes.json();
         const stats = await statsRes.json();
         leaderboard = await leaderboardRes.json();
-        
+
         updateStats(stats);
         renderPlayers();
         renderLeaderboard();
@@ -124,22 +124,38 @@ function updateStats(stats) {
 }
 
 function renderPlayers(filter = '') {
-    const sortedPlayers = [...players].sort((a, b) => {
+    const normalize = str => str.toLowerCase();
+    const query = normalize(filter);
+
+    // Initial filter
+    let displayPlayers = players.filter(p => normalize(p.name).includes(query));
+
+    // Sort logic
+    displayPlayers.sort((a, b) => {
+        // 1. Search Relevance (if searching)
+        if (query) {
+            const aStarts = normalize(a.name).startsWith(query);
+            const bStarts = normalize(b.name).startsWith(query);
+            if (aStarts && !bStarts) return -1;
+            if (!aStarts && bStarts) return 1;
+        }
+
+        // 2. Completion Status (Unfinished first)
         const aCompleted = a.total_remaining === 0;
         const bCompleted = b.total_remaining === 0;
         if (aCompleted && !bCompleted) return 1;
         if (!aCompleted && bCompleted) return -1;
+
+        // 3. Alphabetical
         return a.name.localeCompare(b.name);
     });
-    
-    const filteredPlayers = sortedPlayers.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()));
 
-    if (filteredPlayers.length === 0) {
+    if (displayPlayers.length === 0) {
         playersGrid.innerHTML = `<div class="loading">Keine Spieler gefunden.</div>`;
         return;
     }
 
-    playersGrid.innerHTML = filteredPlayers.map(player => {
+    playersGrid.innerHTML = displayPlayers.map(player => {
         const target = player.target_goal;
         const progress = (player.total_remaining / target) * 100;
         const isCompleted = player.total_remaining === 0;
@@ -185,7 +201,7 @@ function openModal(playerId) {
     modalRemainingEl.innerHTML = `Noch <span>${selectedPlayer.total_remaining}</span> übrig`;
     pushupCountInput.value = '';
     pushupCountInput.max = selectedPlayer.total_remaining;
-    
+
     modalOverlay.classList.add('active');
     setTimeout(() => pushupCountInput.focus(), 100);
 }
@@ -219,7 +235,7 @@ async function submitPushups() {
             const err = await response.json();
             throw new Error(err.detail || 'Failed to save');
         }
-        
+
         // Success feedback
         submitBtn.innerHTML = '<span>Gespeichert! ✓</span>';
 
