@@ -57,6 +57,64 @@ header h1 {
     margin: 0 auto;
 }
 
+/* Global Progress Bar */
+.progress-section {
+    max-width: 800px;
+    margin: 0 auto 2rem;
+    padding: 0 1rem;
+}
+
+.global-progress-bar {
+    height: 32px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.global-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f1c40f, #f39c12);
+    width: 0%;
+    transition: width 1s ease-in-out;
+    box-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+    position: relative;
+}
+
+/* Shine effect */
+.global-progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0) 100%);
+    z-index: 1;
+}
+
+.global-progress-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    z-index: 2;
+    letter-spacing: 0.5px;
+}
+
 /* Stats Bar */
 .stats-bar {
     display: flex;
@@ -453,9 +511,17 @@ header h1 {
     text-align: center;
 }
 
-.leaderboard-entry:nth-child(1) .leaderboard-rank { color: var(--gold); }
-.leaderboard-entry:nth-child(2) .leaderboard-rank { color: #c0c0c0; }
-.leaderboard-entry:nth-child(3) .leaderboard-rank { color: #cd7f32; }
+.leaderboard-entry:nth-child(1) .leaderboard-rank {
+    color: var(--gold);
+}
+
+.leaderboard-entry:nth-child(2) .leaderboard-rank {
+    color: #c0c0c0;
+}
+
+.leaderboard-entry:nth-child(3) .leaderboard-rank {
+    color: #cd7f32;
+}
 
 .leaderboard-name {
     font-weight: 600;
@@ -467,7 +533,8 @@ header h1 {
 }
 
 .leaderboard-progress {
-    display: none; /* Hidden on mobile by default */
+    display: none;
+    /* Hidden on mobile by default */
 }
 
 .leaderboard-percentage {
@@ -486,7 +553,7 @@ header h1 {
     .container {
         padding: 2rem;
     }
-    
+
     header h1 {
         font-size: 2.5rem;
     }
@@ -544,7 +611,7 @@ header h1 {
     .progress-fill {
         border-radius: 4px;
     }
-    
+
     .tabs {
         gap: 1rem;
         margin-bottom: 2rem;
@@ -559,7 +626,7 @@ header h1 {
     .leaderboard {
         border-radius: 16px;
     }
-    
+
     .leaderboard-entry {
         grid-template-columns: 60px 1fr 120px 80px;
         padding: 1rem 1.5rem;
@@ -579,24 +646,24 @@ header h1 {
         flex-direction: column;
         gap: 0.25rem;
     }
-    
+
     .leaderboard-progress-bar {
         height: 6px;
         background: rgba(255, 255, 255, 0.1);
         border-radius: 3px;
         overflow: hidden;
     }
-    
+
     .leaderboard-progress-fill {
         height: 100%;
         background: linear-gradient(90deg, var(--accent), #ff8a80);
         transition: width 0.5s ease;
     }
-    
+
     .leaderboard-entry.completed .leaderboard-progress-fill {
         background: var(--success);
     }
-    
+
     .leaderboard-progress-text {
         font-size: 0.75rem;
         color: var(--text-secondary);

@@ -121,6 +121,28 @@ async function loadData() {
 function updateStats(stats) {
     totalDoneEl.textContent = stats.total_done.toLocaleString('de-DE');
     completedPlayersEl.textContent = stats.completed_players;
+
+    // Global Progress Bar
+    const totalTarget = stats.total_done + stats.total_remaining;
+    let percentage = 0;
+    if (totalTarget > 0) {
+        percentage = (stats.total_done / totalTarget) * 100;
+    }
+
+    // Clamp to 100 max for display
+    const displayPercentage = Math.min(100, percentage).toFixed(1);
+
+    const fillEl = document.getElementById('global-progress-fill');
+    const textEl = document.getElementById('global-progress-text');
+
+    fillEl.style.width = `${displayPercentage}%`;
+
+    if (percentage >= 100) {
+        fillEl.style.background = 'linear-gradient(90deg, #00d26a, #00b894)'; // Success green
+        textEl.textContent = '50 L lecker Bierchen 🍺';
+    } else {
+        textEl.textContent = `${displayPercentage}%`;
+    }
 }
 
 function renderPlayers(filter = '') {
