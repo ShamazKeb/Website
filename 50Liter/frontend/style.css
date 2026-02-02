@@ -60,27 +60,29 @@ header h1 {
 /* Global Progress Bar */
 .progress-section {
     max-width: 800px;
-    margin: 0 auto 2rem;
+    margin: 0 auto 2.5rem;
     padding: 0 1rem;
 }
 
 .global-progress-bar {
-    height: 32px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 18px;
     position: relative;
     overflow: hidden;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
 }
 
 .global-progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #f1c40f, #f39c12);
     width: 0%;
-    transition: width 1s ease-in-out;
-    box-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 15px rgba(243, 156, 18, 0.4);
     position: relative;
+    border-radius: 18px;
 }
 
 /* Shine effect */
@@ -96,6 +98,18 @@ header h1 {
             rgba(255, 255, 255, 0.2) 50%,
             rgba(255, 255, 255, 0) 100%);
     z-index: 1;
+    animation: shine 2s infinite linear;
+    background-size: 200% 100%;
+}
+
+@keyframes shine {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 .global-progress-text {
@@ -108,9 +122,9 @@ header h1 {
     align-items: center;
     justify-content: center;
     font-weight: 800;
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: white;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     z-index: 2;
     letter-spacing: 0.5px;
 }
@@ -156,17 +170,21 @@ header h1 {
 .search-wrapper {
     margin: 0 auto 1.5rem;
     max-width: 500px;
+    position: relative;
 }
 
 #search-input {
     width: 100%;
-    padding: 0.75rem 1rem;
-    background: var(--bg-secondary);
+    padding: 1rem 1.5rem;
+    background: rgba(22, 33, 62, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 50px;
+    /* Pillow shape */
     color: var(--text-primary);
-    font-size: 1rem;
-    transition: all 0.2s;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 #search-input::placeholder {
@@ -176,7 +194,9 @@ header h1 {
 #search-input:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 15px var(--accent-glow);
+    box-shadow: 0 0 20px var(--accent-glow);
+    background: rgba(22, 33, 62, 0.95);
+    transform: translateY(-2px);
 }
 
 /* Players Grid */

@@ -79,7 +79,7 @@ function setupTabs() {
             if (tab === 'leaderboard') {
                 renderLeaderboard();
             } else {
-                renderPlayers();
+                renderPlayers(searchInput.value); // Fix: Keep search query
             }
         });
     });
@@ -158,11 +158,17 @@ function renderPlayers(filter = '') {
         if (query) {
             const aStarts = normalize(a.name).startsWith(query);
             const bStarts = normalize(b.name).startsWith(query);
+
+            // If one starts with query and other doesn't, prioritize match
             if (aStarts && !bStarts) return -1;
             if (!aStarts && bStarts) return 1;
+
+            // If both match (or neither), sort alphabetically
+            // We explicitely SKIP completion check when searching so results are intuitive
+            return a.name.localeCompare(b.name);
         }
 
-        // 2. Completion Status (Unfinished first)
+        // 2. Completion Status (Unfinished first) ONLY if not searching
         const aCompleted = a.total_remaining === 0;
         const bCompleted = b.total_remaining === 0;
         if (aCompleted && !bCompleted) return 1;
