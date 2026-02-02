@@ -9,6 +9,7 @@ class Player(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, nullable=False)
+    target_goal = Column(Integer, default=500)
     total_remaining = Column(Integer, default=500)
     
     entries = relationship("PushupEntry", back_populates="player")

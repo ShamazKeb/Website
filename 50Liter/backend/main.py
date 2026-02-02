@@ -44,7 +44,7 @@ def seed_if_empty():
         if db.query(Player).count() == 0:
             print("Seeding players...")
             for name, target in PLAYERS:
-                player = Player(name=name, total_remaining=target)
+                player = Player(name=name, total_remaining=target, target_goal=target)
                 db.add(player)
             db.commit()
             print(f"Added {len(PLAYERS)} players!")
@@ -84,6 +84,7 @@ class PlayerResponse(BaseModel):
     id: int
     name: str
     total_remaining: int
+    target_goal: int
     
     class Config:
         from_attributes = True
@@ -107,7 +108,7 @@ class LeaderboardEntry(BaseModel):
 @app.get("/api/players", response_model=List[PlayerResponse])
 def get_players(db: Session = Depends(get_db)):
     """Get all players with their remaining push-ups"""
-    return db.query(Player).order_by(Player.total_remaining).all()
+    return db.query(Player).order_by(Player.name).all()
 
 
 @app.get("/api/leaderboard", response_model=List[LeaderboardEntry])
@@ -118,8 +119,7 @@ def get_leaderboard(db: Session = Depends(get_db)):
     # Calculate stats for each player
     leaderboard = []
     for p in players:
-        # Determine original target (Andilaus has 1000, others 500)
-        target = 1000 if p.name == "Andilaus" else 500
+        target = p.target_goal
         done = target - p.total_remaining
         percentage = (done / target) * 100 if target > 0 else 0
         
@@ -128,12 +128,12 @@ def get_leaderboard(db: Session = Depends(get_db)):
             "done": done,
             "target": target,
             "remaining": p.total_remaining,
-            "percentage": round(percentage, 1),
+            "percentage": percentage,
             "completed": p.total_remaining == 0
         })
     
-    # Sort by percentage (descending)
-    leaderboard.sort(key=lambda x: x["percentage"], reverse=True)
+    # Sort by percentage (descending), then by name (ascending)
+    leaderboard.sort(key=lambda x: (-x["percentage"], x["name"]))
     
     # Add ranks
     for i, entry in enumerate(leaderboard):
@@ -161,6 +161,9 @@ def add_pushups(player_id: int, pushup: PushupCreate, db: Session = Depends(get_
     if pushup.count <= 0:
         raise HTTPException(status_code=400, detail="Count must be positive")
     
+    if player.total_remaining == 0:
+        raise HTTPException(status_code=400, detail="Player has already completed the challenge")
+
     # Create entry
     entry = PushupEntry(player_id=player_id, count=pushup.count)
     db.add(entry)
@@ -177,7 +180,7 @@ def add_pushups(player_id: int, pushup: PushupCreate, db: Session = Depends(get_
 def get_stats(db: Session = Depends(get_db)):
     """Get overall challenge statistics"""
     players = db.query(Player).all()
-    total_target = sum(1000 if p.name == "Andilaus" else 500 for p in players)
+    total_target = sum(p.target_goal for p in players)
     total_remaining = sum(p.total_remaining for p in players)
     total_done = total_target - total_remaining
     completed_players = sum(1 for p in players if p.total_remaining == 0)

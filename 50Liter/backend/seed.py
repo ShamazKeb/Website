@@ -46,7 +46,7 @@ def seed_players():
         
         # Add players
         for name, target in PLAYERS:
-            player = Player(name=name, total_remaining=target)
+            player = Player(name=name, total_remaining=target, target_goal=target)
             db.add(player)
         
         db.commit()
