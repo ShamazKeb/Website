@@ -346,6 +346,131 @@ header h1 {
     color: var(--text-secondary);
 }
 
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    justify-content: center;
+}
+
+.tab-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--bg-secondary);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--accent);
+}
+
+.tab-btn.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.tab-content.hidden {
+    display: none;
+}
+
+/* Leaderboard */
+.leaderboard {
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.leaderboard-entry {
+    display: grid;
+    grid-template-columns: 60px 1fr 100px 80px;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.2s;
+}
+
+.leaderboard-entry:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.leaderboard-entry:last-child {
+    border-bottom: none;
+}
+
+.leaderboard-rank {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+}
+
+.leaderboard-entry:nth-child(1) .leaderboard-rank {
+    color: #ffd700;
+}
+
+.leaderboard-entry:nth-child(2) .leaderboard-rank {
+    color: #c0c0c0;
+}
+
+.leaderboard-entry:nth-child(3) .leaderboard-rank {
+    color: #cd7f32;
+}
+
+.leaderboard-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.leaderboard-entry.completed .leaderboard-name::after {
+    content: ' ✅';
+}
+
+.leaderboard-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.leaderboard-progress-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.leaderboard-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #ff8a80);
+    transition: width 0.5s ease;
+}
+
+.leaderboard-entry.completed .leaderboard-progress-fill {
+    background: var(--success);
+}
+
+.leaderboard-progress-text {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.leaderboard-percentage {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: right;
+    color: var(--accent);
+}
+
+.leaderboard-entry.completed .leaderboard-percentage {
+    color: var(--success);
+}
+
 /* Responsive */
 @media (max-width: 600px) {
     header h1 {
@@ -367,5 +492,14 @@ header h1 {
 
     .players-grid {
         grid-template-columns: 1fr;
+    }
+
+    .leaderboard-entry {
+        grid-template-columns: 40px 1fr 60px;
+        gap: 0.5rem;
+    }
+
+    .leaderboard-progress {
+        display: none;
     }
 }

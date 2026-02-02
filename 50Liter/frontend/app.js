@@ -7,10 +7,12 @@ const DEADLINE = new Date('2026-02-15T23:59:59');
 
 // State
 let players = [];
+let leaderboard = [];
 let selectedPlayer = null;
 
 // DOM Elements
 const playersGrid = document.getElementById('players-grid');
+const leaderboardEl = document.getElementById('leaderboard');
 const modalOverlay = document.getElementById('modal-overlay');
 const modalPlayerName = document.getElementById('modal-player-name');
 const modalRemaining = document.getElementById('modal-remaining');
@@ -18,6 +20,7 @@ const pushupCountInput = document.getElementById('pushup-count');
 const submitBtn = document.getElementById('submit-btn');
 const modalClose = document.getElementById('modal-close');
 const quickButtons = document.querySelectorAll('.quick-btn');
+const tabButtons = document.querySelectorAll('.tab-btn');
 
 // Stats elements
 const totalDoneEl = document.getElementById('total-done');
@@ -27,9 +30,33 @@ const daysLeftEl = document.getElementById('days-left');
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     loadPlayers();
+    loadLeaderboard();
     updateCountdown();
-    setInterval(updateCountdown, 60000); // Update every minute
+    setInterval(updateCountdown, 60000);
+    setupTabs();
 });
+
+// Tab functionality
+function setupTabs() {
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.dataset.tab;
+
+            // Update buttons
+            tabButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Update content
+            document.getElementById('players-tab').classList.toggle('hidden', tab !== 'players');
+            document.getElementById('leaderboard-tab').classList.toggle('hidden', tab !== 'leaderboard');
+
+            // Reload leaderboard when switching to it
+            if (tab === 'leaderboard') {
+                loadLeaderboard();
+            }
+        });
+    });
+}
 
 // Event Listeners
 modalClose.addEventListener('click', closeModal);
@@ -72,6 +99,18 @@ async function loadPlayers() {
     }
 }
 
+async function loadLeaderboard() {
+    try {
+        const response = await fetch(`${API_URL}/leaderboard`);
+        if (!response.ok) throw new Error('Failed to load leaderboard');
+
+        leaderboard = await response.json();
+        renderLeaderboard();
+    } catch (error) {
+        console.error('Error loading leaderboard:', error);
+    }
+}
+
 async function loadStats() {
     try {
         const response = await fetch(`${API_URL}/stats`);
@@ -94,8 +133,10 @@ function renderPlayers() {
     });
 
     playersGrid.innerHTML = sortedPlayers.map(player => {
-        const done = 500 - player.total_remaining;
-        const progress = (done / 500) * 100;
+        // Andilaus has 1000, others 500
+        const target = player.name === 'Andilaus' ? 1000 : 500;
+        const done = target - player.total_remaining;
+        const progress = (done / target) * 100;
         const isCompleted = player.total_remaining === 0;
 
         return `
@@ -112,6 +153,22 @@ function renderPlayers() {
             </div>
         `;
     }).join('');
+}
+
+function renderLeaderboard() {
+    leaderboardEl.innerHTML = leaderboard.map(entry => `
+        <div class="leaderboard-entry ${entry.completed ? 'completed' : ''}">
+            <div class="leaderboard-rank">#${entry.rank}</div>
+            <div class="leaderboard-name">${entry.name}</div>
+            <div class="leaderboard-progress">
+                <div class="leaderboard-progress-bar">
+                    <div class="leaderboard-progress-fill" style="width: ${entry.percentage}%"></div>
+                </div>
+                <div class="leaderboard-progress-text">${entry.done}/${entry.target}</div>
+            </div>
+            <div class="leaderboard-percentage">${entry.percentage}%</div>
+        </div>
+    `).join('');
 }
 
 function openModal(playerId) {
@@ -169,6 +226,7 @@ async function submitPushups() {
             closeModal();
             renderPlayers();
             loadStats();
+            loadLeaderboard();
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<span>Eintragen</span><span class="submit-icon">💪</span>';
         }, 800);
