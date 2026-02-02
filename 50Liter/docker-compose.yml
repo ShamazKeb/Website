@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: 50Liter-backend
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATABASE_URL=sqlite:///./data/pushups.db
+
+  frontend:
+    build: ./frontend
+    container_name: 50Liter
+    restart: unless-stopped
+    ports:
+      - "8085:80"
+    depends_on:
+      - backend
