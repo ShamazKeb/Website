@@ -9,6 +9,8 @@ services:
       - ./data:/app/data
     environment:
       - DATABASE_URL=sqlite:///./data/pushups.db
+    networks:
+      - web-public
 
   frontend:
     build: ./frontend
@@ -18,3 +20,9 @@ services:
       - "8085:80"
     depends_on:
       - backend
+    networks:
+      - web-public
+
+networks:
+  web-public:
+    external: true
