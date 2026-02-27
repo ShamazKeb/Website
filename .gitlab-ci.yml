@@ -13,5 +13,5 @@ mirror_to_github:
     - git remote remove github 2>/dev/null || true
     - git remote add github https://x-access-token:${GITHUB_TOKEN}@github.com/ShamazKeb/Website.git
     - git fetch --all --tags
-    - git push --force github HEAD:main
+    - git push --force github HEAD:refs/heads/main
     - git push --force github --tags
