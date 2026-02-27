@@ -1,0 +1,17 @@
+stages: [mirror]
+
+mirror_to_github:
+  stage: mirror
+  image: alpine:3.19
+  variables:
+    GIT_DEPTH: "0"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  before_script:
+    - apk add --no-cache git
+  script:
+    - git remote remove github 2>/dev/null || true
+    - git remote add github https://x-access-token:${GITHUB_TOKEN}@github.com/ShamazKeb/Website.git
+    - git fetch --all --tags
+    - git push --force github HEAD:main
+    - git push --force github --tags
