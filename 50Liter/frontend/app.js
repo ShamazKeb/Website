@@ -35,7 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateCountdown, 60000);
     setupTabs();
     setupEventListeners();
+    registerServiceWorker();
 });
+
+function registerServiceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+    if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') return;
+
+    navigator.serviceWorker.register('sw.js').catch((err) => {
+        console.warn('Service worker registration failed:', err);
+    });
+}
 
 function setupEventListeners() {
     modalClose.addEventListener('click', closeModal);
