@@ -1,4 +1,4 @@
-const CACHE_NAME = '50l-challenge-v1';
+const CACHE_NAME = '50l-challenge-v2';
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
@@ -6,7 +6,8 @@ const ASSETS_TO_CACHE = [
     '/app.js?v=2',
     '/manifest.json',
     '/icon-192.png',
-    '/icon-512.png'
+    '/icon-512.png',
+    '/apple-touch-icon.png'
 ];
 
 self.addEventListener('install', (event) => {
