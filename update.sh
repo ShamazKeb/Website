@@ -45,6 +45,13 @@ cd audio-wake
 docker compose up -d --build
 cd ..
 
+# 7. 50Liter Challenge
+echo "🍺 Starte 50Liter Challenge..."
+echo "50LITER" > /tmp/admin_update_status
+cd 50Liter
+docker compose up -d --build
+cd ..
+
 echo "✅ Alle Dienste aktualisiert!"
 
 # 7. Admin Display (Self-Update)
