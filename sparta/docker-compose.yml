@@ -1,0 +1,13 @@
+services:
+  frontend:
+    build: .
+    container_name: sparta-tormusik
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    networks:
+      - web-public
+
+networks:
+  web-public:
+    external: true

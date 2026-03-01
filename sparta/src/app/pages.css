@@ -1,0 +1,444 @@
+/* ============================================================
+   PAGE-SPECIFIC STYLES
+   ============================================================ */
+
+/* ── Landing Page ───────────────────────────────────────────── */
+.landing {
+    text-align: center;
+    width: 100%;
+    max-width: 440px;
+}
+
+.landing-logo {
+    font-size: 4rem;
+    margin-bottom: var(--space-md);
+}
+
+.landing-title {
+    font-size: var(--font-size-hero);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--team-ui-accent), var(--color-info));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--space-xs);
+}
+
+.landing-subtitle {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-2xl);
+}
+
+.landing-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.landing-error {
+    color: var(--color-danger);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+.landing-btn {
+    width: 100%;
+    font-size: var(--font-size-xl);
+    padding: var(--space-md) var(--space-xl);
+}
+
+.landing-admin-link {
+    display: inline-block;
+    margin-top: var(--space-2xl);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.landing-admin-link:hover {
+    color: var(--team-ui-accent);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   BOARD – Soundboard Layout
+   ════════════════════════════════════════════════════════════ */
+
+.board {
+    position: relative;
+    min-height: 100dvh;
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    overflow: hidden;
+}
+
+/* Geometric background triangles */
+.board-bg-pattern {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(135deg, rgba(26, 107, 60, 0.15) 0%, transparent 40%),
+        linear-gradient(225deg, rgba(26, 107, 60, 0.10) 0%, transparent 35%),
+        linear-gradient(315deg, rgba(26, 107, 60, 0.08) 0%, transparent 30%);
+}
+
+.board>* {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Jersey Grid (Player Buttons) ──────────────────────────── */
+.board-players {
+    margin-bottom: var(--space-xs);
+}
+
+.jersey-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-start;
+}
+
+/* Jersey Button */
+.jersey-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: transform var(--transition-fast);
+    padding: 2px;
+}
+
+.jersey-btn:active {
+    transform: scale(0.92);
+}
+
+/* Jersey Shape */
+.jersey-shape {
+    width: 70px;
+    height: 65px;
+    background: var(--team-primary);
+    clip-path: polygon(15% 0%, 85% 0%,
+            /* shoulders */
+            100% 15%,
+            /* right sleeve */
+            85% 15%, 85% 100%,
+            /* right side */
+            15% 100%, 15% 15%,
+            /* left side */
+            0% 15%
+            /* left sleeve */
+        );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: background var(--transition-fast), filter var(--transition-fast);
+}
+
+.jersey-shape--gk {
+    background: var(--team-gk);
+}
+
+.jersey-btn:hover .jersey-shape {
+    filter: brightness(1.15);
+}
+
+.jersey-btn:active .jersey-shape {
+    filter: brightness(1.3);
+}
+
+.jersey-number {
+    color: white;
+    font-size: 1.6rem;
+    font-weight: 900;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    line-height: 1;
+    margin-top: 4px;
+}
+
+.jersey-name {
+    color: var(--color-text);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 70px;
+}
+
+
+/* ── Category Buttons Row ──────────────────────────────────── */
+.board-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.cat-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 72px;
+    min-height: 62px;
+    padding: var(--space-xs) var(--space-sm);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: all var(--transition-fast);
+    color: white;
+    font-family: var(--font-sans);
+}
+
+.cat-btn:active {
+    transform: scale(0.93);
+    filter: brightness(1.2);
+}
+
+.cat-btn--heim {
+    background: var(--color-cat-heim);
+}
+
+.cat-btn--gast {
+    background: var(--color-cat-gast);
+}
+
+.cat-btn--neutral {
+    background: var(--color-cat-neutral);
+}
+
+.cat-btn--danger {
+    background: var(--color-cat-red-card);
+}
+
+.cat-btn--special {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+}
+
+.cat-btn-big {
+    font-size: 1.4rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.cat-btn-big sub {
+    font-size: 0.7em;
+}
+
+.cat-btn-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.85;
+}
+
+.cat-btn-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+}
+
+.cat-btn-small {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.cat-btn-spacer {
+    flex: 1;
+}
+
+/* ── STOP Button ───────────────────────────────────────────── */
+.stop-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    background: var(--color-danger);
+    border: 4px solid #ff6b6b;
+    border-radius: 12px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: all var(--transition-fast);
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+}
+
+.stop-btn:hover {
+    box-shadow: 0 0 25px rgba(231, 76, 60, 0.6);
+}
+
+.stop-btn:active {
+    transform: scale(0.93);
+    background: #c0392b;
+}
+
+.stop-label {
+    color: white;
+    font-family: var(--font-sans);
+    font-size: 1.1rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+}
+
+
+/* ── Bottom Bar ────────────────────────────────────────────── */
+.board-bottom {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--space-xs);
+}
+
+.bottom-bar-btn {
+    background: linear-gradient(90deg, var(--color-danger), #e74c3c);
+    color: white;
+    border: none;
+    padding: var(--space-sm) var(--space-xl);
+    border-radius: var(--radius-full);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    font-style: italic;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-bar-btn:hover {
+    filter: brightness(1.1);
+}
+
+.bottom-bar-btn:active {
+    transform: scale(0.97);
+}
+
+
+/* ── Responsive (iPad landscape primary) ───────────────────── */
+@media (min-width: 768px) {
+    .jersey-shape {
+        width: 80px;
+        height: 75px;
+    }
+
+    .jersey-number {
+        font-size: 1.9rem;
+    }
+
+    .jersey-name {
+        font-size: 0.75rem;
+        max-width: 80px;
+    }
+
+    .cat-btn {
+        min-width: 85px;
+        min-height: 72px;
+    }
+
+    .cat-btn-big {
+        font-size: 1.6rem;
+    }
+
+    .stop-btn {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .jersey-shape {
+        width: 55px;
+        height: 52px;
+    }
+
+    .jersey-number {
+        font-size: 1.2rem;
+    }
+
+    .cat-btn {
+        min-width: 60px;
+        min-height: 52px;
+    }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   ADMIN Layout
+   ════════════════════════════════════════════════════════════ */
+
+.admin-layout {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-bg-card);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.admin-nav-brand {
+    font-weight: 800;
+    font-size: var(--font-size-lg);
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.admin-nav-links {
+    display: flex;
+    gap: var(--space-md);
+}
+
+.admin-nav-link {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.admin-nav-link:hover,
+.admin-nav-link.active {
+    color: var(--color-text);
+    background: var(--color-bg-elevated);
+}
+
+.admin-nav-link.active {
+    color: var(--team-ui-accent);
+}
+
+.admin-content {
+    flex: 1;
+    padding: var(--space-xl) var(--space-lg);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
